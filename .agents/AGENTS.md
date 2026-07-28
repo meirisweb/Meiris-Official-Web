@@ -1,0 +1,2 @@
+# Content Migration Rule
+When connecting a new page to the CMS, NEVER delete or overwrite the existing hardcoded static content (like placeholder text, mock cards, or hardcoded profiles). Instead, you MUST write a script to migrate the existing hardcoded data directly into the Sanity CMS database so that it is preserved and editable by the user. Only remove the hardcoded content from the source code AFTER successfully migrating it to the CMS dataset.

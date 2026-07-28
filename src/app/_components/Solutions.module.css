@@ -1,0 +1,239 @@
+/* ─── Section ──────────────────────────────────────────────────────────────── */
+.solutions {
+  height: auto;
+  padding: 86px 40px 86px;
+  background-color: var(--bg-color);
+  opacity: 0;
+  transition: opacity 0.8s ease-out;
+}
+
+.sectionVisible {
+  opacity: 1;
+}
+
+.container {
+  max-width: 1716px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ─── Header ───────────────────────────────────────────────────────────────── */
+.header {
+  margin-bottom: 148px;
+}
+
+.title {
+  font-family: var(--font-primary);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 60px;
+  color: var(--text-color);
+  margin-bottom: 14px;
+}
+
+.subtitle {
+  font-family: var(--font-secondary);
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+}
+
+/* ─── Cards grid ────────── */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  justify-content: center;
+  gap: clamp(20px, 4vw, 70px);
+  width: 100%;
+}
+
+/* ─── Card ─────────────────────────────────────────────────────────────── */
+.card {
+  position: relative;
+  height: 420px;
+  background-size: cover;
+  background-position: center;
+  border-radius: 0px;
+  overflow: hidden;
+  cursor: pointer;
+
+  /* Initial hidden state */
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Revealed state */
+.cardVisible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hover lift */
+.card:hover {
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Overlay ──────────────────────────────────────────────────────────────── */
+.cardOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top,
+      rgba(0, 0, 0, 0.95) 0%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0.2) 100%);
+  transition: background 0.35s ease;
+}
+
+.card:hover .cardOverlay {
+  background: linear-gradient(to top,
+      rgba(0, 30, 20, 0.96) 0%,
+      rgba(0, 100, 60, 0.35) 55%,
+      rgba(0, 0, 0, 0.05) 100%);
+}
+
+/* ─── Text body ─────────────────────────────────────────────────────────────── */
+.cardBody {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 2;
+}
+
+.cardTitle {
+  font-family: var(--font-primary);
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 22px;
+}
+
+.cardDesc {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.65);
+  line-height: 1.5;
+  /* Hidden by default, slides up on hover */
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: max-height 0.35s ease, opacity 0.35s ease, transform 0.35s ease;
+}
+
+.card:hover .cardDesc {
+  max-height: 60px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.cardCta {
+  font-family: var(--font-secondary);
+  font-size: 12px;
+  font-weight: 400;
+  color: #00D384;
+  letter-spacing: 0.3px;
+  line-height: 16px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.3s ease 0.05s, transform 0.3s ease 0.05s;
+}
+
+.card:hover .cardCta {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ─── Responsive ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 1400px) {
+  .cardsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Tablets landscape (1024–1280px) */
+@media (max-width: 1280px) {
+  .cardsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Tablets portrait (768–1024px) */
+@media (max-width: 1024px) {
+  .solutions {
+    min-height: auto;
+    padding: 60px 40px;
+  }
+  .cardsGrid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    justify-content: flex-start;
+    scroll-padding-left: 40px;
+    scroll-padding-right: 40px;
+    margin: 0 -40px;
+    padding: 20px 40px; /* top/bottom padding for hover box-shadow */
+    width: calc(100% + 80px);
+    gap: 24px;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .cardsGrid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    flex: 0 0 45%; /* show roughly 2 cards and a peek of the 3rd */
+    scroll-snap-align: start;
+    height: 380px;
+  }
+
+  .card:last-child {
+    scroll-snap-align: end;
+  }
+  
+  /* Fix WebKit bug where right padding on flex scroll containers is ignored */
+  .cardsGrid::after {
+    content: "";
+    flex: 0 0 1px;
+    width: 1px;
+  }
+}
+
+/* Small (< 768px) */
+@media (max-width: 768px) {
+  .cardsGrid {
+    justify-content: flex-start;
+    scroll-padding-left: 20px;
+    scroll-padding-right: 20px;
+    margin: 0 -20px;
+    padding: 20px 20px;
+    width: calc(100% + 40px);
+    gap: 16px;
+  }
+  .solutions {
+    min-height: auto;
+    padding: 60px 20px;
+  }
+  .header {
+    margin-bottom: 40px;
+  }
+  .title {
+    font-size: 36px;
+  }
+  .card {
+    flex: 0 0 82%; /* show 1 card and a 18% peek of the 2nd minus gap */
+    height: 340px;
+  }
+}

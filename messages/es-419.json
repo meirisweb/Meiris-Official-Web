@@ -1,0 +1,15 @@
+{
+  "Navbar": {
+    "platform": "Plataforma",
+    "products": "Productos",
+    "solutions": "Soluciones",
+    "insights": "Perspectivas",
+    "about": "Nosotros",
+    "contact": "Contáctenos"
+  },
+  "Prompt": {
+    "title": "Selecciona tu región",
+    "en": "Continuar en inglés internacional",
+    "es": "Cambiar a Español (Latinoamérica)"
+  }
+}

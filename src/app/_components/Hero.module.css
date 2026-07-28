@@ -1,0 +1,240 @@
+/* ─── Section ──────────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 100px 20px 60px;
+  /* offset for fixed navbar height and bottom padding */
+  gap: 48px;
+  /* Isolate from surrounding paint */
+  isolation: isolate;
+  contain: layout;
+}
+
+/* ─── Background image ─────────────────────────────────────────────────────── */
+.background {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.videoBackground {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Pointer-events off so it can never be interacted with */
+  pointer-events: none;
+  user-select: none;
+  /* Force GPU compositing for smooth playback */
+  will-change: transform;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0.65) 100%);
+}
+
+/* ─── Content — centered ──────────────────────────────────────────────────────────── */
+.content {
+  position: relative;
+  z-index: 1;
+  width: 95vw;
+  max-width: 2400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  animation: heroFadeUp 1s ease-out forwards;
+}
+
+.bottomContent {
+  position: relative;
+  width: 95vw;
+  max-width: 2400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  animation: heroFadeUp 1s ease-out forwards;
+  z-index: 1;
+  text-align: center;
+}
+
+.title {
+  font-family: var(--font-primary);
+  /*
+   * 6vw at 1020px = 61px  → "The power conversion" (≈ 650px) fits in 95vw container
+   * 6vw at 1440px = 86px  → hits clamp max of 92px, still fits
+   */
+  font-size: clamp(44px, 6vw, 160px);
+  font-weight: 700;
+  line-height: 1.0;
+  letter-spacing: -0.06em;
+  /* tighten the letter spacing for a premium look */
+  margin: 0;
+  color: var(--text-color);
+  white-space: normal;
+  text-wrap: balance;
+}
+
+.highlight {
+  color: var(--primary-color);
+}
+
+.description {
+  font-family: var(--font-secondary);
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 44px;
+  line-height: 1.65;
+  /*
+   * 170-char text / 2 lines = 85 chars/line
+   * At 15px Hanken Grotesk ≈ 7.8px/char avg → 85 * 7.8 = 663px needed
+   */
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ─── Buttons ──────────────────────────────────────────────────────────────── */
+.actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn {
+  font-family: var(--font-button);
+  font-weight: 700;
+  font-size: 12px;
+  padding: 14px 30px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.28s ease;
+  border: none;
+}
+
+.btnPrimary {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #000000;
+}
+
+.btnPrimary:hover {
+  background-color: var(--primary-color);
+  color: #000000;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 211, 132, 0.35);
+}
+
+.btnSecondary {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1.5px solid rgba(255, 255, 255, 0.55);
+}
+
+.btnSecondary:hover {
+  border-color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* ─── Animation ────────────────────────────────────────────────────────────── */
+@keyframes heroFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────────── */
+
+/* Large monitors (1600px+) */
+@media (min-width: 1600px) {
+  .description {
+    font-size: 20px;
+  }
+}
+
+/* 4K and Ultra Wide monitors */
+@media (min-width: 2560px) {
+  .title {
+    font-size: clamp(160px, 6vw, 220px);
+  }
+  .description {
+    font-size: 26px;
+  }
+}
+
+/* Small desktops / large tablets (1024–1280px) */
+@media (max-width: 1280px) {
+  /* font-size handled by clamp() */
+}
+
+/* Tablets (768–1024px) */
+@media (max-width: 1024px) {
+  .hero {
+    gap: 36px;
+  }
+  .desktopBr {
+    display: none;
+  }
+  .content {
+    width: 90vw;
+  }
+  .title {
+    font-size: clamp(40px, 7vw, 64px);
+    letter-spacing: 0em;
+  }
+  .description {
+    font-size: 16px;
+  }
+}
+
+/* Small tablets (max 768px) */
+@media (max-width: 768px) {
+  .hero {
+    padding: 90px 16px 48px;
+    gap: 28px;
+  }
+
+  .title {
+    font-size: clamp(28px, 7.5vw, 40px);
+    line-height: 1.08;
+    letter-spacing: -0.02em;
+    margin-bottom: 0;
+  }
+  
+  .description {
+    font-size: 14px;
+    margin-bottom: 24px;
+    padding: 0 10px;
+    line-height: 1.6;
+  }
+
+  .actions {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 16px;
+    gap: 12px;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+}
