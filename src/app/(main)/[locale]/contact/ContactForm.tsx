@@ -7,6 +7,7 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
 import { sendEmail } from "@/actions/sendEmail";
+import { trackContactSubmit } from "@/lib/analytics";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -73,6 +74,7 @@ export default function ContactForm({ data }: { data?: FormProps }) {
     setIsSubmitting(false);
 
     if (result.success) {
+      trackContactSubmit({ source: "contact_page", formType: inquiryType });
       toast.success("Thank you! Your message has been sent successfully.");
       form.reset();
     } else {

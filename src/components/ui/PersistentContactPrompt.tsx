@@ -8,6 +8,7 @@ import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
 import { sendEmail } from "@/actions/sendEmail";
+import { trackContactSubmit } from "@/lib/analytics";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -107,6 +108,7 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
     setIsSubmitting(false);
 
     if (result.success) {
+      trackContactSubmit({ source: "persistent_prompt", formType: segmentName });
       toast.success("Thank you! Our expert will be in touch shortly.");
       setIsOpen(false);
       form.reset({ ...form.getValues(), name: "", contactInfo: "", preferredTime: "" });

@@ -16,6 +16,11 @@ export const resourcePostType = defineType({
       hidden: true,
     }),
     defineField({
+      name: 'seo',
+      title: 'SEO & Meta Data',
+      type: 'seo',
+    }),
+    defineField({
       name: 'cardCategory',
       title: 'Category',
       type: 'string',

@@ -3,16 +3,31 @@ import Hero from '../../_components/Hero';
 import Solutions from '../../_components/Solutions';
 import LatestNews from '../../_components/LatestNews';
 import Contact from '../../_components/Contact';
-import { getLocalizedMetadata } from '@/lib/seo';
+import { getLocalizedMetadata, resolveSanitySeo } from '@/lib/seo';
 import type { Metadata } from 'next';
 
 import { sanityFetch } from '@/sanity/lib/sanityFetch';
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
-  return getLocalizedMetadata({
-    locale,
+export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const locale = resolvedParams?.locale || 'en';
+  let seoData = null;
+  try {
+    const doc = await sanityFetch<any>({
+      query: `*[_type == "homePage" && language == $locale][0] { seo }`,
+      params: { locale },
+    });
+    seoData = doc?.seo;
+  } catch (e) {
+    console.error('Error fetching home seo:', e);
+  }
+
+  return resolveSanitySeo({
+    seoData,
+    fallbackTitle: 'Meiris — The power conversion platform for global electrification',
+    fallbackDescription: 'Meiris provides cutting-edge electrification solutions, power infrastructure, and technological innovation.',
     path: '/',
-    title: 'Meiris — The power conversion platform for global electrification',
+    locale,
   });
 }
 

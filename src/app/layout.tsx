@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   },
   description: "Meiris, previously known as SIRIEM, provides cutting-edge electrification solutions, power infrastructure, and technological innovation.",
   keywords: ["Meiris", "SIRIEM", "SIRI", "Electrification", "Power Solutions", "Infrastructure", "Technology"],
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "YOUR_GOOGLE_VERIFICATION_CODE",
+  },
   other: {
     google: 'notranslate',
   },
@@ -38,6 +41,7 @@ const jetbrainsMono = JetBrains_Mono({
 
 import VisualEditingWrapper from '@/components/VisualEditingWrapper';
 import { Toaster } from '@/components/ui/sonner';
+import CookieConsent from '@/components/ui/CookieConsent';
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   let locale = 'en';
@@ -49,13 +53,46 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
 
   const isDraft = draftMode().isEnabled;
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'Organization',
+        '@id': 'https://www.siriem.com/#organization',
+        name: 'Meiris',
+        url: 'https://www.siriem.com',
+        logo: 'https://www.siriem.com/favicon.ico',
+        description:
+          'Meiris, previously known as SIRIEM, provides cutting-edge electrification solutions, power infrastructure, and technological innovation.',
+      },
+      {
+        '@type': 'WebSite',
+        '@id': 'https://www.siriem.com/#website',
+        url: 'https://www.siriem.com',
+        name: 'Meiris',
+        publisher: {
+          '@id': 'https://www.siriem.com/#organization',
+        },
+      },
+    ],
+  };
+
+  const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX";
+
   return (
     <html lang={locale} translate="no" className={`${dmSans.variable} ${hankenGrotesk.variable} ${jetbrainsMono.variable}`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body>
         {children}
         {isDraft && <VisualEditingWrapper />}
         <Toaster />
-        <GoogleAnalytics gaId="G-XXXXXXXXXX" />
+        <CookieConsent />
+        {gaId && <GoogleAnalytics gaId={gaId} />}
       </body>
     </html>
   );

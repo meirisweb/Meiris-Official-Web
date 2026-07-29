@@ -1,15 +1,29 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getLocalizedMetadata } from "@/lib/seo";
+import { getLocalizedMetadata, resolveSanitySeo } from "@/lib/seo";
 import { client } from "@/sanity/lib/client";
 import { PortableText } from "@portabletext/react";
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
-  return getLocalizedMetadata({
-    locale,
+export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const locale = resolvedParams?.locale || 'en';
+  let seoData = null;
+  try {
+    const doc = await client.fetch(
+      `*[_type == "aboutPage" && language == $locale][0] { seo }`,
+      { locale }
+    );
+    seoData = doc?.seo;
+  } catch (e) {
+    console.error('Error fetching about seo:', e);
+  }
+
+  return resolveSanitySeo({
+    seoData,
+    fallbackTitle: "About Us — Meiris Intelligent Power Conversion",
+    fallbackDescription: "Learn more about Meiris and our mission to electrify the world.",
     path: '/about',
-    title: "About Us — Meiris Intelligent Power Conversion",
-    description: "Learn more about Meiris and our mission to electrify the world.",
+    locale,
   });
 }
 

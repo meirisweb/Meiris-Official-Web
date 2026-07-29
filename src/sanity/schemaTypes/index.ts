@@ -13,9 +13,11 @@ import { resourcesPageType } from './resourcesPageType'
 import { insightsPageType } from './insightsPageType'
 import { insightPostType } from './insightPostType'
 import { resourcePostType } from './resourcePostType'
+import { seoType } from './seoType'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
+    seoType,
     solutionType,
     homePageType,
     aboutPageType,
@@ -31,3 +33,4 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     resourcePostType,
   ],
 }
+

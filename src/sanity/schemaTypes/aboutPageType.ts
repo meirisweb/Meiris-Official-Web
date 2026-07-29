@@ -11,6 +11,11 @@ export const aboutPageType = defineType({
       hidden: true,
     }),
     defineField({
+      name: 'seo',
+      title: 'SEO & Meta Data',
+      type: 'seo',
+    }),
+    defineField({
       name: 'hero',
       title: 'Hero Section',
       type: 'object',

@@ -10,6 +10,11 @@ export const contactPageType = defineType({
       type: 'string',
       hidden: true,
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO & Meta Data',
+      type: 'seo',
+    }),
     
     // --- HERO SECTION ---
     defineField({

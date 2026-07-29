@@ -11,6 +11,11 @@ export const solutionType = defineType({
       hidden: true,
     }),
     defineField({
+      name: 'seo',
+      title: 'SEO & Meta Data',
+      type: 'seo',
+    }),
+    defineField({
       name: 'title',
       title: 'Title',
       type: 'string',

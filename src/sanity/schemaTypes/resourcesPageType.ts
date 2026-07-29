@@ -14,6 +14,11 @@ export const resourcesPageType = defineType({
       hidden: true,
     }),
     defineField({
+      name: 'seo',
+      title: 'SEO & Meta Data',
+      type: 'seo',
+    }),
+    defineField({
       name: 'pageTitle',
       title: 'Page Title',
       type: 'string',

@@ -4,7 +4,7 @@ import RecommendedSetup from "./RecommendedSetup";
 import CustomSection2 from "./CustomSection2";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import PersistentContactPrompt from "@/components/ui/PersistentContactPrompt";
-import { getLocalizedMetadata } from "@/lib/seo";
+import { getLocalizedMetadata, resolveSanitySeo, getBreadcrumbJsonLd } from "@/lib/seo";
 import { client } from "@/sanity/lib/client";
 
 export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
@@ -12,13 +12,32 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
   const slug = resolvedParams?.slug || '';
   const locale = resolvedParams?.locale || 'en';
   
-  // Optionally fetch dynamic SEO data from Sanity here if added in future
+  let solutionTitle = "Solutions — Meiris Intelligent Power Conversion";
+  let solutionDesc = "Charging infrastructure built around your fleet's schedule.";
+  let seoData = null;
+
+  try {
+    const solution = await client.fetch(
+      `*[_type == "solution" && slug.current == $slug && language == $locale][0] { title, subtitle, seo }`,
+      { slug, locale }
+    );
+    if (solution?.title) {
+      solutionTitle = `${solution.title} — Meiris Intelligent Power Conversion`;
+      if (solution?.subtitle) {
+        solutionDesc = solution.subtitle;
+      }
+    }
+    seoData = solution?.seo;
+  } catch (e) {
+    console.error("Error fetching solution metadata:", e);
+  }
   
-  return getLocalizedMetadata({
-    locale,
+  return resolveSanitySeo({
+    seoData,
+    fallbackTitle: solutionTitle,
+    fallbackDescription: solutionDesc,
     path: `/solutions/${slug}`,
-    title: "Solutions — Meiris Intelligent Power Conversion",
-    description: "Charging infrastructure built around your fleet's schedule.",
+    locale,
   });
 }
 
@@ -146,8 +165,43 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
   // Destructure content from Sanity
   const { hero, featuresSection, customSection2, recommendedSetup, benefitsSection } = content;
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    name: content.title || 'Meiris Electrification Solution',
+    description:
+      content.subtitle ||
+      'Charging infrastructure built around your fleet schedule.',
+    brand: {
+      '@type': 'Brand',
+      name: 'Meiris',
+    },
+    offers: {
+      '@type': 'Offer',
+      priceCurrency: 'USD',
+      price: '0',
+      priceValidUntil: '2030-12-31',
+      availability: 'https://schema.org/InStock',
+      url: `https://www.siriem.com/${locale}/solutions/${urlSlug}`,
+    },
+  };
+
+  const breadcrumbLd = getBreadcrumbJsonLd([
+    { name: 'Home', path: '' },
+    { name: 'Solutions', path: `/solutions/${urlSlug}` },
+    { name: content.title || urlSlug, path: `/solutions/${urlSlug}` },
+  ], locale);
+
   return (
     <div className="relative min-h-screen bg-black text-white selection:bg-[#00E573] selection:text-black overflow-x-clip">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
 
       {/* Hero Section */}
       <section className="relative flex flex-col md:flex-row h-auto md:h-screen min-h-[100dvh] md:min-h-[700px] pt-[68px] bg-[#0c0c0c] w-full">

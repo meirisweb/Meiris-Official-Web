@@ -5,14 +5,16 @@ import { urlFor } from "@/sanity/lib/image";
 import { PortableText } from '@portabletext/react';
 import Image from 'next/image';
 
-import { getLocalizedMetadata } from "@/lib/seo";
+import { resolveSanitySeo } from "@/lib/seo";
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
-  return getLocalizedMetadata({
-    locale,
+export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const locale = resolvedParams?.locale || 'en';
+  return resolveSanitySeo({
+    fallbackTitle: "Team — Meiris Intelligent Power Conversion",
+    fallbackDescription: "Meet the engineering and leadership team behind Meiris.",
     path: '/team',
-    title: "Team — Meiris Intelligent Power Conversion",
-    description: "Meet the engineering and leadership team behind Meiris.",
+    locale,
   });
 }
 

@@ -1,21 +1,33 @@
 
 import type { Metadata } from "next";
-import { getLocalizedMetadata } from "@/lib/seo";
+import { getLocalizedMetadata, resolveSanitySeo, getBreadcrumbJsonLd } from "@/lib/seo";
 import { client } from "@/sanity/lib/client";
 import dynamic from 'next/dynamic';
 const ResourcesClient = dynamic(() => import('./ResourcesClient'));
+import { sanityFetch } from "@/sanity/lib/sanityFetch";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   const locale = resolvedParams?.locale || 'en';
-  return getLocalizedMetadata({
-    locale,
+  let seoData = null;
+  try {
+    const doc = await sanityFetch<any>({
+      query: `*[_type == "resourcesPage" && language == $locale][0] { seo }`,
+      params: { locale },
+    });
+    seoData = doc?.seo;
+  } catch (e) {
+    console.error('Error fetching resources seo:', e);
+  }
+
+  return resolveSanitySeo({
+    seoData,
+    fallbackTitle: "Resources — Meiris Intelligent Power Conversion",
+    fallbackDescription: "Brochures, datasheets, and technical specifications for Meiris products and solutions.",
     path: '/resources',
-    title: "Resources — Meiris Intelligent Power Conversion",
-    description: "Brochures, datasheets, and technical specifications for Meiris products and solutions.",
+    locale,
   });
 }
-import { sanityFetch } from "@/sanity/lib/sanityFetch";
 
 export const revalidate = 60; // Fetch fresh data from Sanity every 60s
 
@@ -80,8 +92,17 @@ export default async function ResourcesPage({ params }: { params: Promise<{ loca
     content.resourceItems = posts;
   }
 
+  const breadcrumbLd = getBreadcrumbJsonLd([
+    { name: 'Home', path: '' },
+    { name: 'Resources', path: '/resources' },
+  ], locale);
+
   return (
     <div className="relative min-h-screen bg-white text-black selection:bg-[#00E573] selection:text-black">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbLd) }}
+      />
       <ResourcesClient data={content || {}} />
     </div>
   );

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import styles from './Navbar.module.css';
 import { useTranslations } from 'next-intl';
 import { useLocale } from 'next-intl';
+import { trackLanguageChange, trackCtaClick } from '@/lib/analytics';
 
 export default function Navbar({ data }: { data?: any }) {
   const progressBarRef = useRef<HTMLDivElement>(null);
@@ -21,6 +22,7 @@ export default function Navbar({ data }: { data?: any }) {
   const ctaBtn = data?.ctaBtn || t('contact');
 
   const switchLanguage = (newLocale: string) => {
+    trackLanguageChange({ fromLocale: currentLocale, toLocale: newLocale });
     // Save preference in cookie for next-intl middleware (1 year expiry)
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
     
@@ -145,7 +147,11 @@ export default function Navbar({ data }: { data?: any }) {
               ES
             </button>
           </div>
-          <Link href={localePath('/contact')} className={`${styles.contactBtnWrapper} ${styles.contactBtn}`}>
+          <Link 
+            href={localePath('/contact')} 
+            className={`${styles.contactBtnWrapper} ${styles.contactBtn}`}
+            onClick={() => trackCtaClick({ location: 'navbar', label: ctaBtn, targetUrl: '/contact' })}
+          >
             {ctaBtn}
           </Link>
           <button className={styles.hamburger} onClick={() => setIsMenuOpen(!isMenuOpen)} aria-label="Toggle menu">

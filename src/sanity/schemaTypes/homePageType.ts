@@ -12,6 +12,11 @@ export const homePageType = defineType({
       type: 'string',
       hidden: true, // managed by plugin
     }),
+    defineField({
+      name: 'seo',
+      title: 'SEO & Meta Data',
+      type: 'seo',
+    }),
     
     // --- HERO SECTION ---
     defineField({

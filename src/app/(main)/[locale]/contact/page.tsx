@@ -4,15 +4,29 @@ import ctaEngineers from "@/assets/cta-engineers.jpg";
 import dynamic from 'next/dynamic';
 const ContactForm = dynamic(() => import('./ContactForm'));
 
-import { getLocalizedMetadata } from "@/lib/seo";
+import { getLocalizedMetadata, resolveSanitySeo } from "@/lib/seo";
 import { client } from "@/sanity/lib/client";
 
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
-  return getLocalizedMetadata({
-    locale,
+export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
+  const resolvedParams = await params;
+  const locale = resolvedParams?.locale || 'en';
+  let seoData = null;
+  try {
+    const doc = await client.fetch(
+      `*[_type == "contactPage" && language == $locale][0] { seo }`,
+      { locale }
+    );
+    seoData = doc?.seo;
+  } catch (e) {
+    console.error('Error fetching contact seo:', e);
+  }
+
+  return resolveSanitySeo({
+    seoData,
+    fallbackTitle: "Contact Us — Meiris Intelligent Power Conversion",
+    fallbackDescription: "Connect with our experts to discuss intelligent charging solutions designed for tomorrow's mobility.",
     path: '/contact',
-    title: "Contact Us — Meiris Intelligent Power Conversion",
-    description: "Connect with our experts to discuss intelligent charging solutions designed for tomorrow's mobility.",
+    locale,
   });
 }
 
