@@ -6,40 +6,94 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
-import { sendEmail } from "@/actions/sendEmail";
+import { sendEmail, validateContactForm } from "@/actions/sendEmail";
 import { trackContactSubmit } from "@/lib/analytics";
+import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
+
+const DISPOSABLE_DOMAINS = new Set([
+  "mailinator.com",
+  "guerrillamail.com",
+  "tempmail.com",
+  "10minutemail.com",
+  "yopmail.com",
+  "throwawaymail.com",
+  "sharklasers.com",
+  "getairmail.com",
+  "dispostable.com",
+  "fakeinbox.com",
+  "maildrop.cc",
+  "temp-mail.org",
+  "test.com",
+  "example.com",
+  "fake.com",
+  "spam.com",
+  "asdf.com",
+  "qwerty.com",
+]);
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   company: z.string().min(2, { message: "Company name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
-  phone: z.string().min(8, { message: "Please enter a valid phone number." }),
+  email: z
+    .string()
+    .email({ message: "Please enter a valid email address." })
+    .refine(
+      (val) => {
+        const domain = val.split("@")[1]?.toLowerCase();
+        return domain && !DISPOSABLE_DOMAINS.has(domain);
+      },
+      { message: "Please use a professional corporate email address (disposable emails are not allowed)." }
+    ),
+  countryCode: z.string().optional(),
+  phone: z
+    .string()
+    .min(6, { message: "Please enter a valid phone number." })
+    .regex(/^[0-9\s\-().+]+$/, { message: "Please enter a valid phone number." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
 });
 
-type FormProps = {
-  heading: string;
-  categories: string[];
+const FORM_CATEGORIES = [
+  "ELECTRIC VEHICLES",
+  "BATTERY STORAGE",
+  "AEROSPACE",
+  "INDUSTRIAL POWER",
+  "GENERAL INQUIRY",
+];
+
+const FORM_CONFIG = {
+  heading: "TELL US WHAT YOU WANT TO SOLVE",
   labels: {
-    name: string;
-    company: string;
-    email: string;
-    phone: string;
-    message: string;
-    submitBtn: string;
-  };
+    name: "Your Name",
+    company: "Company Name",
+    email: "Email Address",
+    phone: "Phone Number",
+    message: "Project Details / How can we help?",
+    submitBtn: "Send Inquiry",
+  },
   placeholders: {
-    name: string;
-    company: string;
-    email: string;
-    phone: string;
-    message: string;
-  };
+    name: "John Doe",
+    company: "Siriem Mobility",
+    email: "john@siriem.com",
+    message: "Tell us about your power conversion requirements...",
+  },
+};
+
+type FormProps = {
+  heading?: string;
+  categories?: string[];
+  labels?: Partial<typeof FORM_CONFIG.labels>;
+  placeholders?: Partial<typeof FORM_CONFIG.placeholders>;
 };
 
 export default function ContactForm({ data }: { data?: FormProps }) {
-  const [inquiryType, setInquiryType] = useState(data?.categories?.[0] || "");
+  const heading = data?.heading || FORM_CONFIG.heading;
+  const categories = data?.categories?.length ? data.categories : FORM_CATEGORIES;
+  const labels = { ...FORM_CONFIG.labels, ...data?.labels };
+  const placeholders = { ...FORM_CONFIG.placeholders, ...data?.placeholders };
+
+  const [inquiryType, setInquiryType] = useState(categories[0]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -48,19 +102,16 @@ export default function ContactForm({ data }: { data?: FormProps }) {
       name: "",
       company: "",
       email: "",
+      countryCode: "+1",
       phone: "",
       message: "",
     },
   });
 
-  if (!data) {
-    return <div>Form data not found.</div>;
-  }
-
-  const { heading, categories, labels, placeholders } = data;
-
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    setServerError(null);
+
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       formData.append(key, value || "");
@@ -70,15 +121,67 @@ export default function ContactForm({ data }: { data?: FormProps }) {
     const botField = document.querySelector<HTMLInputElement>('#contact-form-page-bot');
     if (botField?.value) formData.append("bot-field", botField.value);
 
-    const result = await sendEmail(formData);
-    setIsSubmitting(false);
+    // 1. Run server-side spam, MX DNS (via Google DNS over HTTPS), and phone number validation
+    const valResult = await validateContactForm(formData);
+    if (!valResult.success) {
+      setIsSubmitting(false);
+      const errorMsg = valResult.error || "Please check the form fields and try again.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
+      if (valResult.fieldErrors) {
+        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
+          form.setError(field as any, { type: "server", message: msg as string });
+        });
+      }
+      return;
+    }
 
-    if (result.success) {
-      trackContactSubmit({ source: "contact_page", formType: inquiryType });
-      toast.success("Thank you! Your message has been sent successfully.");
-      form.reset();
-    } else {
-      toast.error(result.error || "Failed to submit. Please try again.");
+    // 2. Submit to Web3Forms directly from the browser (Client-Side) to comply with Web3Forms Free Plan
+    try {
+      const accessKey =
+        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
+        "8104f760-2d45-4607-a202-8d3d5992582b";
+
+      let formattedPhone = String(values.phone || "").trim();
+      if (values.countryCode && !formattedPhone.startsWith("+")) {
+        formattedPhone = `${values.countryCode} ${formattedPhone}`.trim();
+      }
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New Inquiry (${inquiryType}) from ${values.name || "Visitor"}`,
+          from_name: "Meiris Website",
+          replyto: values.email,
+          ...values,
+          phone: formattedPhone,
+          inquiryType: inquiryType,
+        }),
+      });
+
+      const result = await response.json();
+      setIsSubmitting(false);
+
+      if (response.ok && result.success) {
+        trackContactSubmit({ source: "contact_page", formType: inquiryType });
+        toast.success("Thank you! Your message has been sent successfully.");
+        form.reset();
+        setServerError(null);
+      } else {
+        const errorMsg = result.message || "We could not send your message at this time. Please try again later.";
+        setServerError(errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (err: any) {
+      setIsSubmitting(false);
+      const errorMsg = "We could not deliver your message automatically at this moment. Please email us directly at reachus@siriem.com.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
     }
   }
 
@@ -155,19 +258,27 @@ export default function ContactForm({ data }: { data?: FormProps }) {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="phone"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col gap-2">
-                    <label className="text-[10px] uppercase tracking-widest text-black/50 font-bold">{labels?.phone}</label>
-                    <FormControl>
-                      <input type="tel" placeholder={placeholders?.phone} className="w-full bg-[#f9f9f9] rounded-xl px-5 py-4 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] transition-all" {...field} />
-                    </FormControl>
-                    <FormMessage className="text-red-500 font-medium text-xs" />
-                  </FormItem>
-                )}
-              />
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] uppercase tracking-widest text-black/50 font-bold">{labels?.phone}</label>
+                <FormField
+                  control={form.control}
+                  name="phone"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <IntlPhoneInput
+                          value={field.value}
+                          onChange={(formatted) => field.onChange(formatted)}
+                          onCountryChange={(dialCode) => {
+                            form.setValue("countryCode", dialCode);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage className="text-red-500 font-medium text-xs" />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             <FormField
@@ -183,6 +294,18 @@ export default function ContactForm({ data }: { data?: FormProps }) {
                 </FormItem>
               )}
             />
+
+            {serverError && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl p-4 text-xs font-semibold flex items-start gap-3">
+                <svg className="w-5 h-5 flex-shrink-0 text-red-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div className="flex flex-col">
+                  <p className="font-bold">Submission Error</p>
+                  <p className="text-red-600/90 font-normal mt-0.5">{serverError}</p>
+                </div>
+              </div>
+            )}
 
             <div className="flex justify-center pt-6">
               <button type="submit" disabled={isSubmitting} className="cursor-pointer bg-[#0a0a0a] text-white px-8 py-4 rounded-full text-[12px] font-bold shadow-lg hover:bg-[#00E573] hover:text-black hover:shadow-[0_0_18px_rgba(0,211,132,0.35)] transition-all duration-300 flex items-center gap-2 hover:-translate-y-0.5 tracking-wide disabled:opacity-70 disabled:cursor-not-allowed">

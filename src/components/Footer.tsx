@@ -50,7 +50,7 @@ export default function Footer({ data }: { data?: any }) {
     { _key: 'x', platform: 'X', url: 'https://x.com/SIRIEMPL' }
   ];
   const contactDetails = data?.contactDetails || {
-    email: 'info@siriem.com',
+    email: 'reachus@siriem.com',
     phone: '',
     address: ''
   };
