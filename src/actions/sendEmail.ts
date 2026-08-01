@@ -68,7 +68,7 @@ export async function validateContactForm(formData: FormData): Promise<{
     const data = Object.fromEntries(formData.entries());
 
     // 3a. Email verification: check against disposable domains and verify MX records via DNS over HTTPS
-    const emailStr = String(data.email || "").trim().toLowerCase();
+    const emailStr = String(data.email || data.orgContact || data.contactInfo || "").trim().toLowerCase();
     const emailDomain = emailStr.split("@")[1];
 
     if (!emailDomain || DISPOSABLE_DOMAINS.has(emailDomain)) {
@@ -77,6 +77,8 @@ export async function validateContactForm(formData: FormData): Promise<{
         error: "Please provide a valid professional or corporate email address (disposable/fake emails are not allowed).",
         fieldErrors: {
           email: "Please provide a valid professional or corporate email address (disposable/fake emails are not allowed).",
+          orgContact: "Please provide a valid professional or corporate email address (disposable/fake emails are not allowed).",
+          contactInfo: "Please provide a valid professional or corporate email address (disposable/fake emails are not allowed).",
         },
       };
     }
@@ -94,6 +96,8 @@ export async function validateContactForm(formData: FormData): Promise<{
           error: `The email domain "@${emailDomain}" does not appear to have valid mail servers. Please check your email address.`,
           fieldErrors: {
             email: `The email domain "@${emailDomain}" does not appear to have valid mail servers. Please check your email address.`,
+            orgContact: `The email domain "@${emailDomain}" does not appear to have valid mail servers. Please check your email address.`,
+            contactInfo: `The email domain "@${emailDomain}" does not appear to have valid mail servers. Please check your email address.`,
           },
         };
       }

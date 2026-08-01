@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
-import { sendEmail } from "@/actions/sendEmail";
+import { sendEmail, validateContactForm } from "@/actions/sendEmail";
 
 import solCharge from "@/assets/sol-charge.jpg";
 import solDepot from "@/assets/sol-depot.jpg";
@@ -50,6 +50,7 @@ const formSchema = z.object({
 export default function RecommendedSetup({ setupData }: { setupData?: any }) {
   const [activeTab, setActiveTab] = useState("bus");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -65,6 +66,8 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    setServerError(null);
+
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       formData.append(key, value || "");
@@ -73,14 +76,64 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
     const botField = document.querySelector<HTMLInputElement>('#setup-form-bot');
     if (botField?.value) formData.append("bot-field", botField.value);
 
-    const result = await sendEmail(formData);
-    setIsSubmitting(false);
+    // 1. Run server-side spam & MX DNS validation (over Google DNS HTTPS)
+    const valResult = await validateContactForm(formData);
+    if (!valResult.success) {
+      setIsSubmitting(false);
+      const errorMsg = valResult.error || "Please check the form fields and try again.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
+      if (valResult.fieldErrors) {
+        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
+          if (field === "email" || field === "orgContact") {
+            form.setError("orgContact" as any, { type: "server", message: msg as string });
+          }
+        });
+      }
+      return;
+    }
 
-    if (result.success) {
-      toast.success("Thank you! Our expert will be in touch shortly.");
-      form.reset();
-    } else {
-      toast.error(result.error || "Failed to submit. Please try again.");
+    // 2. Submit to Web3Forms directly from the browser (Client-Side) to avoid Free Plan 403 blocks
+    try {
+      const accessKey =
+        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
+        "8104f760-2d45-4607-a202-8d3d5992582b";
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New Inquiry (${values.appDomain || "Solutions Page"}) from ${values.orgContact}`,
+          replyto: values.orgContact,
+          email: values.orgContact,
+          "Application Domain": values.appDomain,
+          "Power Rating": values.powerRating,
+          "Constraints": values.constraints || "None specified",
+          "Timeline": values.timeline,
+        }),
+      });
+
+      const result = await response.json();
+      setIsSubmitting(false);
+
+      if (response.ok && result.success) {
+        toast.success("Thank you! Our expert will be in touch shortly.");
+        form.reset();
+        setServerError(null);
+      } else {
+        const errorMsg = result.message || "We could not submit your request at this time. Please try again later.";
+        setServerError(errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (err: any) {
+      setIsSubmitting(false);
+      const errorMsg = "We could not deliver your request automatically at this moment. Please email us directly at reachus@siriem.com.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
     }
   }
 
@@ -216,11 +269,6 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
                               {...field} 
                               type="text" 
                               placeholder={setupData.setupForm.placeholders?.timeline || "Prototype required by / production volumes expected"} 
-                              onFocus={(e) => (e.target.type = "date")}
-                              onBlur={(e) => {
-                                field.onBlur();
-                                if (!e.target.value) e.target.type = "text";
-                              }}
                               className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-5 py-4 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" 
                             />
                           </FormControl>
@@ -229,6 +277,18 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
                       )}
                     />
                   </div>
+
+                  {serverError && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl p-4 text-xs font-semibold flex items-start gap-3 mt-4">
+                      <svg className="w-5 h-5 flex-shrink-0 text-red-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                      <div className="flex flex-col">
+                        <p className="font-bold">Submission Error</p>
+                        <p className="text-red-600/90 font-normal mt-0.5">{serverError}</p>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="flex justify-center pt-6">
                     <button type="submit" disabled={isSubmitting} className="cursor-pointer bg-[#0a0a0a] text-white px-8 py-4 rounded-full text-[12px] font-bold shadow-lg hover:bg-[#00E573] hover:text-black hover:shadow-[0_0_18px_rgba(0,211,132,0.35)] transition-all duration-300 flex items-center gap-2 hover:-translate-y-0.5 tracking-wide disabled:opacity-70 disabled:cursor-not-allowed">

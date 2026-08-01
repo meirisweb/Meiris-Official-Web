@@ -7,8 +7,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
-import { sendEmail } from "@/actions/sendEmail";
+import { sendEmail, validateContactForm } from "@/actions/sendEmail";
 import { trackContactSubmit } from "@/lib/analytics";
+import DateTimePicker from "@/components/ui/DateTimePicker";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
@@ -21,6 +22,7 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
   const [isOpen, setIsOpen] = useState(false);
   const [showNudge, setShowNudge] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
   const idleTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const nudgeFadeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const IDLE_TIME = 8000; // 8 seconds
@@ -88,32 +90,77 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    setServerError(null);
     
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       formData.append(key, value || "");
     });
     
-    // Add honeypot value manually if we were using a native form submission, 
-    // but since we are using react-hook-form, we grab it from a ref or just let the form handle it.
-    // Actually, it's easier to just pass the hidden field value if we add it to the DOM.
-    // We'll get it from the DOM element.
     const botField = document.querySelector<HTMLInputElement>('input[name="bot-field"]');
     if (botField?.value) {
       formData.append("bot-field", botField.value);
     }
 
-    const result = await sendEmail(formData);
-    
-    setIsSubmitting(false);
+    // 1. Server-side spam & MX DNS check
+    const valResult = await validateContactForm(formData);
+    if (!valResult.success) {
+      setIsSubmitting(false);
+      const errorMsg = valResult.error || "Please check the form fields and try again.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
+      if (valResult.fieldErrors) {
+        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
+          if (field === "contactInfo") {
+            form.setError("contactInfo" as any, { type: "server", message: msg as string });
+          }
+        });
+      }
+      return;
+    }
 
-    if (result.success) {
-      trackContactSubmit({ source: "persistent_prompt", formType: segmentName });
-      toast.success("Thank you! Our expert will be in touch shortly.");
-      setIsOpen(false);
-      form.reset({ ...form.getValues(), name: "", contactInfo: "", preferredTime: "" });
-    } else {
-      toast.error(result.error || "Failed to submit. Please try again.");
+    // 2. Submit to Web3Forms client-side
+    try {
+      const accessKey =
+        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
+        "8104f760-2d45-4607-a202-8d3d5992582b";
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New Inquiry (${segmentName}) from ${values.name || "Visitor"}`,
+          replyto: values.contactInfo,
+          name: values.name,
+          email: values.contactInfo,
+          segment: values.segment,
+          preferredTime: values.preferredTime || "Anytime",
+        }),
+      });
+
+      const result = await response.json();
+      setIsSubmitting(false);
+
+      if (response.ok && result.success) {
+        trackContactSubmit({ source: "persistent_prompt", formType: segmentName });
+        toast.success("Thank you! Our expert will be in touch shortly.");
+        setIsOpen(false);
+        setServerError(null);
+        form.reset({ ...form.getValues(), name: "", contactInfo: "", preferredTime: "" });
+      } else {
+        const errorMsg = result.message || "We could not submit your inquiry at this time. Please try again later.";
+        setServerError(errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (err: any) {
+      setIsSubmitting(false);
+      const errorMsg = "We could not deliver your message automatically at this moment. Please email us directly at reachus@siriem.com.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
     }
   }
 
@@ -191,22 +238,28 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <input 
-                      {...field} 
-                      type="text" 
-                      placeholder="Preferred time (optional)" 
-                      onFocus={(e) => (e.target.type = "datetime-local")}
-                      onBlur={(e) => {
-                        field.onBlur();
-                        if (!e.target.value) e.target.type = "text";
-                      }}
-                      className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-5 py-3.5 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" 
+                    <DateTimePicker
+                      value={field.value || ""}
+                      onChange={(formatted) => field.onChange(formatted)}
+                      placeholder="Preferred date & time (optional)"
                     />
                   </FormControl>
                   <FormMessage className="text-[11px] text-red-500" />
                 </FormItem>
               )}
             />
+
+            {serverError && (
+              <div className="bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl p-3 text-xs font-semibold flex items-start gap-2.5">
+                <svg className="w-4 h-4 flex-shrink-0 text-red-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <div className="flex flex-col">
+                  <p className="font-bold">Submission Error</p>
+                  <p className="text-red-600/90 font-normal mt-0.5">{serverError}</p>
+                </div>
+              </div>
+            )}
 
             <button type="submit" disabled={isSubmitting} className="w-full mt-2 cursor-pointer bg-[#0a0a0a] text-white py-3.5 rounded-full text-[13px] font-bold shadow-lg hover:bg-[#00E573] hover:text-black hover:shadow-[0_0_18px_rgba(0,211,132,0.35)] transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed">
               {isSubmitting ? "Sending..." : "Talk to our expert"}

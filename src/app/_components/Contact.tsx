@@ -6,7 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { sendEmail } from "@/actions/sendEmail";
+import { validateContactForm } from "@/actions/sendEmail";
+import { trackContactSubmit } from '@/lib/analytics';
 import styles from './Contact.module.css';
 
 const formSchema = z.object({
@@ -18,6 +19,7 @@ const formSchema = z.object({
 export default function Contact({ data }: { data: any }) {
   const sectionRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,6 +33,8 @@ export default function Contact({ data }: { data: any }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
+    setServerError(null);
+
     const formData = new FormData();
     Object.entries(values).forEach(([key, value]) => {
       formData.append(key, value || "");
@@ -39,14 +43,59 @@ export default function Contact({ data }: { data: any }) {
     const botField = document.querySelector<HTMLInputElement>('#contact-form-bot');
     if (botField?.value) formData.append("bot-field", botField.value);
 
-    const result = await sendEmail(formData);
-    setIsSubmitting(false);
+    // 1. Validate on server (MX DNS validation via Google DNS over HTTPS, spam check, disposable email check)
+    const valResult = await validateContactForm(formData);
+    if (!valResult.success) {
+      setIsSubmitting(false);
+      const errorMsg = valResult.error || "Please check the form fields and try again.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
+      if (valResult.fieldErrors) {
+        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
+          form.setError(field as any, { type: "server", message: msg as string });
+        });
+      }
+      return;
+    }
 
-    if (result.success) {
-      toast.success("Thank you! Your message has been sent successfully.");
-      form.reset();
-    } else {
-      toast.error(result.error || "Failed to submit. Please try again.");
+    // 2. Submit directly from client browser to Web3Forms to bypass Free Plan server blocks
+    try {
+      const accessKey =
+        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
+        "8104f760-2d45-4607-a202-8d3d5992582b";
+
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          subject: `New Inquiry (Home Page Contact) from ${values.name}`,
+          replyto: values.email,
+          ...values,
+        }),
+      });
+
+      const result = await response.json();
+      setIsSubmitting(false);
+
+      if (response.ok && result.success) {
+        trackContactSubmit({ source: "home_page_contact", formType: "general" });
+        toast.success("Thank you! Your message has been sent successfully.");
+        form.reset();
+        setServerError(null);
+      } else {
+        const errorMsg = result.message || "We could not send your message at this time. Please try again later.";
+        setServerError(errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (err: any) {
+      setIsSubmitting(false);
+      const errorMsg = "We could not deliver your message automatically at this moment. Please email us directly at reachus@siriem.com.";
+      setServerError(errorMsg);
+      toast.error(errorMsg);
     }
   }
 
@@ -83,7 +132,7 @@ export default function Contact({ data }: { data: any }) {
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
-                          <input type="text" placeholder={data.namePlaceholder} className={styles.input} {...field} />
+                          <input type="text" placeholder={data.namePlaceholder || "Your Name"} className={styles.input} {...field} />
                         </FormControl>
                         <FormMessage className="text-red-500 font-medium text-xs mt-1" />
                       </FormItem>
@@ -95,7 +144,7 @@ export default function Contact({ data }: { data: any }) {
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
-                          <input type="email" placeholder={data.emailPlaceholder} className={styles.input} {...field} />
+                          <input type="email" placeholder={data.emailPlaceholder || "Email Address"} className={styles.input} {...field} />
                         </FormControl>
                         <FormMessage className="text-red-500 font-medium text-xs mt-1" />
                       </FormItem>
@@ -108,14 +157,24 @@ export default function Contact({ data }: { data: any }) {
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormControl>
-                        <textarea placeholder={data.messagePlaceholder} className={styles.textarea} rows={4} {...field}></textarea>
+                        <textarea placeholder={data.messagePlaceholder || "Project Details / How can we help?"} className={styles.textarea} rows={4} {...field}></textarea>
                       </FormControl>
                       <FormMessage className="text-red-500 font-medium text-xs mt-1" />
                     </FormItem>
                   )}
                 />
+
+                {serverError && (
+                  <div className="bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl p-3 text-xs font-semibold flex items-start gap-2.5 my-2">
+                    <svg className="w-4 h-4 flex-shrink-0 text-red-500 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span>{serverError}</span>
+                  </div>
+                )}
+
                 <button type="submit" disabled={isSubmitting} className={`${styles.submitBtn} disabled:opacity-70 disabled:cursor-not-allowed`}>
-                  {isSubmitting ? "Sending..." : data.submitBtn}
+                  {isSubmitting ? "Sending..." : data.submitBtn || "Send Message"}
                   <span className={styles.arrow}>→</span>
                 </button>
               </form>

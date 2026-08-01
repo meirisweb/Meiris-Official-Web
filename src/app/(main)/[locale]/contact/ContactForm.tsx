@@ -156,7 +156,6 @@ export default function ContactForm({ data }: { data?: FormProps }) {
         body: JSON.stringify({
           access_key: accessKey,
           subject: `New Inquiry (${inquiryType}) from ${values.name || "Visitor"}`,
-          from_name: "Meiris Website",
           replyto: values.email,
           ...values,
           phone: formattedPhone,

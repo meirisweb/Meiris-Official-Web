@@ -81,8 +81,7 @@ export default function CareersForm({ locale }: { locale: string }) {
 
       const submitData = new FormData();
       submitData.append("access_key", accessKey);
-      submitData.append("subject", `New Career Application from ${values.name}`);
-      submitData.append("from_name", "Meiris Careers");
+      submitData.append("subject", `New Inquiry (Careers Application) from ${values.name}`);
       submitData.append("replyto", values.email);
       submitData.append("name", values.name);
       submitData.append("email", values.email);
