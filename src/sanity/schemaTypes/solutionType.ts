@@ -65,6 +65,20 @@ export const solutionType = defineType({
           title: 'Hero Subtitle',
           type: 'text',
         }),
+        defineField({
+          name: 'image',
+          title: 'Hero Section Image (Default / Desktop)',
+          description: 'The image displayed in the right hero area on laptops and desktops (>= 768px).',
+          type: 'image',
+          options: { hotspot: true },
+        }),
+        defineField({
+          name: 'mobileImage',
+          title: 'Hero Section Image (Mobile & Tablet)',
+          description: 'The background image displayed in the hero section on mobile devices (< 768px). If left empty, falls back to the Default / Desktop Image.',
+          type: 'image',
+          options: { hotspot: true },
+        }),
       ],
     }),
 

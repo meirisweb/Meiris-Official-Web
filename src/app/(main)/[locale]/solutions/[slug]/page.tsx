@@ -76,6 +76,11 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
   let content = await client.fetch(
     `*[_type == "solution" && slug.current == $slug && language == $locale][0] {
       ...,
+      "hero": hero {
+        ...,
+        "imageUrl": image.asset->url,
+        "mobileImageUrl": mobileImage.asset->url
+      },
       "recommendedSetup": recommendedSetup {
         ...,
         "setupFeaturesOnly": setupFeaturesOnly[] {
@@ -95,6 +100,11 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
   ) || await client.fetch(
     `*[_type == "solution" && slug.current == $slug && language == "en"][0] {
       ...,
+      "hero": hero {
+        ...,
+        "imageUrl": image.asset->url,
+        "mobileImageUrl": mobileImage.asset->url
+      },
       "recommendedSetup": recommendedSetup {
         ...,
         "setupFeaturesOnly": setupFeaturesOnly[] {
@@ -118,6 +128,11 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
     content = await client.fetch(
       `*[_type == "solution" && slug.current == "depot-infrastructure" && language == $locale][0] {
         ...,
+        "hero": hero {
+          ...,
+          "imageUrl": image.asset->url,
+          "mobileImageUrl": mobileImage.asset->url
+        },
         "recommendedSetup": recommendedSetup {
           ...,
           "setupFeaturesOnly": setupFeaturesOnly[] {
@@ -137,6 +152,11 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
     ) || await client.fetch(
       `*[_type == "solution" && slug.current == "depot-infrastructure" && language == "en"][0] {
         ...,
+        "hero": hero {
+          ...,
+          "imageUrl": image.asset->url,
+          "mobileImageUrl": mobileImage.asset->url
+        },
         "recommendedSetup": recommendedSetup {
           ...,
           "setupFeaturesOnly": setupFeaturesOnly[] {
@@ -205,9 +225,21 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
       />
 
       {/* Hero Section */}
-      <section className="relative flex flex-col md:flex-row h-auto md:h-screen min-h-[100dvh] md:min-h-[700px] pt-[68px] bg-[#0c0c0c] w-full">
+      <section className="relative flex flex-col lg:flex-row h-auto lg:h-screen min-h-[100dvh] lg:min-h-[700px] pt-[68px] bg-[#0c0c0c] w-full overflow-hidden">
+        {/* Mobile & Tablet Background Image (< 1024px) */}
+        {(hero?.mobileImageUrl || hero?.imageUrl) && (
+          <div className="block lg:hidden absolute inset-0 z-0 overflow-hidden">
+            <img
+              src={hero.mobileImageUrl || hero.imageUrl}
+              alt={hero?.heroTitle || "Solution Hero Background"}
+              className="w-full h-full object-cover opacity-35"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0c0c0c]/90 via-[#0c0c0c]/50 to-[#0c0c0c]"></div>
+          </div>
+        )}
+
         {/* Left Content */}
-        <div className="w-full md:w-1/2 px-6 md:pl-20 md:pr-12 py-12 z-10 flex flex-col flex-1 justify-center">
+        <div className="w-full lg:w-1/2 px-6 md:px-12 lg:pl-20 lg:pr-12 py-12 md:py-16 relative z-10 flex flex-col flex-1 justify-center">
           <ScrollReveal>
             <h1 className="text-[clamp(2.5rem,4.5vw,4.5rem)] font-bold text-white leading-[1.05] tracking-tight mb-6 max-w-xl">
               {hero?.heroTitle}
@@ -222,9 +254,17 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
           </ScrollReveal>
         </div>
         
-        {/* Right Massive Gray Block */}
-        <ScrollReveal delay={300} className="hidden md:block absolute right-0 top-0 bottom-0 w-[55%] bg-[#e6e6e6] rounded-l-[4rem] shadow-2xl z-0">
-          <div />
+        {/* Right Hero Image Area (Laptops & Desktops >= 1024px) */}
+        <ScrollReveal delay={300} className="hidden lg:block absolute right-0 top-0 bottom-0 w-[55%] bg-[#1a1a1a] rounded-l-[4rem] shadow-2xl z-0 overflow-hidden">
+          {hero?.imageUrl ? (
+            <img
+              src={hero.imageUrl}
+              alt={hero?.heroTitle || "Solution Hero Image"}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <div className="w-full h-full bg-[#e6e6e6]" />
+          )}
         </ScrollReveal>
       </section>
 

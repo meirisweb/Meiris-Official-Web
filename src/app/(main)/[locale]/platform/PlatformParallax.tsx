@@ -538,8 +538,8 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 style={{ transform: isMobile ? `translateX(${s8MobileTranslateX}vw)` : "none" }}
               >
                 {/* Card 1 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C1X}px)` }}>
-                  <Image src={platformModule} alt={t.s8_c1_t} className="absolute inset-0 h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 hover:scale-105" placeholder="blur" />
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C1X}px)` }}>
+                  <Image src="/images/EV Charging Solutions - Platform.png" alt={t.s8_c1_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
                   <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
                     <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c1_t}</h3>
@@ -548,8 +548,8 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 </div>
                 
                 {/* Card 2 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C2X}px)` }}>
-                  <Image src={platformModule} alt={t.s8_c2_t} className="absolute inset-0 h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 hover:scale-105" placeholder="blur" />
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C2X}px)` }}>
+                  <Image src="/images/Solar - Platform.png" alt={t.s8_c2_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
                   <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
                     <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c2_t}</h3>
@@ -558,8 +558,8 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 </div>
 
                 {/* Card 3 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C3X}px)` }}>
-                  <Image src={platformModule} alt={t.s8_c3_t} className="absolute inset-0 h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 hover:scale-105" placeholder="blur" />
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C3X}px)` }}>
+                  <Image src="/images/Railway - Platform.png" alt={t.s8_c3_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
                   <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
                     <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c3_t}</h3>
@@ -568,8 +568,8 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 </div>
                 
                 {/* Card 4 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C4X}px)` }}>
-                  <Image src={platformModule} alt={t.s8_c4_t} className="absolute inset-0 h-full w-full object-cover opacity-50 grayscale transition-transform duration-700 hover:scale-105" placeholder="blur" />
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C4X}px)` }}>
+                  <Image src="/images/BESS - Platform.png" alt={t.s8_c4_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
                   <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
                     <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c4_t}</h3>
