@@ -98,32 +98,20 @@ export default async function ContactPage({ params: { locale } }: { params: { lo
           <ContactForm data={form} />
 
           {/* Contact Info Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-[900px] mt-16 mx-auto">
-            {/* Card 1: HQ */}
-            <div className="bg-[#111111] text-white rounded-3xl p-8 flex flex-col items-center text-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E573" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-4">
-                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                <circle cx="12" cy="10" r="3"></circle>
-              </svg>
-              <h3 className="text-[13px] font-bold mb-3">{contactCards?.hq?.title}</h3>
-              <p className="text-[11px] text-white/70 leading-relaxed whitespace-pre-line">
-                {contactCards?.hq?.address}
-              </p>
-            </div>
-            
-            {/* Card 2: Email */}
-            <div className="bg-white text-black rounded-3xl p-8 flex flex-col items-center text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-[700px] mt-16 mx-auto">
+            {/* Card 1: Email (Black, Green, White) */}
+            <div className="bg-[#111111] text-white rounded-3xl p-8 flex flex-col items-center text-center shadow-lg hover:-translate-y-1 hover:shadow-xl transition-all duration-300 border border-white/10">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E573" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-4">
                 <rect x="2" y="4" width="20" height="16" rx="2"></rect>
                 <path d="M2 4l10 8 10-8"></path>
               </svg>
-              <h3 className="text-[13px] font-bold mb-3">{contactCards?.email?.title}</h3>
-              <p className="text-[11px] text-black/60 leading-relaxed whitespace-pre-line">
+              <h3 className="text-[13px] font-bold mb-3 text-white">{contactCards?.email?.title}</h3>
+              <p className="text-[11px] text-white/80 leading-relaxed whitespace-pre-line">
                 {contactCards?.email?.emails}
               </p>
             </div>
 
-            {/* Card 3: Phone */}
+            {/* Card 2: Phone / Call Experts (White, Black, Green) */}
             <div className="bg-white text-black rounded-3xl p-8 flex flex-col items-center text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300">
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#00E573" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mb-4">
                 <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
