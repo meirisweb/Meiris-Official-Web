@@ -44,7 +44,7 @@ const formSchema = z.object({
   powerRating: z.string().min(2, { message: "Power rating is required." }),
   constraints: z.string().optional(),
   orgContact: z.string().email({ message: "Please enter a valid email address." }),
-  timeline: z.string().min(2, { message: "Timeline is required." }),
+  timeline: z.string().min(1, { message: "Please select a project timeline." }),
 });
 
 export default function RecommendedSetup({ setupData }: { setupData?: any }) {
@@ -87,6 +87,8 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
         Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
           if (field === "email" || field === "orgContact") {
             form.setError("orgContact" as any, { type: "server", message: msg as string });
+          } else if (field in form.getValues()) {
+            form.setError(field as any, { type: "server", message: msg as string });
           }
         });
       }
@@ -122,7 +124,13 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
 
       if (response.ok && result.success) {
         toast.success("Thank you! Our expert will be in touch shortly.");
-        form.reset();
+        form.reset({
+          appDomain: "",
+          powerRating: "",
+          constraints: "",
+          orgContact: "",
+          timeline: "",
+        });
         setServerError(null);
       } else {
         const errorMsg = result.message || "We could not submit your request at this time. Please try again later.";
@@ -179,9 +187,9 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
                 <button
                   key={fleet.id}
                   onClick={() => setActiveTab(fleet.id)}
-                  className={`px-6 py-3 rounded-full transition-all duration-300 ${activeTab === fleet.id
-                    ? "bg-[#00D384] text-black shadow-md"
-                    : "text-black hover:bg-gray-100"
+                  className={`px-6 py-3 rounded-full transition-all duration-300 cursor-pointer ${activeTab === fleet.id
+                    ? "bg-[#00E573] text-black shadow-md scale-105 font-extrabold"
+                    : "text-black/70 hover:text-black hover:bg-gray-100"
                     }`}
                 >
                   {fleet.label}
@@ -265,12 +273,18 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
                         <FormItem className="flex flex-col gap-2">
                           <label className="text-[10px] uppercase tracking-widest text-black/50 font-bold">{setupData.setupForm.labels?.timeline || "Timeline"}</label>
                           <FormControl>
-                            <input 
-                              {...field} 
-                              type="text" 
-                              placeholder={setupData.setupForm.placeholders?.timeline || "Prototype required by / production volumes expected"} 
-                              className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-5 py-4 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" 
-                            />
+                            <select
+                              {...field}
+                              className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-5 py-4 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all cursor-pointer"
+                            >
+                              <option value="" disabled>Select project timeline...</option>
+                              <option value="Immediate (< 1 month)">Immediate (&lt; 1 month)</option>
+                              <option value="1 – 3 months">1 – 3 months</option>
+                              <option value="3 – 6 months">3 – 6 months</option>
+                              <option value="6 – 12 months">6 – 12 months</option>
+                              <option value="12+ months / Long-term">12+ months / Long-term</option>
+                              <option value="Flexible / Exploratory">Flexible / Exploratory</option>
+                            </select>
                           </FormControl>
                           <FormMessage className="text-red-500 font-medium text-xs" />
                         </FormItem>
@@ -301,12 +315,19 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
             </div>
           </ScrollReveal>
         ) : (
-          <ScrollReveal staggerChildren={true} className={`grid gap-10 md:gap-12 lg:gap-16 ${featuresToDisplay.length === 4
-            ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
-            : "grid-cols-1 md:grid-cols-3"
-            }`}>
+          <div
+            key={activeTab}
+            className={`grid gap-10 md:gap-12 lg:gap-16 animate-in fade-in-0 slide-in-from-bottom-4 duration-500 ease-out ${featuresToDisplay.length === 4
+              ? "grid-cols-1 md:grid-cols-2 lg:grid-cols-4"
+              : "grid-cols-1 md:grid-cols-3"
+              }`}
+          >
             {featuresToDisplay.map((feature: any, idx: number) => (
-              <div key={idx} className="animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out flex flex-col items-center">
+              <div
+                key={`${activeTab}-${idx}`}
+                className="flex flex-col items-center animate-in fade-in-0 slide-in-from-bottom-6 duration-700 ease-out fill-mode-both"
+                style={{ animationDelay: `${idx * 100}ms` }}
+              >
                 <div className="w-full aspect-[4/3] bg-gray-100 rounded-[2rem] overflow-hidden relative shadow-sm mb-8 transition-transform duration-500 hover:scale-[1.02]">
                   <Image
                     src={feature.image}
@@ -323,7 +344,7 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
                 </p>
               </div>
             ))}
-          </ScrollReveal>
+          </div>
         )}
       </div>
     </section>
