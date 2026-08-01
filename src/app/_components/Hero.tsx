@@ -1,8 +1,19 @@
 "use client";
 import { useEffect, useRef } from 'react';
+import Link from 'next/link';
+import { useLocale } from 'next-intl';
 import styles from './Hero.module.css';
+
 export default function Hero({ data }: { data: any }) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const currentLocale = useLocale();
+
+  const scrollToSolutions = () => {
+    const solutionsSection = document.getElementById("solutions");
+    if (solutionsSection) {
+      solutionsSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   useEffect(() => {
     const video = videoRef.current;
@@ -59,8 +70,16 @@ export default function Hero({ data }: { data: any }) {
           {data.description}
         </p>
         <div className={styles.actions}>
-          <button className={`${styles.btn} ${styles.btnPrimary}`}>{data.btnExplore}</button>
-          <button className={`${styles.btn} ${styles.btnSecondary}`}>{data.btnSolutions}</button>
+          <Link href={`/${currentLocale}/platform`} className={`${styles.btn} ${styles.btnPrimary}`}>
+            {data.btnExplore || "Explore architecture"}
+          </Link>
+          <button
+            type="button"
+            onClick={scrollToSolutions}
+            className={`${styles.btn} ${styles.btnSecondary}`}
+          >
+            {data.btnSolutions || "View solutions"}
+          </button>
         </div>
       </div>
     </section>

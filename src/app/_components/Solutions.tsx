@@ -2,10 +2,20 @@
 import { useEffect, useRef } from 'react';
 import styles from './Solutions.module.css';
 import Link from 'next/link';
+import { useLocale } from 'next-intl';
+
 export default function Solutions({ data }: { data: any }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const currentLocale = useLocale();
   
   const solutions = data.solutions || [];
+
+  const formatHref = (rawHref?: string) => {
+    if (!rawHref) return '#';
+    let p = rawHref.trim().replace(/^\/(?:en|es-419|es)(?=\/|$)/i, '');
+    if (!p.startsWith('/')) p = '/' + p;
+    return `/${currentLocale}${p}`.replace(/\/\/+/g, '/');
+  };
 
   useEffect(() => {
     const cardEls = sectionRef.current?.querySelectorAll(`.${styles.card}`) ?? [];
@@ -28,7 +38,7 @@ export default function Solutions({ data }: { data: any }) {
   }, []);
 
   return (
-    <section className={styles.solutions} ref={sectionRef}>
+    <section id="solutions" className={styles.solutions} ref={sectionRef}>
       <div className={styles.container}>
         <div className={styles.header}>
           <h2 className={styles.title}>{data.heading}</h2>
@@ -38,7 +48,7 @@ export default function Solutions({ data }: { data: any }) {
           {solutions.map((sol: any, i: number) => (
             <Link
               key={i}
-              href={sol.href}
+              href={formatHref(sol.href)}
               className={styles.card}
               style={{ backgroundImage: `url(${sol.imageUrl || '/images/CustomSolutions.png'})` }}
             >

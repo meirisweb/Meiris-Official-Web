@@ -9,7 +9,7 @@ export default function CustomSection2({ data }: { data: any }) {
   const activeApp = data.apps.find((a: any) => a.id === activeTab) || data.apps[0];
 
   return (
-    <section className="bg-white py-16 md:py-32 px-6 md:px-20 relative border-t border-gray-200">
+    <section id="solution-next-section" className="bg-white py-16 md:py-32 px-6 md:px-20 relative border-t border-gray-200">
       <div className="mx-auto max-w-[1400px]">
         <ScrollReveal>
           <h2 className="text-[clamp(2rem,3vw,2.5rem)] font-bold text-[#1f2937] mb-2 max-w-4xl leading-[1.2] tracking-tight">

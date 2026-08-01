@@ -38,12 +38,14 @@ export const productsPageType = defineType({
         }),
         defineField({
           name: 'btnTalk',
-          title: 'Talk to our expert Button Text',
+          title: 'Talk to our expert Button Text (Deprecated)',
           type: 'string',
+          hidden: true,
         }),
         defineField({
           name: 'btnHowItWorks',
-          title: 'See how it works Button Text',
+          title: 'See how it works Button Text (Primary Green CTA)',
+          description: 'Text for the primary green button that scrolls down to the product cards.',
           type: 'string',
         }),
         defineField({

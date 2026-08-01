@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import RecommendedSetup from "./RecommendedSetup";
 import CustomSection2 from "./CustomSection2";
+import SolutionHeroButtons from "./SolutionHeroButtons";
 import ScrollReveal from "@/components/ui/ScrollReveal";
 import PersistentContactPrompt from "@/components/ui/PersistentContactPrompt";
 import { getLocalizedMetadata, resolveSanitySeo, getBreadcrumbJsonLd } from "@/lib/seo";
@@ -214,15 +215,10 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
             <p className="text-[15px] md:text-[16px] text-white/80 max-w-xl mb-10 leading-relaxed font-[family-name:var(--font-secondary)]">
               {hero?.heroSubtitle}
             </p>
-            <div className="flex flex-wrap items-center gap-4">
-              <button className="bg-[#00E573] text-black px-6 py-3 text-[13px] font-bold tracking-wide transition-all hover:bg-white hover:-translate-y-0.5 rounded-sm">
-                Talk to our expert
-              </button>
-              <button className="border border-white/20 text-white px-6 py-3 text-[13px] font-bold tracking-wide flex items-center gap-2 hover:bg-white/5 transition-all rounded-sm hover:-translate-y-0.5">
-                See how it works 
-                <span className="text-[14px] leading-none font-normal">→</span>
-              </button>
-            </div>
+            <SolutionHeroButtons
+              talkText={hero?.btnTalk || "Talk to our expert"}
+              howItWorksText={hero?.btnHowItWorks || "See how it works"}
+            />
           </ScrollReveal>
         </div>
         
@@ -236,7 +232,7 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
       {customSection2?.heading ? (
         <CustomSection2 data={customSection2} />
       ) : (
-        <section className="bg-black py-16 md:py-32 px-6 md:px-20 border-t border-white/10 relative">
+        <section id="solution-next-section" className="bg-black py-16 md:py-32 px-6 md:px-20 border-t border-white/10 relative">
           <div className="mx-auto max-w-[1200px]">
             <ScrollReveal>
               <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold text-white mb-16 max-w-4xl leading-[1.1] tracking-tight">

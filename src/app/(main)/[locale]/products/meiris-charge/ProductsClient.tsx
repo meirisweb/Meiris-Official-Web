@@ -115,6 +115,12 @@ export default function ProductsPage({ data }: { data?: any }) {
     }, 450); // wait for fade-out duration
   };
 
+  const scrollToProducts = () => {
+    if (productsRef.current) {
+      productsRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="relative bg-[#111111] text-white selection:bg-[#00E573] selection:text-black">
 
@@ -148,7 +154,7 @@ export default function ProductsPage({ data }: { data?: any }) {
               )}
             </div>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/70 to-black/30"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/45 to-black/10"></div>
         </div>
 
         <div className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-col justify-center px-8 md:px-16 py-12 md:py-24 pt-[120px] md:pt-[140px]">
@@ -159,12 +165,13 @@ export default function ProductsPage({ data }: { data?: any }) {
             {data?.hero?.description || "AC chargers for residential and workplace dwell-time charging. DC fast chargers for fleets, depots and highway corridors. Dynamic Load Balancing for intelligent multi-charger site management."}
           </p>
           <div className="mt-10 flex flex-wrap items-center gap-4">
-            <button className="bg-[#00E573] text-white px-6 py-3 text-[13px] font-bold tracking-wide rounded-sm cursor-pointer hover:bg-[#00c261] transition-colors">
-              {data?.hero?.btnTalk || "Talk to our expert"}
-            </button>
-            <button className="border border-white text-white px-6 py-3 text-[13px] font-semibold flex items-center gap-2 hover:bg-white/10 transition-colors rounded-sm cursor-pointer">
-              {data?.hero?.btnHowItWorks || "See how it works"}
-              <span>→</span>
+            <button
+              type="button"
+              onClick={scrollToProducts}
+              className="bg-[#00E573] text-black px-6 py-3 text-[13px] font-bold tracking-wide rounded-sm cursor-pointer hover:bg-[#00c261] transition-colors flex items-center gap-2"
+            >
+              <span>{data?.hero?.btnHowItWorks || data?.hero?.btnTalk || "See how it works"}</span>
+              <span>↓</span>
             </button>
           </div>
         </div>

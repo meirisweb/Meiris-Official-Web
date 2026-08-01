@@ -88,6 +88,15 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    const handleOpenPrompt = () => {
+      setIsOpen(true);
+      setShowNudge(false);
+    };
+    window.addEventListener("open-contact-prompt", handleOpenPrompt);
+    return () => window.removeEventListener("open-contact-prompt", handleOpenPrompt);
+  }, []);
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     setServerError(null);
