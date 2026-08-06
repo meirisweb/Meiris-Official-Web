@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import DepotInfrastructureMap from "@/app/_components/DepotInfrastructureMap";
 import RecommendedSetup from "./RecommendedSetup";
 import CustomSection2 from "./CustomSection2";
 import SolutionHeroButtons from "./SolutionHeroButtons";
@@ -285,33 +286,23 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
               </h2>
             </ScrollReveal>
             
-            <ScrollReveal delay={150}>
-              <div className="w-full bg-white rounded-2xl md:rounded-3xl relative aspect-[4/3] md:aspect-[16/9] max-h-[700px] overflow-hidden mb-10 shadow-2xl p-4 md:p-8">
-                {/* SVG Lines Connecting Markers */}
-                <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                  <line x1="20%" y1="35%" x2="40%" y2="50%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="20%" y1="35%" x2="30%" y2="60%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="40%" y1="50%" x2="55%" y2="25%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="40%" y1="50%" x2="70%" y2="50%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="40%" y1="50%" x2="30%" y2="60%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="55%" y1="25%" x2="70%" y2="50%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="70%" y1="50%" x2="85%" y2="35%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="70%" y1="50%" x2="90%" y2="60%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                  <line x1="85%" y1="35%" x2="90%" y2="60%" stroke="black" strokeWidth="1" strokeOpacity="0.3" />
-                </svg>
-                
-                {/* Markers */}
-                <Marker num={1} top="35%" left="20%" />
-                <Marker num={2} top="50%" left="40%" />
-                <Marker num={3} top="25%" left="55%" labelOnTop={false} />
-                <Marker num={4} top="50%" left="70%" />
-                <Marker num={5} top="35%" left="85%" />
-                <Marker num={6} top="60%" left="90%" />
-                <Marker num={7} top="60%" left="30%" labelOnTop={false} />
-                
-                {/* Bottom text */}
-                <div className="absolute bottom-8 right-10 text-[#00E573] text-[10px] font-medium tracking-wide">
-                  {locale === 'es-419' ? 'Selecciona un marcador para explorar' : 'Select a marker to explore'}
+            <ScrollReveal delay={150} className="mb-10 z-30 relative">
+              {/* Mobile Swipe Instruction */}
+              <div className="md:hidden flex items-center justify-center gap-3 text-white/50 text-[10px] font-bold tracking-widest uppercase mb-4">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                {locale === 'es-419' || locale === 'es' ? 'Desliza para ver más' : 'Swipe to explore'}
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+              </div>
+
+              {/* Scrollable Container for Mobile */}
+              <div className="w-full overflow-x-auto md:overflow-visible hide-scrollbar pb-10 -mb-10 md:pb-0 md:mb-0 snap-x snap-proximity">
+                <div className="w-[1000px] md:w-full relative aspect-[21/9] p-0">
+                  <DepotInfrastructureMap src="Depot-Infrastructure_imbnbg" locale={locale} />
+                  
+                  {/* Bottom text - hidden on mobile since we have swipe instructions */}
+                  <div className="hidden md:block absolute bottom-8 right-10 text-[#00E573] text-[11px] font-bold tracking-widest uppercase z-10 bg-[#0c0c0c]/80 px-4 py-2 rounded-full backdrop-blur-md pointer-events-none">
+                    {locale === 'es-419' || locale === 'es' ? 'Selecciona un marcador para explorar' : 'Select a marker to explore'}
+                  </div>
                 </div>
               </div>
             </ScrollReveal>

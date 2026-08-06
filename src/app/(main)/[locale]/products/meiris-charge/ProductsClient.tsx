@@ -261,116 +261,116 @@ export default function ProductsPage({ data }: { data?: any }) {
           }`}>
           {/* Spacer to push content below Navbar */}
           <div className="h-[99px] flex-shrink-0 bg-transparent cursor-pointer" onClick={handleClose}></div>
-          
+
           {/* Scrollable Modal Content */}
           <div className="flex-1 min-h-0 bg-white text-black overflow-y-auto lg:overflow-hidden relative overscroll-contain">
             <div className="flex flex-col min-h-full lg:h-full">
               {/* Top Header & Navigation */}
-          <div className="flex items-center justify-between px-4 py-4 md:px-10 lg:py-10 border-b border-black/10 flex-shrink-0 relative">
-            
-            {/* --- DESKTOP VIEW --- */}
-            <button
-              onClick={() => handleModelChange(Math.max(0, activeModelIndex - 1))}
-              className="hidden lg:block text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-              disabled={activeModelIndex === 0}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6" /></svg>
-            </button>
+              <div className="flex items-center justify-between px-4 py-4 md:px-10 lg:py-10 border-b border-black/10 flex-shrink-0 relative">
 
-            <div className="hidden lg:flex gap-3 xl:gap-10 text-[10px] lg:text-[11px] font-bold tracking-wide overflow-x-auto scrollbar-hide px-2 lg:px-4 mx-auto">
-              {currentModels.map((model: any, idx: number) => (
+                {/* --- DESKTOP VIEW --- */}
                 <button
-                  key={model.id}
-                  onClick={() => handleModelChange(idx)}
-                  className={`px-4 py-2 lg:px-5 lg:py-2.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${activeModelIndex === idx
-                    ? 'bg-[#00E573] text-white shadow-sm scale-105'
-                    : 'text-black/40 hover:text-black'
-                    }`}
+                  onClick={() => handleModelChange(Math.max(0, activeModelIndex - 1))}
+                  className="hidden lg:block text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                  disabled={activeModelIndex === 0}
                 >
-                  {model.name}
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6" /></svg>
                 </button>
-              ))}
-            </div>
 
-            <div className="hidden lg:flex items-center gap-4 xl:gap-10">
-              <button
-                onClick={() => handleModelChange(Math.min(currentModels.length - 1, activeModelIndex + 1))}
-                className="text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                disabled={activeModelIndex === currentModels.length - 1}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6" /></svg>
-              </button>
-              <button onClick={handleClose} className="text-black/40 hover:text-black transition-colors p-2 -mr-2 cursor-pointer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-6 h-6 md:w-7 md:h-7"><path d="M18 6L6 18M6 6l12 12" /></svg>
-              </button>
-            </div>
+                <div className="hidden lg:flex gap-3 xl:gap-10 text-[10px] lg:text-[11px] font-bold tracking-wide overflow-x-auto scrollbar-hide px-2 lg:px-4 mx-auto">
+                  {currentModels.map((model: any, idx: number) => (
+                    <button
+                      key={model.id}
+                      onClick={() => handleModelChange(idx)}
+                      className={`px-4 py-2 lg:px-5 lg:py-2.5 rounded-full transition-all cursor-pointer whitespace-nowrap ${activeModelIndex === idx
+                        ? 'bg-[#00E573] text-white shadow-sm scale-105'
+                        : 'text-black/40 hover:text-black'
+                        }`}
+                    >
+                      {model.name}
+                    </button>
+                  ))}
+                </div>
 
-            {/* --- MOBILE VIEW --- */}
-            <div className="lg:hidden flex items-center justify-center gap-8 absolute inset-x-0 pointer-events-none z-0">
-              <button
-                onClick={() => handleModelChange(Math.max(0, activeModelIndex - 1))}
-                className="pointer-events-auto text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                disabled={activeModelIndex === 0}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6" /></svg>
-              </button>
-              <div className={`pointer-events-auto bg-[#00E573] text-white px-5 py-2 rounded-full text-[12px] font-bold tracking-wide shadow-sm text-center ${textClasses}`}>
-                {activeModel.name}
+                <div className="hidden lg:flex items-center gap-4 xl:gap-10">
+                  <button
+                    onClick={() => handleModelChange(Math.min(currentModels.length - 1, activeModelIndex + 1))}
+                    className="text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                    disabled={activeModelIndex === currentModels.length - 1}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6" /></svg>
+                  </button>
+                  <button onClick={handleClose} className="text-black/40 hover:text-black transition-colors p-2 -mr-2 cursor-pointer">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-6 h-6 md:w-7 md:h-7"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                  </button>
+                </div>
+
+                {/* --- MOBILE VIEW --- */}
+                <div className="lg:hidden flex items-center justify-center gap-8 absolute inset-x-0 pointer-events-none z-0">
+                  <button
+                    onClick={() => handleModelChange(Math.max(0, activeModelIndex - 1))}
+                    className="pointer-events-auto text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                    disabled={activeModelIndex === 0}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6" /></svg>
+                  </button>
+                  <div className={`pointer-events-auto bg-[#00E573] text-white px-5 py-2 rounded-full text-[12px] font-bold tracking-wide shadow-sm text-center ${textClasses}`}>
+                    {activeModel.name}
+                  </div>
+                  <button
+                    onClick={() => handleModelChange(Math.min(currentModels.length - 1, activeModelIndex + 1))}
+                    className="pointer-events-auto text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                    disabled={activeModelIndex === currentModels.length - 1}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6" /></svg>
+                  </button>
+                </div>
+                <button onClick={handleClose} className="lg:hidden ml-auto relative z-10 text-black/40 hover:text-black transition-colors p-2 -mr-2 cursor-pointer">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-6 h-6"><path d="M18 6L6 18M6 6l12 12" /></svg>
+                </button>
               </div>
-              <button
-                onClick={() => handleModelChange(Math.min(currentModels.length - 1, activeModelIndex + 1))}
-                className="pointer-events-auto text-black/50 hover:text-black transition-colors cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
-                disabled={activeModelIndex === currentModels.length - 1}
-              >
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 18l6-6-6-6" /></svg>
-              </button>
-            </div>
-            <button onClick={handleClose} className="lg:hidden ml-auto relative z-10 text-black/40 hover:text-black transition-colors p-2 -mr-2 cursor-pointer">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="w-6 h-6"><path d="M18 6L6 18M6 6l12 12" /></svg>
-            </button>
-          </div>
 
-          {/* Content Area */}
-          <div className="flex-1 flex flex-col lg:flex-row relative lg:min-h-0 lg:overflow-hidden">
-            {/* Left Text */}
-            <div className={`order-2 lg:order-1 w-full lg:w-[45%] p-4 sm:p-6 pt-0 lg:pt-10 md:p-12 xl:p-16 flex flex-col justify-center z-10 lg:overflow-y-auto ${textClasses}`}>
-              <h2 className="text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] lg:text-[3.25rem] xl:text-[4rem] font-bold mb-4 sm:mb-6 md:mb-8 lg:mb-10 tracking-tight">
+              {/* Content Area */}
+              <div className="flex-1 flex flex-col lg:flex-row relative lg:min-h-0 lg:overflow-hidden">
+                {/* Left Text */}
+                <div className={`order-2 lg:order-1 w-full lg:w-[45%] p-4 sm:p-6 pt-0 lg:pt-10 md:p-12 xl:p-16 flex flex-col justify-center z-10 lg:overflow-y-auto ${textClasses}`}>
+                  <h2 className="text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] lg:text-[3.25rem] xl:text-[4rem] font-bold mb-4 sm:mb-6 md:mb-8 lg:mb-10 tracking-tight">
+                    Model {activeModel.name}
+                  </h2>
+                  <div className="text-[1rem] sm:text-[1.1rem] md:text-[1.25rem] lg:text-[1.5rem] xl:text-[1.75rem] font-bold leading-[1.3] tracking-tight text-black flex flex-col gap-4 sm:gap-5 md:gap-8">
+                    <div>
+                      <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Form Factor</span>
+                      {activeModel.formFactor}
+                    </div>
+                    <div>
+                      <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Key Use Case</span>
+                      {activeModel.useCase}
+                    </div>
+                    <div>
+                      <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Notable Spec</span>
+                      {activeModel.spec}
+                    </div>
+                  </div>
+
+                  <div className="mt-8 sm:mt-10 md:mt-12 pb-8 sm:pb-10 lg:pb-0 w-full">
+                    <button className="bg-[#0a0a0a] text-white px-4 md:px-8 py-3 sm:py-4 text-[10px] sm:text-[11px] md:text-[13px] font-bold tracking-widest uppercase flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3 hover:bg-[#00E573] hover:text-black transition-colors duration-300 rounded-sm w-full lg:w-max mx-auto lg:mx-0 cursor-pointer">
+                      <span className="text-center leading-relaxed whitespace-normal break-words">Download Brochure for {activeCategory === 'ac' ? 'AC Chargers' : 'DC Fast Chargers'}</span>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </button>
+                  </div>
+                </div>
+
+                <div className={`order-1 lg:order-2 w-full lg:w-[55%] relative flex items-center justify-center lg:justify-start py-4 sm:py-8 md:py-12 lg:py-10 px-4 sm:px-6 lg:pl-0 lg:h-full`}>
+                  <div className={`w-[140px] sm:w-[200px] md:w-[260px] lg:w-full lg:h-full flex-shrink-0 lg:flex-shrink relative z-10 ${textClasses}`}>
+                    <Image src={activeModel.imageUrl || "/images/ChargerDemo.png"} alt={`Model ${activeModel.name}`} width={480} height={900} className="w-full h-auto lg:h-full lg:w-auto lg:max-w-full object-contain object-center lg:object-left" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Green Bar */}
+              <div className={`w-full flex-shrink-0 bg-[#00E573] py-4 sm:py-6 px-4 sm:px-6 md:py-8 md:px-10 text-white font-bold text-[1.25rem] sm:text-[1.5rem] md:text-[1.75rem] tracking-tight ${textClasses}`}>
                 Model {activeModel.name}
-              </h2>
-              <div className="text-[1rem] sm:text-[1.1rem] md:text-[1.25rem] lg:text-[1.5rem] xl:text-[1.75rem] font-bold leading-[1.3] tracking-tight text-black flex flex-col gap-4 sm:gap-5 md:gap-8">
-                <div>
-                  <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Form Factor</span>
-                  {activeModel.formFactor}
-                </div>
-                <div>
-                  <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Key Use Case</span>
-                  {activeModel.useCase}
-                </div>
-                <div>
-                  <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Notable Spec</span>
-                  {activeModel.spec}
-                </div>
               </div>
-              
-              <div className="mt-8 sm:mt-10 md:mt-12 pb-8 sm:pb-10 lg:pb-0 w-full">
-                <button className="bg-[#0a0a0a] text-white px-4 md:px-8 py-3 sm:py-4 text-[10px] sm:text-[11px] md:text-[13px] font-bold tracking-widest uppercase flex flex-col sm:flex-row items-center justify-center gap-2 md:gap-3 hover:bg-[#00E573] hover:text-black transition-colors duration-300 rounded-sm w-full lg:w-max mx-auto lg:mx-0 cursor-pointer">
-                  <span className="text-center leading-relaxed whitespace-normal break-words">Download Brochure for {activeCategory === 'ac' ? 'AC Chargers' : 'DC Fast Chargers'}</span>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-shrink-0"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-                </button>
-              </div>
-            </div>
-
-            <div className={`order-1 lg:order-2 w-full lg:w-[55%] relative flex items-center justify-center lg:justify-start py-4 sm:py-8 md:py-12 lg:py-10 px-4 sm:px-6 lg:pl-0 lg:h-full`}>
-              <div className={`w-[140px] sm:w-[200px] md:w-[260px] lg:w-full lg:h-full flex-shrink-0 lg:flex-shrink relative z-10 ${textClasses}`}>
-                <Image src={activeModel.imageUrl || "/images/ChargerDemo.png"} alt={`Model ${activeModel.name}`} width={480} height={900} className="w-full h-auto lg:h-full lg:w-auto lg:max-w-full object-contain object-center lg:object-left" />
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom Green Bar */}
-          <div className={`w-full flex-shrink-0 bg-[#00E573] py-4 sm:py-6 px-4 sm:px-6 md:py-8 md:px-10 text-white font-bold text-[1.25rem] sm:text-[1.5rem] md:text-[1.75rem] tracking-tight ${textClasses}`}>
-            Model {activeModel.name}
-          </div>
             </div>
           </div>
         </div>

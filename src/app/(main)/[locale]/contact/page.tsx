@@ -73,18 +73,18 @@ export default async function ContactPage({ params: { locale } }: { params: { lo
           </div>
           <div className="relative w-full aspect-[4/3] rounded-[2rem] overflow-hidden shadow-xl">
             {imageUrl ? (
-              <Image 
-                src={imageUrl} 
-                alt={hero?.title || "Contact Us Hero"} 
-                className="absolute inset-0 w-full h-full object-cover" 
+              <Image
+                src={imageUrl}
+                alt={hero?.title || "Contact Us Hero"}
+                className="absolute inset-0 w-full h-full object-cover"
                 fill
               />
             ) : (
-              <Image 
-                src={ctaEngineers} 
-                alt="Engineers reviewing data" 
-                className="absolute inset-0 w-full h-full object-cover" 
-                placeholder="blur" 
+              <Image
+                src={ctaEngineers}
+                alt="Engineers reviewing data"
+                className="absolute inset-0 w-full h-full object-cover"
+                placeholder="blur"
               />
             )}
           </div>
@@ -94,7 +94,7 @@ export default async function ContactPage({ params: { locale } }: { params: { lo
       {/* Form Section */}
       <section className="bg-[#f5f6f8] py-16 md:py-24 lg:py-32">
         <div className="mx-auto max-w-[1200px] px-6 md:px-8 lg:px-12">
-          
+
           <ContactForm data={form} />
 
           {/* Contact Info Cards */}
