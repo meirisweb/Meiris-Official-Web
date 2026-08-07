@@ -134,7 +134,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s3BoxOp = Math.min(lerp(0.14, 0.148), s3Out);
   const s3BoxW = rng(0.14, 0.152, 0, isMobile ? 100 : 45);
   const s3DiagOp = lerp(0.145, 0.165);
-  const s3MobileCardsOp = isMobile ? lerp(0.176, 0.180) : 1;
+  const s3MobileCardsOp = isMobile ? lerp(0.16, 0.17) : 1;
   const s3MobileTranslateX = isMobile ? rng(0.180, 0.235, 0, -178) : 0;
   const s3C1Op = lerp(0.208, 0.216);
   const s3C1Y = rng(0.208, 0.216, 40, 0);
@@ -458,7 +458,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                   </div>
                 </div>
                 <div 
-                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-8 mt-4 md:-mt-10 lg:-mt-16 transition-transform duration-100 ease-out" 
+                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-8 mt-4 md:-mt-10 lg:-mt-16" 
                   style={{ transform: isMobile ? `translateX(${s3MobileTranslateX}vw)` : "none" }}
                 >
                   <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none md:rounded-l-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C1Op, transform: isMobile ? "none" : `translateY(${s3C1Y}px)` }}>
