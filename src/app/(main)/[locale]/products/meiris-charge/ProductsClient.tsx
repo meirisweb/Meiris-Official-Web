@@ -32,6 +32,10 @@ export default function ProductsPage({ data }: { data?: any }) {
   const [animState, setAnimState] = useState<'idle' | 'exiting' | 'entering'>('idle');
   const [animationDirection, setAnimationDirection] = useState<'left' | 'right'>('right');
 
+  // Touch swipe state
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
   const heroRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
   const servicesRef = useRef<HTMLElement>(null);
@@ -106,6 +110,31 @@ export default function ProductsPage({ data }: { data?: any }) {
     ? 'opacity-100 transition-opacity duration-300'
     : 'opacity-0 transition-opacity duration-300';
 
+
+  // Touch swipe handlers
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEndHandler = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && activeModelIndex < currentModels.length - 1) {
+      handleModelChange(activeModelIndex + 1);
+    } else if (isRightSwipe && activeModelIndex > 0) {
+      handleModelChange(activeModelIndex - 1);
+    }
+  };
 
   const handleClose = () => {
     setIsClosing(true);
@@ -263,7 +292,12 @@ export default function ProductsPage({ data }: { data?: any }) {
           <div className="h-[99px] flex-shrink-0 bg-transparent cursor-pointer" onClick={handleClose}></div>
 
           {/* Scrollable Modal Content */}
-          <div className="flex-1 min-h-0 bg-white text-black overflow-y-auto lg:overflow-hidden relative overscroll-contain">
+          <div 
+            className="flex-1 min-h-0 bg-white text-black overflow-y-auto lg:overflow-hidden relative overscroll-contain"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEndHandler}
+          >
             <div className="flex flex-col min-h-full lg:h-full">
               {/* Top Header & Navigation */}
               <div className="flex items-center justify-between px-4 py-4 md:px-10 lg:py-10 border-b border-black/10 flex-shrink-0 relative">
