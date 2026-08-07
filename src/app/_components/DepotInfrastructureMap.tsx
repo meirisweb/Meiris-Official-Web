@@ -16,7 +16,7 @@ const markersDataEn = [
     id: 2,
     title: "Peak load & transformer sizing",
     desc: "Sizing a transformer for 20-60 vehicles charging in overlapping shifts is hard to get right. Oversize it and you've sunk capex into unused capacity; undersize it and you risk tripping, demand penalties and stranded vehicles at shift-start.",
-    top: "49%",
+    top: "45%",
     left: "30%"
   },
   {

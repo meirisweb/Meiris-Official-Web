@@ -395,7 +395,7 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
                       {item.narrative}
                     </p>
                   </div>
-                  {item.stat && (
+                  {item.stat && /[a-zA-Z0-9]/.test(item.stat) && (
                     <div className="bg-[#00E573] text-black text-[11px] font-bold px-4 py-2 rounded-full whitespace-nowrap shadow-sm tracking-wide mt-2 md:mt-0 self-start md:self-auto uppercase">
                       {item.stat}
                     </div>
