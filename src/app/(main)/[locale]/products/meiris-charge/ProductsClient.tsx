@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import { useLenis } from "lenis/react";
 import Image from "next/image";
 import solDepot from "@/assets/sol-depot.jpg";
 import solCharge from "@/assets/sol-charge.jpg";
@@ -7,6 +8,7 @@ import solHospitality from "@/assets/sol-hospitality.jpg";
 import platformModule from "@/assets/platform-module.jpg";
 
 export default function ProductsPage({ data }: { data?: any }) {
+  const lenis = useLenis();
   const [activeCategory, setActiveCategory] = useState<'ac' | 'dc' | null>(null);
   const [isClosing, setIsClosing] = useState(false);
 
@@ -140,9 +142,29 @@ export default function ProductsPage({ data }: { data?: any }) {
     setIsClosing(true);
     setTimeout(() => {
       setActiveCategory(null);
+      setActiveModelIndex(0);
       setIsClosing(false);
-    }, 450); // wait for fade-out duration
+    }, 500); // wait for fade-out duration
   };
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (activeCategory !== null) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      if (lenis) lenis.stop();
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      if (lenis) lenis.start();
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      if (lenis) lenis.start();
+    };
+  }, [activeCategory, lenis]);
 
   const scrollToProducts = () => {
     if (productsRef.current) {
@@ -367,7 +389,7 @@ export default function ProductsPage({ data }: { data?: any }) {
               {/* Content Area */}
               <div className="flex-1 flex flex-col lg:flex-row relative lg:min-h-0 lg:overflow-hidden">
                 {/* Left Text */}
-                <div className={`order-2 lg:order-1 w-full lg:w-[45%] p-4 sm:p-6 pt-0 lg:pt-10 md:p-12 xl:p-16 flex flex-col justify-center z-10 lg:overflow-y-auto ${textClasses}`}>
+                <div className={`order-2 lg:order-1 w-full lg:w-[45%] p-4 sm:p-6 pt-0 lg:pt-10 md:p-12 xl:p-16 flex flex-col justify-center z-10 lg:overflow-y-auto scrollbar-hide ${textClasses}`}>
                   <h2 className="text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] lg:text-[3.25rem] xl:text-[4rem] font-bold mb-4 sm:mb-6 md:mb-8 lg:mb-10 tracking-tight">
                     Model {activeModel.name}
                   </h2>
