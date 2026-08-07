@@ -3,13 +3,52 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image, { StaticImageData } from "next/image";
-import { ChipGraphic, NetworkGraphic, ThreeLayers, GREEN } from "./Graphics";
-import platformFirmware from "@/assets/platform-firmware.jpg";
+import { ChipGraphic, NetworkGraphic, GREEN } from "./Graphics";
 
 interface Props {
   platformModule: StaticImageData;
   locale?: string;
 }
+
+const ProtectedVideo = ({ src, className }: { src: string, className?: string }) => {
+  const [blobUrl, setBlobUrl] = useState<string>("");
+
+  useEffect(() => {
+    let objectUrl = "";
+    fetch(src)
+      .then(res => res.blob())
+      .then(blob => {
+        objectUrl = URL.createObjectURL(blob);
+        setBlobUrl(objectUrl);
+      })
+      .catch(console.error);
+    
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [src]);
+
+  if (!blobUrl) {
+    return <div className={className} />;
+  }
+
+  return (
+    <div className="relative w-full h-full" onContextMenu={(e) => e.preventDefault()}>
+      <video
+        src={blobUrl}
+        autoPlay
+        loop
+        muted
+        playsInline
+        className={className}
+        controlsList="nodownload"
+        disablePictureInPicture
+      />
+      {/* Invisible shield to prevent clicking/dragging */}
+      <div className="absolute inset-0 z-10 bg-transparent" />
+    </div>
+  );
+};
 
 export default function PlatformParallax({ platformModule, locale }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -45,6 +84,21 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const preloadSequence = () => {
+      for (let i = 1; i <= 181; i++) {
+        const img = new window.Image();
+        const paddedIndex = String(i).padStart(3, '0');
+        img.src = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${paddedIndex}.jpg`;
+      }
+    };
+    
+    // Delay preloading slightly to prioritize initial page load
+    const timer = setTimeout(preloadSequence, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+
   // ┌── Interpolation helpers ──────────────────────────────────────────
   function lerp(start: number, end: number): number {
     if (progress <= start) return 0;
@@ -79,7 +133,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s3Op = Math.min(s3In, s3Out);
   const s3BoxOp = Math.min(lerp(0.14, 0.148), s3Out);
   const s3BoxW = rng(0.14, 0.152, 0, isMobile ? 100 : 45);
-  const s3DiagOp = lerp(0.16, 0.208);
+  const s3DiagOp = lerp(0.145, 0.165);
   const s3MobileCardsOp = isMobile ? lerp(0.176, 0.180) : 1;
   const s3MobileTranslateX = isMobile ? rng(0.180, 0.235, 0, -178) : 0;
   const s3C1Op = lerp(0.208, 0.216);
@@ -88,6 +142,12 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s3C2Y = rng(0.216, 0.224, 40, 0);
   const s3C3Op = lerp(0.224, 0.232);
   const s3C3Y = rng(0.224, 0.232, 40, 0);
+
+  const s3FrameProgress = lerp(0.14, 0.24);
+  const s3FrameIndex = Math.min(181, Math.max(1, Math.floor(s3FrameProgress * 181) + 1));
+  const s3FramePadded = String(s3FrameIndex).padStart(3, '0');
+  const s3FrameUrl = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${s3FramePadded}.jpg`;
+
 
   // S4 (0.24 → 0.34)
   const s4In = lerp(0.24, 0.248);
@@ -121,7 +181,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s7Out = 1 - lerp(0.54, 0.56);
   const s7Op = Math.min(s7In, s7Out); 
   const s7Quote = lerp(0.50, 0.52);
-  const s7ImgOp = lerp(0.47, 0.50);
+  const s7ImgOp = lerp(0.44, 0.46);
 
   // S8: 4 Cards Reveal and Upward Pan (0.56 → 0.72)
   const s8In = lerp(0.56, 0.58);
@@ -370,12 +430,12 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           >
             <div className="mx-auto w-full max-w-[1180px] flex flex-col justify-center relative px-4 md:px-6 sm:px-8 py-6 md:py-8 lg:px-10">
               <div
-                className="hidden md:block absolute top-12 bottom-12 left-0 rounded-[2rem] rounded-br-none z-0"
+                className="hidden md:block absolute top-16 bottom-8 left-0 rounded-l-[2rem] z-0"
                 style={{ width: `${s3BoxW}%`, opacity: s3BoxOp, background: "#e6e6e6" }}
               />
               <div className="relative z-10 flex flex-col">
-                <div className="flex flex-col md:flex-row flex-1 min-h-0">
-                  <div className="w-full md:w-[38%] p-0 md:p-12 pt-0 md:pt-16 text-white md:text-black">
+                <div className="flex flex-col md:flex-row flex-1 min-h-0 items-center">
+                  <div className="w-full md:w-[45%] p-0 md:p-10 pt-0 md:pt-12 text-white md:text-black">
                     <p className="text-[9px] md:text-[10px] font-bold tracking-widest text-[#00E573] md:text-black/50 uppercase">
                       <TypewriterScroll text={t.s3_t1} start={0.152} end={0.16} />
                     </p>
@@ -386,14 +446,19 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                       <TypewriterScroll text={t.s3_t3} start={0.176} end={0.208} />
                     </p>
                   </div>
-                  <div className="flex w-full md:w-[62%] items-center justify-center p-4 md:p-8" style={{ opacity: s3DiagOp }}>
-                    <div className="w-full max-w-[200px] md:max-w-none">
-                      <ThreeLayers />
+                  <div className="flex w-full md:w-[55%] items-center justify-center md:justify-end p-4 md:p-8 md:pr-4 lg:pr-12" style={{ opacity: s3DiagOp }}>
+                    <div className="w-full max-w-[200px] md:max-w-none flex justify-center md:justify-end">
+                      <img 
+
+                        src={s3FrameUrl} 
+                        alt="Three Layers Architecture" 
+                        className="w-full max-w-[280px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[600px] h-auto object-contain mix-blend-screen"
+                      />
                     </div>
                   </div>
                 </div>
                 <div 
-                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-8 mt-4 md:mt-6 transition-transform duration-100 ease-out" 
+                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-8 mt-4 md:-mt-10 lg:-mt-16 transition-transform duration-100 ease-out" 
                   style={{ transform: isMobile ? `translateX(${s3MobileTranslateX}vw)` : "none" }}
                 >
                   <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none md:rounded-l-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C1Op, transform: isMobile ? "none" : `translateY(${s3C1Y}px)` }}>
@@ -507,12 +572,17 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 </div>
               </div>
               <div className="relative flex flex-col items-center mt-4 md:mt-0" style={{ opacity: s7ImgOp }}>
-                <Image src={platformFirmware} alt="Glowing SiC MOSFET representing MEIRIS firmware intelligence core" className="w-full max-w-[200px] md:max-w-[600px]" placeholder="blur" />
-                <div className="mt-2 md:mt-6 flex w-full max-w-[500px] items-center justify-between">
-                  <p className="text-[10px] md:text-sm text-white/80">{t.s7_img}</p>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="text-white/40">
-                    <path d="M12 2l2 8 8 2-8 2-2 8-2-8-8-2 8-2z" fill="currentColor" stroke="none" />
-                  </svg>
+                <div 
+                  className="relative w-full max-w-[200px] md:max-w-[600px]"
+                  style={{
+                    maskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 90%)',
+                    WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 90%)'
+                  }}
+                >
+                  <ProtectedVideo
+                    src="https://res.cloudinary.com/efi3yigo/video/upload/Platform_Section_7_jne46l.mp4"
+                    className="w-full h-auto object-cover mix-blend-screen"
+                  />
                 </div>
               </div>
             </div>
