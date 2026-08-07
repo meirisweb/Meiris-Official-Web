@@ -12,23 +12,32 @@ export default function Navbar({ data }: { data?: any }) {
   const progressBarRef = useRef<HTMLDivElement>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [optimisticLocale, setOptimisticLocale] = useState<string | null>(null);
   const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations('Navbar');
   const currentLocale = useLocale();
+  const displayLocale = optimisticLocale || currentLocale;
   let rafId: number | null = null;
 
   const navLinks = data?.navLinks || [];
   const ctaBtn = data?.ctaBtn || t('contact');
 
   const switchLanguage = (newLocale: string) => {
+    if (newLocale === currentLocale) return;
+    setOptimisticLocale(newLocale);
+    
     trackLanguageChange({ fromLocale: currentLocale, toLocale: newLocale });
     // Save preference in cookie for next-intl middleware (1 year expiry)
     document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000`;
     
     // Strip current locale prefix and replace with new one
-    const currentPath = pathname?.replace(/^\/(en|es-419)/, '') || '/';
-    router.push(`/${newLocale}${currentPath || '/'}`);
+    const currentPath = pathname?.replace(/^\/(en|es-419|es)/, '') || '/';
+    
+    // Delay routing slightly to ensure the animation starts
+    setTimeout(() => {
+      router.push(`/${newLocale}${currentPath === '' ? '/' : currentPath}`);
+    }, 150);
   };
 
   // Build locale-aware href
@@ -51,6 +60,7 @@ export default function Navbar({ data }: { data?: any }) {
   useEffect(() => {
     setIsMenuOpen(false);
     setActiveDropdown(null);
+    setOptimisticLocale(null); // Reset optimistic state on navigation complete
   }, [pathname]);
 
   const toggleDropdown = (name: string) => {
@@ -133,16 +143,22 @@ export default function Navbar({ data }: { data?: any }) {
 
         {/* CTA and Lang */}
         <div className={styles.actions}>
-          <div className="flex bg-white/10 rounded-full p-1 border border-white/20">
+          <div className="relative flex items-center bg-white/10 rounded-full p-1 border border-white/20" style={{ width: '88px', height: '32px' }}>
+            <div 
+              className={`absolute top-1 bottom-1 rounded-full transition-all duration-300 ease-[cubic-bezier(0.23,1,0.32,1)] z-0 ${
+                displayLocale === 'es-419' || displayLocale === 'es' ? 'bg-[#00E573]' : 'bg-white'
+              }`}
+              style={{ width: '40px', transform: (displayLocale === 'es-419' || displayLocale === 'es') ? 'translateX(40px)' : 'translateX(0)' }}
+            />
             <button 
               onClick={() => switchLanguage('en')}
-              className={`px-3 py-1 text-xs font-bold uppercase rounded-full transition-all duration-200 ${currentLocale === 'en' ? 'bg-white text-black shadow-sm' : 'text-white/60 hover:text-white'}`}
+              className={`relative z-10 flex-1 h-full flex items-center justify-center text-xs font-bold uppercase transition-colors duration-300 ${displayLocale === 'en' ? 'text-black' : 'text-white/60 hover:text-white'}`}
             >
               EN
             </button>
             <button 
               onClick={() => switchLanguage('es-419')}
-              className={`px-3 py-1 text-xs font-bold uppercase rounded-full transition-all duration-200 ${currentLocale === 'es-419' ? 'bg-[#00E573] text-black shadow-sm' : 'text-white/60 hover:text-white'}`}
+              className={`relative z-10 flex-1 h-full flex items-center justify-center text-xs font-bold uppercase transition-colors duration-300 ${displayLocale === 'es-419' || displayLocale === 'es' ? 'text-black' : 'text-white/60 hover:text-white'}`}
             >
               ES
             </button>
