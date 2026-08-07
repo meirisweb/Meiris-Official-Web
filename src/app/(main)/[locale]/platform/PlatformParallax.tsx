@@ -54,6 +54,8 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [showScrollIndicator, setShowScrollIndicator] = useState(true);
+  const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -77,6 +79,24 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
       } else if (rect.top > 0) {
         setProgress(0); // Before track starts
       }
+
+      // Scroll Indicator Logic
+      setShowScrollIndicator((prev) => prev ? false : prev);
+      
+      if (scrollTimeout.current) {
+        clearTimeout(scrollTimeout.current);
+      }
+      
+      scrollTimeout.current = setTimeout(() => {
+        // We calculate progress independently here because we can't rely on the closure's `progress` variable being up-to-date
+        const currentScrolled = -rect.top;
+        const currentTotal = window.innerHeight * 50;
+        const currentP = Math.max(0, Math.min(1, currentScrolled / currentTotal));
+        
+        if (currentP < 0.98) {
+          setShowScrollIndicator(true);
+        }
+      }, 3000);
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -339,6 +359,20 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     <>
       <div ref={containerRef} style={{ height: "3700vh", position: "relative" }}>
         <div style={{ position: "sticky", top: 0, width: "100%", height: "100vh", zIndex: 0, backgroundColor: "#000", overflow: "hidden" }}>
+
+          {/* ── SCROLL INDICATOR ────────────────────────────── */}
+          <div 
+            className={`absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 transition-opacity duration-700 pointer-events-none z-50 ${showScrollIndicator ? 'opacity-100' : 'opacity-0'}`}
+          >
+            <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-white/50 font-medium">Scroll</span>
+            <div className="w-[1px] h-8 md:h-12 bg-white/20 relative overflow-hidden rounded-full">
+              <motion.div 
+                className="w-full h-1/2 bg-[#00E573] absolute top-0 left-0"
+                animate={{ y: ["-100%", "200%"] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+              />
+            </div>
+          </div>
 
           {/* ── SECTION 1 ───────────────────────────────────── */}
           <div
