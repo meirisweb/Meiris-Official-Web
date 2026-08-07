@@ -116,10 +116,18 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
 
   useEffect(() => {
     const preloadSequence = () => {
+      const isDesktop = window.innerWidth >= 1024;
       for (let i = 1; i <= 181; i++) {
-        const img = new window.Image();
+        // Preload Section 3
+        const img3 = new window.Image();
         const paddedIndex = String(i).padStart(3, '0');
-        img.src = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${paddedIndex}.jpg`;
+        img3.src = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${paddedIndex}.jpg`;
+
+        // Preload Section 6 (Desktop only, as it's skipped on mobile/tablet)
+        if (isDesktop) {
+          const img6 = new window.Image();
+          img6.src = `https://res.cloudinary.com/efi3yigo/image/upload/v1786135471/platform-section6_${i}.jpg`;
+        }
       }
     };
 
@@ -204,10 +212,10 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s6In = lerp(0.40, 0.401);
   const s6Out = 1 - lerp(0.499, 0.50);
   const s6Op = Math.min(s6In, s6Out);
-  
+
   const s6WipeIn = rng(0.40, 0.42, -20, 120);
   const s6WipeOut = rng(0.48, 0.50, 120, -20);
-  
+
   const s6WipePos = Math.min(s6WipeIn, s6WipeOut);
   const s6MaskImage = `linear-gradient(to right, black ${s6WipePos - 15}%, transparent ${s6WipePos + 15}%)`;
 
@@ -304,7 +312,13 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s5_c2: "El resultado: los sistemas impulsados por MEIRIS pueden ser simultáneamente un sistema de suministro de energía y un sistema de recuperación de energía. Una batería de VE se convierte en un recurso de red despachable. Un banco de almacenamiento se convierte en un activo de regulación de frecuencia. Un nodo de energía distribuida se convierte en un participante interactivo con la red. La física de la conversión es idéntica en ambas direcciones. La inteligencia define la dirección, la magnitud y los tiempos.",
     s5_q: "“La arquitectura que carga una batería es la misma arquitectura que despacha su energía a la red. Eso no es una capacidad añadida. Es una forma diferente de pensar sobre la conversión de energía.”",
 
+    s6_in: "Entrada",
+    s6_out: "Salida",
+    s6_flow: "Flujo Bidireccional",
+    s6_stage: "Etapa de Conversión MEIRIS",
+
     s7_t1: "El firmware\nhace que la\nplataforma\nsea lo que es.",
+    s7_t1_mobile: "El firmware hace que la\nplataforma sea lo que es.",
     s7_t2: "Las unidades de control, basadas en una arquitectura y un firmware exclusivos, forman la capa de inteligencia que da coherencia a la plataforma en todas las condiciones de operación, perfiles de carga y contextos de aplicación.",
     s7_t3: "El firmware patentado orquesta el control de potencia en tiempo real, la gestión dinámica de carga, la optimización predictiva de energía y la integración a la red sin la latencia del middleware.",
     s7_q: "“El hardware define el límite de lo posible. El firmware define lo que realmente sucede. MEIRIS posee ambos.”",
@@ -356,7 +370,13 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s5_c2: "The result: MEIRIS-powered systems can be simultaneously a power delivery system and an energy recovery system. An EV battery becomes a dispatchable grid resource. A storage bank becomes a frequency regulation asset. A distributed energy node becomes a grid-interactive participant. The physics of conversion are identical in both directions. The intelligence defines direction, magnitude, and timing.",
     s5_q: "“The architecture that charges a battery is the same architecture that dispatches its energy to the grid. That is not a capability addition. That is a different way of thinking about power conversion.”",
 
+    s6_in: "Input",
+    s6_out: "Output",
+    s6_flow: "Bi-Directional Flow",
+    s6_stage: "MEIRIS Conversion Stage",
+
     s7_t1: "The firmware\nmakes the\nplatform\nwhat it is.",
+    s7_t1_mobile: "The firmware makes the\nplatform what it is.",
     s7_t2: "The controller units built on a proprietary architecture and firmware form the intelligence layer that makes the platform coherent across all operating conditions, load profiles, and application contexts",
     s7_t3: "Patented firmware orchestrates real-time power control, dynamic load management, predictive energy optimization, and grid integration without middleware latency.",
     s7_q: "“Hardware defines the boundary of what is possible. Firmware defines what actually happens. MEIRIS owns both.”",
@@ -478,10 +498,10 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                   </p>
                 </div>
                 <div className="mt-2 md:mt-12 border-l-2 pl-3 md:pl-6" style={{ borderColor: GREEN, opacity: s2Quote }}>
-                  <p className="max-w-lg text-[10px] md:text-[clamp(0.85rem,1.2vw,1rem)] italic leading-[1.5] md:leading-[1.8] text-white/65">
+                  <p className="max-w-lg text-[12px] md:text-[clamp(0.85rem,1.2vw,1rem)] italic leading-[1.5] md:leading-[1.8] text-white/65">
                     {t.s2_q}
                   </p>
-                  <p className="mt-1 md:mt-3 text-[9px] md:text-[12px] uppercase tracking-widest" style={{ color: GREEN }}>
+                  <p className="mt-1 md:mt-3 text-[11px] md:text-[12px] uppercase tracking-widest" style={{ color: GREEN }}>
                     {t.s2_qa}
                   </p>
                 </div>
@@ -530,10 +550,10 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                     <p className="text-[9px] md:text-[10px] font-bold tracking-widest text-[#00E573] md:text-black/50 uppercase">
                       <TypewriterScroll text={t.s3_t1} start={0.152} end={0.16} />
                     </p>
-                    <h2 className="mt-1 md:mt-8 text-[clamp(1.5rem,3.5vw,3.5rem)] font-bold leading-[1.05] tracking-tight text-white md:text-black">
+                    <h2 className="mt-1 md:mt-8 text-[clamp(1.75rem,3.5vw,3.5rem)] font-bold leading-[1.05] tracking-tight text-white md:text-black">
                       <TypewriterScroll text={t.s3_t2} start={0.16} end={0.176} />
                     </h2>
-                    <p className="mt-2 md:mt-6 text-[10px] md:text-sm text-white/70 md:text-black/70 leading-[1.4] md:leading-relaxed">
+                    <p className="mt-2 md:mt-6 text-[12px] md:text-sm text-white/70 md:text-black/70 leading-[1.4] md:leading-relaxed">
                       <TypewriterScroll text={t.s3_t3} start={0.176} end={0.208} />
                     </p>
                   </div>
@@ -554,15 +574,15 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 >
                   <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none md:rounded-l-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C1Op, transform: isMobile ? "none" : `translateY(${s3C1Y}px)` }}>
                     <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c1_h}</h3>
-                    <p className="mt-2 md:mt-4 text-[10px] md:text-xs leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c1_p}</p>
+                    <p className="mt-2 md:mt-4 text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c1_p}</p>
                   </div>
                   <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none" style={{ opacity: isMobile ? s3MobileCardsOp : s3C2Op, transform: isMobile ? "none" : `translateY(${s3C2Y}px)` }}>
                     <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c2_h}</h3>
-                    <p className="mt-2 md:mt-4 text-[10px] md:text-xs leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c2_p}</p>
+                    <p className="mt-2 md:mt-4 text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c2_p}</p>
                   </div>
                   <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none md:rounded-r-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C3Op, transform: isMobile ? "none" : `translateY(${s3C3Y}px)` }}>
                     <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c3_h}</h3>
-                    <p className="mt-2 md:mt-4 text-[10px] md:text-xs leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c3_p}</p>
+                    <p className="mt-2 md:mt-4 text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c3_p}</p>
                   </div>
                 </div>
               </div>
@@ -633,22 +653,22 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           {/* ── SECTION 5 ───────────────────────────────────── */}
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", opacity: s5Op, willChange: "opacity" }}>
             <div className="mx-auto flex w-full max-w-[1240px] flex-col justify-center px-6 sm:px-10 lg:px-12">
-              <h2 className="text-[clamp(1.5rem,4vw,3.75rem)] font-bold leading-[1.05] tracking-tight text-white" style={{ transform: `translateY(${s5TitleY}px)`, opacity: s5TitleOp }}>
+              <h2 className="text-[clamp(1.75rem,4vw,3.75rem)] font-bold leading-[1.05] tracking-tight text-white" style={{ transform: `translateY(${s5TitleY}px)`, opacity: s5TitleOp }}>
                 <TypewriterScroll text={t.s5_t1} start={0.34} end={0.348} />
               </h2>
-              <p className="mt-1 md:mt-4 text-[11px] md:text-lg font-medium text-[#00E573]" style={{ transform: `translateY(${s5TitleY}px)`, opacity: s5TitleOp }}>
+              <p className="mt-1 md:mt-4 text-[13px] md:text-lg font-medium text-[#00E573]" style={{ transform: `translateY(${s5TitleY}px)`, opacity: s5TitleOp }}>
                 {t.s5_t2}
               </p>
               <div className="mt-4 md:mt-16 grid w-full grid-cols-1 gap-3 md:gap-6 md:grid-cols-2">
                 <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-4 md:p-8" style={{ opacity: s5C1Op, transform: `translateX(${s5C1X}px)` }}>
-                  <p className="text-[10px] md:text-[13px] leading-[1.4] md:leading-relaxed text-white/80">{t.s5_c1}</p>
+                  <p className="text-[12px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/80">{t.s5_c1}</p>
                 </div>
                 <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-4 md:p-8" style={{ opacity: s5C2Op, transform: `translateX(${s5C2X}px)` }}>
-                  <p className="text-[10px] md:text-[13px] leading-[1.4] md:leading-relaxed text-white/80">{t.s5_c2}</p>
+                  <p className="text-[12px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/80">{t.s5_c2}</p>
                 </div>
               </div>
               <div className="mt-4 md:mt-20 border-l-2 pl-3 md:pl-6" style={{ borderColor: GREEN, opacity: s5QuoteOp }}>
-                <p className="max-w-4xl text-[10px] md:text-[13px] italic leading-[1.4] md:leading-relaxed text-white/80">
+                <p className="max-w-4xl text-[12px] md:text-[14px] italic leading-[1.4] md:leading-relaxed text-white/80">
                   {t.s5_q}
                 </p>
               </div>
@@ -658,9 +678,9 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           {/* ── SECTION 6 ───────────────────────────────────── */}
           {!isTablet && (
             <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyItems: "center", opacity: s6Op, willChange: "opacity" }}>
-              <div 
-                className="w-full h-full flex justify-center mx-auto relative overflow-hidden" 
-                style={{ 
+              <div
+                className="w-full h-full flex justify-center mx-auto relative overflow-hidden"
+                style={{
                   maskImage: s6MaskImage,
                   WebkitMaskImage: s6MaskImage
                 }}
@@ -672,22 +692,22 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(100vw,177.78vh)] h-[max(100vh,56.25vw)] pointer-events-none" style={{ opacity: s6TextOp }}>
                   {/* Left Pill */}
                   <div className="absolute left-[5.9%] top-[58.7%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                    <span className="text-white/90 font-medium text-sm md:text-base">Input</span>
+                    <span className="text-white/90 font-medium text-sm md:text-base">{(t as any).s6_in}</span>
                   </div>
 
                   {/* Right Pill */}
                   <div className="absolute left-[94.1%] top-[58.7%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                    <span className="text-white/90 font-medium text-sm md:text-base">Output</span>
+                    <span className="text-white/90 font-medium text-sm md:text-base">{(t as any).s6_out}</span>
                   </div>
 
-                  {/* Middle Top */}
-                  <div className="absolute left-1/2 top-[34.5%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-full">
-                    <span className="text-white font-bold text-xl md:text-3xl drop-shadow-md">Bi-Directional Flow</span>
+                  {/* Top Middle */}
+                  <div className="absolute left-[50%] top-[34.5%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                    <span className="text-white/90 font-medium text-sm md:text-lg">{(t as any).s6_flow}</span>
                   </div>
 
-                  {/* Middle Bottom */}
-                  <div className="absolute left-1/2 top-[65%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-full">
-                    <span className="text-white font-bold text-xl md:text-3xl drop-shadow-md">MEIRIS Conversion Stage</span>
+                  {/* Bottom Middle */}
+                  <div className="absolute left-[50%] top-[65%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                    <span className="text-white/90 font-medium text-sm md:text-lg">{(t as any).s6_stage}</span>
                   </div>
                 </div>
               </div>
@@ -698,24 +718,27 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", opacity: s7Op, willChange: "opacity" }}>
             <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-4 md:gap-16 px-6 md:px-8 md:grid-cols-[1fr_1.1fr]">
               <div className="flex flex-col">
-                <h2 className="text-[clamp(1.5rem,4vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
+                <h2 className="text-[clamp(1.75rem,4vw,4rem)] font-bold leading-[1.05] tracking-tight text-white hidden md:block">
                   <TypewriterScroll text={t.s7_t1} start={0.51} end={0.53} />
                 </h2>
-                <p className="mt-2 md:mt-12 max-w-sm text-[11px] md:text-[13px] leading-[1.4] md:leading-relaxed text-white/70">
+                <h2 className="text-[clamp(1.75rem,4vw,4rem)] font-bold leading-[1.05] tracking-tight text-white md:hidden">
+                  <TypewriterScroll text={(t as any).s7_t1_mobile || t.s7_t1} start={0.51} end={0.53} />
+                </h2>
+                <p className="mt-2 md:mt-12 max-w-sm text-[13px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/70">
                   <TypewriterScroll text={t.s7_t2} start={0.53} end={0.55} />
                 </p>
-                <p className="mt-2 md:mt-6 max-w-sm text-[11px] md:text-[13px] leading-[1.4] md:leading-relaxed text-white/70">
+                <p className="mt-2 md:mt-6 max-w-sm text-[13px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/70">
                   <TypewriterScroll text={t.s7_t3} start={0.55} end={0.57} />
                 </p>
                 <div className="mt-3 md:mt-12 border-l-2 border-[#00E573] pl-3 md:pl-6" style={{ opacity: s7Quote }}>
-                  <p className="max-w-md text-[10px] md:text-sm italic leading-[1.4] md:leading-relaxed text-white/80">
+                  <p className="max-w-md text-[12px] md:text-sm italic leading-[1.4] md:leading-relaxed text-white/80">
                     {t.s7_q}
                   </p>
                 </div>
               </div>
               <div className="relative flex flex-col items-center mt-4 md:mt-0" style={{ opacity: s7ImgOp }}>
                 <div
-                  className="relative w-full max-w-[200px] md:max-w-[600px]"
+                  className="relative w-full max-w-[280px] md:max-w-[600px]"
                   style={{
                     maskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 90%)',
                     WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 90%)'
@@ -746,7 +769,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
               </div>
 
               <div
-                className="mt-4 md:mt-12 flex md:grid flex-nowrap md:grid-cols-2 gap-4 md:gap-8 pb-6 md:pb-0 transition-transform duration-100 ease-out"
+                className="mt-4 md:mt-12 flex md:grid flex-nowrap md:grid-cols-2 gap-4 md:gap-8 pb-6 md:pb-0"
                 style={{ transform: isMobile ? `translateX(${s8MobileTranslateX}vw)` : "none" }}
               >
                 {/* Card 1 */}
