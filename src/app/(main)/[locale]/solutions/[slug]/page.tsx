@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import DepotInfrastructureMap from "@/app/_components/DepotInfrastructureMap";
+import CpoInfrastructureMap from "@/app/_components/CpoInfrastructureMap";
+import HospitalityInfrastructureMap from "@/app/_components/HospitalityInfrastructureMap";
+import ResidentialInfrastructureMap from "@/app/_components/ResidentialInfrastructureMap";
 import RecommendedSetup from "./RecommendedSetup";
 import CustomSection2 from "./CustomSection2";
 import SolutionHeroButtons from "./SolutionHeroButtons";
@@ -278,10 +281,27 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
             <ScrollReveal>
               <h2 className="text-[clamp(2rem,3.5vw,3rem)] font-bold text-white mb-16 max-w-4xl leading-[1.1] tracking-tight">
                 {featuresSection?.mapHeading || (
-                  <>
-                    Running a fleet depot has its own set of challenges.<br />
-                    Tap a marker to see where things typically go wrong.
-                  </>
+                  urlSlug === 'charge-point-operators' ? (
+                    <>
+                      Scaling public charging infrastructure has its own set of challenges.<br />
+                      Tap a marker to see where things typically go wrong.
+                    </>
+                  ) : urlSlug === 'hospitality-workplace' ? (
+                    <>
+                      Providing premium charging amenities has its own set of challenges.<br />
+                      Tap a marker to see where things typically go wrong.
+                    </>
+                  ) : urlSlug === 'residential' ? (
+                    <>
+                      Installing residential charging infrastructure has its own set of challenges.<br />
+                      Tap a marker to see where things typically go wrong.
+                    </>
+                  ) : (
+                    <>
+                      Running a fleet depot has its own set of challenges.<br />
+                      Tap a marker to see where things typically go wrong.
+                    </>
+                  )
                 )}
               </h2>
             </ScrollReveal>
@@ -297,7 +317,15 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
               {/* Scrollable Container for Mobile */}
               <div className="w-full overflow-x-auto md:overflow-visible hide-scrollbar pb-10 -mb-10 md:pb-0 md:mb-0 snap-x snap-proximity">
                 <div className="w-[1000px] md:w-full relative aspect-[21/9] p-0">
-                  <DepotInfrastructureMap src="Depot-Infrastructure_imbnbg" locale={locale} />
+                  {urlSlug === 'charge-point-operators' ? (
+                    <CpoInfrastructureMap src="Charge-Point-Operators_qwmjoo" locale={locale} />
+                  ) : urlSlug === 'hospitality-workplace' ? (
+                    <HospitalityInfrastructureMap src="Hospitality-And-Workplace_guhvna" locale={locale} />
+                  ) : urlSlug === 'residential' ? (
+                    <ResidentialInfrastructureMap src="Residential_ywkugd" locale={locale} />
+                  ) : (
+                    <DepotInfrastructureMap src="Depot-Infrastructure_imbnbg" locale={locale} />
+                  )}
                   
                   {/* Bottom text - hidden on mobile since we have swipe instructions */}
                   <div className="hidden md:block absolute bottom-8 right-10 text-[#00E573] text-[11px] font-bold tracking-widest uppercase z-10 bg-[#0c0c0c]/80 px-4 py-2 rounded-full backdrop-blur-md pointer-events-none">

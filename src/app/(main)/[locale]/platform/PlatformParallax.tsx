@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image, { StaticImageData } from "next/image";
-import { ChipGraphic, NetworkGraphic, GREEN } from "./Graphics";
+import { NetworkGraphic, GREEN } from "./Graphics";
 
 interface Props {
   platformModule: StaticImageData;
@@ -22,7 +22,7 @@ const ProtectedVideo = ({ src, className }: { src: string, className?: string })
         setBlobUrl(objectUrl);
       })
       .catch(console.error);
-    
+
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
@@ -54,14 +54,18 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const scrollTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
+    const checkDevice = () => {
+      setIsMobile(window.innerWidth < 768);
+      setIsTablet(window.innerWidth < 1024);
+    };
+    checkDevice();
+    window.addEventListener("resize", checkDevice);
+    return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
   useEffect(() => {
@@ -73,27 +77,33 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
       // Track scroll progress as long as we haven't scrolled completely past it
       if (rect.top <= 0) {
         const scrolled = -rect.top;
-        const total = window.innerHeight * 50; // Restore 5000vh track length
-        const p = Math.max(0, Math.min(1, scrolled / total));
-        setProgress(p);
+        const total = window.innerHeight * 50; // Reference 5000vh track length
+        let p = scrolled / total;
+        // Skip Section 6 (0.40 - 0.50) on tablet & mobile
+        if (isTablet && p > 0.40) {
+          p += 0.10;
+        }
+        setProgress(Math.max(0, p));
       } else if (rect.top > 0) {
         setProgress(0); // Before track starts
       }
 
       // Scroll Indicator Logic
       setShowScrollIndicator((prev) => prev ? false : prev);
-      
+
       if (scrollTimeout.current) {
         clearTimeout(scrollTimeout.current);
       }
-      
+
       scrollTimeout.current = setTimeout(() => {
-        // We calculate progress independently here because we can't rely on the closure's `progress` variable being up-to-date
         const currentScrolled = -rect.top;
         const currentTotal = window.innerHeight * 50;
-        const currentP = Math.max(0, Math.min(1, currentScrolled / currentTotal));
-        
-        if (currentP < 0.98) {
+        let currentP = currentScrolled / currentTotal;
+        if (isTablet && currentP > 0.40) {
+          currentP += 0.10;
+        }
+
+        if (currentP < 0.78) {
           setShowScrollIndicator(true);
         }
       }, 3000);
@@ -102,7 +112,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [isTablet]);
 
   useEffect(() => {
     const preloadSequence = () => {
@@ -112,7 +122,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
         img.src = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${paddedIndex}.jpg`;
       }
     };
-    
+
     // Delay preloading slightly to prioritize initial page load
     const timer = setTimeout(preloadSequence, 1000);
     return () => clearTimeout(timer);
@@ -145,7 +155,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s2Op = Math.min(s2In, s2Out);
   const s2Y = rng(0.032, 0.04, 50, 0) + rng(0.132, 0.14, 0, -50);
   const s2Quote = lerp(0.096, 0.108); // Fixed gap: text ends at 0.096
-  const s2Net = lerp(0.048, 0.112); 
+  const s2Net = lerp(0.048, 0.112);
 
   // S3 (0.14 → 0.24)
   const s3In = lerp(0.14, 0.148);
@@ -190,59 +200,70 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s5C2X = rng(0.364, 0.376, isMobile ? -30 : -60, 0);
   const s5QuoteOp = Math.min(lerp(0.376, 0.380), s5Out);
 
-  // S6: Video/Image Frame (0.40 → 0.43)
-  const s6In = lerp(0.40, 0.41);
-  const s6Out = 1 - lerp(0.42, 0.43);
+  // S6: Left-to-Right Wipe Entry (0.40 → 0.42) -> Play Sequence (0.42 → 0.48) -> Wipe Out (0.48 -> 0.50)
+  const s6In = lerp(0.40, 0.401);
+  const s6Out = 1 - lerp(0.499, 0.50);
   const s6Op = Math.min(s6In, s6Out);
-  const s6ImgOp = Math.min(lerp(0.405, 0.415), 1 - lerp(0.415, 0.425));
+  
+  const s6WipeIn = rng(0.40, 0.42, -20, 120);
+  const s6WipeOut = rng(0.48, 0.50, 120, -20);
+  
+  const s6WipePos = Math.min(s6WipeIn, s6WipeOut);
+  const s6MaskImage = `linear-gradient(to right, black ${s6WipePos - 15}%, transparent ${s6WipePos + 15}%)`;
 
-  // S7: Firmware Text Showcase (0.43 → 0.56)
-  const s7In = lerp(0.43, 0.44);
-  const s7Out = 1 - lerp(0.54, 0.56);
-  const s7Op = Math.min(s7In, s7Out); 
-  const s7Quote = lerp(0.50, 0.52);
-  const s7ImgOp = lerp(0.44, 0.46);
+  const s6TextOp = Math.min(lerp(0.42, 0.43), 1 - lerp(0.48, 0.49));
 
-  // S8: 4 Cards Reveal and Upward Pan (0.56 → 0.72)
-  const s8In = lerp(0.56, 0.58);
-  const s8Op = s8In; 
-  
-  // Title & Intro (0.58 -> 0.60)
-  const s8TitleOp = lerp(0.58, 0.60);
-  const s8TitleY = rng(0.58, 0.60, 30, 0);
-  const s8IntroOp = lerp(0.60, 0.62);
-  
-  // Row 1 (Cards 1 & 2) slides in (0.62 -> 0.65)
-  const s8R1Op = lerp(0.62, 0.65);
-  const s8C1X = rng(0.62, 0.65, isMobile ? -50 : -150, 0);
-  const s8C2X = rng(0.62, 0.65, isMobile ? 50 : 150, 0);
-  
-  // Pan Upwards (0.66 -> 0.72)
+  const s6FrameProgress = lerp(0.42, 0.48);
+  const s6FrameIndex = Math.min(181, Math.max(1, Math.floor(s6FrameProgress * 181) + 1));
+  const s6FrameUrl = `https://res.cloudinary.com/efi3yigo/image/upload/v1786135471/platform-section6_${s6FrameIndex}.jpg`;
+
+  // S7: Firmware Text Showcase (0.50 → 0.63)
+  const s7In = lerp(0.50, 0.51);
+  const s7Out = 1 - lerp(0.61, 0.63);
+  const s7Op = Math.min(s7In, s7Out);
+  const s7Quote = lerp(0.57, 0.59);
+  const s7ImgOp = lerp(0.51, 0.53);
+
+  // S8: 4 Cards Reveal and Upward Pan (0.63 → 0.79)
+  const s8In = lerp(0.63, 0.65);
+  const s8Op = s8In;
+
+  // Title & Intro (0.65 -> 0.68)
+  const s8TitleOp = lerp(0.65, 0.67);
+  const s8TitleY = rng(0.65, 0.67, 30, 0);
+  const s8IntroOp = lerp(0.66, 0.68);
+
+  // Row 1 (Cards 1 & 2) slides in (0.68 -> 0.70)
+  const s8R1Op = lerp(0.68, 0.70);
+  const s8C1X = rng(0.68, 0.70, isMobile ? -50 : -150, 0);
+  const s8C2X = rng(0.68, 0.70, isMobile ? 50 : 150, 0);
+
+  // Pan Upwards (0.73 -> 0.79)
   const maxPan = isMobile ? 0 : -45; // No panning on mobile, just center it
-  const s8PanY = rng(0.66, 0.72, 0, maxPan); 
-  
-  // Row 2 (Cards 3 & 4) slides in as space is revealed (0.68 -> 0.72)
-  const s8R2Op = lerp(0.68, 0.72);
-  const s8C3X = rng(0.68, 0.72, isMobile ? -50 : -150, 0);
-  const s8C4X = rng(0.68, 0.72, isMobile ? 50 : 150, 0);
-  const s8MobileTranslateX = isMobile ? rng(0.62, 0.72, 0, -267) : 0;
+  const s8PanY = rng(0.73, 0.79, 0, maxPan);
+
+  // Row 2 (Cards 3 & 4) slides in as space is revealed (0.75 -> 0.79)
+  const s8R2Op = lerp(0.75, 0.79);
+  const s8C3X = rng(0.75, 0.79, isMobile ? -50 : -150, 0);
+  const s8C4X = rng(0.75, 0.79, isMobile ? 50 : 150, 0);
+  const s8MobileTranslateX = isMobile ? rng(0.71, 0.79, 0, -267) : 0;
 
   function TypewriterScroll({ text, start, end, className }: { text: string, start: number, end: number, className?: string }) {
     const tokens = text.split(/(\n| )/);
     let wordCount = tokens.filter(t => t !== " " && t !== "\n").length;
     let wordIdx = 0;
-    
+
     return (
       <span className={className}>
         {tokens.map((token, i) => {
           if (token === "\n") return <br key={i} />;
           if (token === " ") return <span key={i}> </span>;
-          
+
           const pStart = start + (wordIdx / wordCount) * (end - start);
           const pEnd = Math.min(end, pStart + (end - start) / wordCount * 2);
           const opacity = lerp(pStart, pEnd);
           wordIdx++;
-          
+
           return <span key={i} style={{ opacity }}>{token}</span>;
         })}
       </span>
@@ -253,7 +274,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s1_title: "Conversión\nInteligente\nde Energía.",
     s1_subtitle: "Desde la entrada de red hasta la salida de precisión: una sola arquitectura integrada verticalmente.",
     s1_desc: "La Plataforma MEIRIS es una plataforma de conversión de energía de integración vertical, desarrollada con dispositivos de Carburo de Silicio (SiC) y firmware exclusivo, diseñada para convertir, gestionar y orquestar la energía con precisión a un 96 % de eficiencia del sistema.",
-    
+
     s2_t1: "La energía está en todas partes.\nLa inteligencia no.",
     s2_t2: "La transición energética no es un problema de hardware.\nEs un problema de conversión.",
     s2_t3: "Cada megavatio de generación renovable, cada vehículo eléctrico, cada sistema de baterías requiere conversión. Cada aspecto de la generación y el consumo de electricidad implica un elemento de conversión. La energía eléctrica bruta de la red debe transformarse, regularse y suministrarse con precisión a cada carga, cada 10 ms. Con fuentes variables y perfiles de carga cambiantes, el problema de la conversión se ha vuelto más complejo. La eficiencia de esa conversión determina la eficiencia de todo el sistema energético. La eficiencia de conversión ya no se puede ignorar.",
@@ -305,7 +326,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s1_title: "Intelligent\nPower\nConversion.",
     s1_subtitle: "From grid input to precision output — a single vertically integrated architecture.",
     s1_desc: "The MEIRIS Platform is a vertically integrated power conversion platform built using Silicon Carbide (SiC) devices & proprietary firmware, engineered to convert, manage, and orchestrate energy with precision at 96% system efficiency.",
-    
+
     s2_t1: "Energy is everywhere.\nIntelligence is not.",
     s2_t2: "The Energy Transition is not a hardware problem.\nIt is a conversion problem.",
     s2_t3: "Every megawatt of renewable generation, every EV, every battery system requires conversion. Every aspect of electricity generation and consumption involves an element of conversion. Raw electrical energy from the grid must be transformed, regulated, and delivered with precision to every load, every 10ms. With variable sources and changing load profiles the conversion problem has become more complex. The efficiency of that conversion determines the efficiency of the entire energy system. Conversion efficiency can no longer be ignored.",
@@ -355,18 +376,20 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s8_c4_p: "Power Conversion System (PCS)"
   };
 
+  const containerHeight = isTablet ? "3550vh" : "4050vh";
+
   return (
     <>
-      <div ref={containerRef} style={{ height: "3700vh", position: "relative" }}>
+      <div ref={containerRef} style={{ height: containerHeight, position: "relative" }}>
         <div style={{ position: "sticky", top: 0, width: "100%", height: "100vh", zIndex: 0, backgroundColor: "#000", overflow: "hidden" }}>
 
           {/* ── SCROLL INDICATOR ────────────────────────────── */}
-          <div 
+          <div
             className={`absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 transition-opacity duration-700 pointer-events-none z-50 ${showScrollIndicator ? 'opacity-100' : 'opacity-0'}`}
           >
             <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-white/50 font-medium">Scroll</span>
             <div className="w-[1px] h-8 md:h-12 bg-white/20 relative overflow-hidden rounded-full">
-              <motion.div 
+              <motion.div
                 className="w-full h-1/2 bg-[#00E573] absolute top-0 left-0"
                 animate={{ y: ["-100%", "200%"] }}
                 transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
@@ -384,7 +407,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
               willChange: "opacity, transform",
             }}
           >
-            <div className="mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-6 px-6 md:px-8 sm:px-10 md:grid-cols-[1.15fr_1fr] md:gap-16 lg:px-12 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-backwards pt-28 md:pt-0">
+            <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-12 md:gap-20 px-6 sm:px-10 md:grid-cols-[1.15fr_1fr] lg:px-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-backwards pt-28 md:pt-0">
               <div>
                 <h1 className="text-[clamp(2.25rem,6vw,5.5rem)] font-bold leading-[1.02] tracking-[-0.03em] text-white">
                   {t.s1_title.split('\n').map((line, i) => (
@@ -403,9 +426,27 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
               </div>
               <div
                 style={{ opacity: s1ChipOp, transform: `translateX(${s1ChipX}px)`, willChange: "opacity, transform" }}
-                className="flex items-center justify-center md:justify-end"
+                className="flex items-center justify-center md:justify-end w-full"
               >
-                <ChipGraphic />
+                <div
+                  className="relative w-full scale-[1.25] md:scale-150 origin-center md:origin-right md:translate-x-16 lg:translate-x-24"
+                  style={{
+                    maskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)',
+                    WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)'
+                  }}
+                >
+                  <video
+                    className="w-full h-auto pointer-events-none mix-blend-screen"
+                    src="/api/media?id=Platform_Section_1_nnqcxk"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onContextMenu={(e) => e.preventDefault()}
+                  />
+                  {/* Invisible shield to prevent interaction/download */}
+                  <div className="absolute inset-0 z-10 bg-transparent" />
+                </div>
               </div>
             </div>
           </div>
@@ -420,34 +461,50 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
               willChange: "opacity, transform",
             }}
           >
-            <div className="mx-auto grid w-full max-w-[1240px] grid-cols-1 items-center gap-2 md:gap-14 px-6 md:px-8 sm:px-10 md:grid-cols-[1.1fr_1fr] lg:px-12">
+            <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-12 md:gap-20 px-6 sm:px-10 md:grid-cols-[1.15fr_1fr] lg:px-16">
               <div>
-                <h2 className="text-[clamp(1.5rem,4.5vw,3.25rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white">
+                <h2 className="text-[clamp(1.75rem,5vw,3.75rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white">
                   <TypewriterScroll text={t.s2_t1} start={0.032} end={0.044} />
                 </h2>
-                <p className="mt-2 md:mt-10 max-w-xl text-[11px] md:text-[clamp(0.95rem,1.5vw,1.15rem)] font-semibold leading-snug text-white">
+                <p className="mt-2 md:mt-10 max-w-xl text-[12px] md:text-[clamp(1rem,1.8vw,1.35rem)] font-semibold leading-snug text-white">
                   <TypewriterScroll text={t.s2_t2} start={0.044} end={0.056} />
                 </p>
                 <div>
-                  <p className="mt-2 md:mt-10 max-w-xl text-[10px] md:text-[clamp(0.8rem,1.2vw,0.95rem)] leading-[1.35] md:leading-[1.55] text-white/55">
+                  <p className="mt-2 md:mt-10 max-w-xl text-[11px] md:text-[clamp(0.85rem,1.4vw,1.1rem)] leading-[1.4] md:leading-[1.55] text-white/55">
                     <TypewriterScroll text={t.s2_t3} start={0.056} end={0.088} />
                   </p>
-                  <p className="mt-1 md:mt-6 text-[10px] md:text-[clamp(0.85rem,1.3vw,1rem)] text-white">
+                  <p className="mt-1 md:mt-6 text-[11px] md:text-[clamp(0.9rem,1.5vw,1.2rem)] text-white">
                     <TypewriterScroll text={t.s2_t4} start={0.088} end={0.096} />
                   </p>
                 </div>
                 <div className="mt-2 md:mt-12 border-l-2 pl-3 md:pl-6" style={{ borderColor: GREEN, opacity: s2Quote }}>
-                  <p className="max-w-lg text-[9px] md:text-[clamp(0.8rem,1.1vw,0.9rem)] italic leading-[1.4] md:leading-[1.8] text-white/65">
+                  <p className="max-w-lg text-[10px] md:text-[clamp(0.85rem,1.2vw,1rem)] italic leading-[1.5] md:leading-[1.8] text-white/65">
                     {t.s2_q}
                   </p>
-                  <p className="mt-1 md:mt-3 text-[8px] md:text-[11px] uppercase tracking-widest" style={{ color: GREEN }}>
+                  <p className="mt-1 md:mt-3 text-[9px] md:text-[12px] uppercase tracking-widest" style={{ color: GREEN }}>
                     {t.s2_qa}
                   </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center md:justify-end mt-2 md:mt-0" style={{ opacity: s2Net }}>
-                <div className="w-full max-w-[120px] md:max-w-none">
-                  <NetworkGraphic />
+              <div className="flex items-center justify-center md:justify-end mt-2 md:mt-0 w-full" style={{ opacity: s2Net }}>
+                <div
+                  className="relative w-full scale-[1.25] md:scale-150 origin-center md:origin-right md:translate-x-16 lg:translate-x-24"
+                  style={{
+                    maskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)',
+                    WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)'
+                  }}
+                >
+                  <video
+                    className="w-full h-auto pointer-events-none mix-blend-screen"
+                    src="/api/media?id=Platform_Section_2_ybbgym"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onContextMenu={(e) => e.preventDefault()}
+                  />
+                  {/* Invisible shield to prevent interaction/download */}
+                  <div className="absolute inset-0 z-10 bg-transparent" />
                 </div>
               </div>
             </div>
@@ -482,17 +539,17 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                   </div>
                   <div className="flex w-full md:w-[55%] items-center justify-center md:justify-end p-4 md:p-8 md:pr-4 lg:pr-12" style={{ opacity: s3DiagOp }}>
                     <div className="w-full max-w-[200px] md:max-w-none flex justify-center md:justify-end">
-                      <img 
+                      <img
 
-                        src={s3FrameUrl} 
-                        alt="Three Layers Architecture" 
+                        src={s3FrameUrl}
+                        alt="Three Layers Architecture"
                         className="w-full max-w-[280px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[600px] h-auto object-contain mix-blend-screen"
                       />
                     </div>
                   </div>
                 </div>
-                <div 
-                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-8 mt-4 md:-mt-10 lg:-mt-16" 
+                <div
+                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-8 mt-4 md:-mt-10 lg:-mt-16"
                   style={{ transform: isMobile ? `translateX(${s3MobileTranslateX}vw)` : "none" }}
                 >
                   <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none md:rounded-l-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C1Op, transform: isMobile ? "none" : `translateY(${s3C1Y}px)` }}>
@@ -516,38 +573,58 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           <div
             style={{
               position: "absolute", inset: 0,
+              zIndex: 0,
               display: "flex", alignItems: "center", justifyContent: "center",
               opacity: s4Op,
               willChange: "opacity",
             }}
           >
-            <div className="absolute inset-0 z-0 flex" style={{ opacity: s4Op }}>
+            <div className="absolute inset-0 z-[-1] flex" style={{ opacity: s4Op }}>
               <div className="w-full bg-[#e6e6e6] md:w-1/2 h-full origin-left" style={{ transform: `scaleX(${s4BoxScaleX})` }} />
               <div className="hidden w-1/2 bg-black md:block h-full" />
             </div>
-            <div className="relative z-10 grid w-full grid-cols-1 md:grid-cols-2">
+            <div className="grid w-full grid-cols-1 md:grid-cols-2">
               <div className="px-6 py-4 md:py-24 md:px-16 lg:px-24 xl:px-32 flex flex-col justify-center" style={{ opacity: s4TextFadeOut }}>
                 <div className="w-full text-black">
-                  <h2 className="text-[clamp(1.5rem,3.8vw,4rem)] font-bold leading-[1.05] tracking-tight">
+                  <h2 className="text-[clamp(1.75rem,5vw,4.5rem)] font-bold leading-[1.05] tracking-tight">
                     <TypewriterScroll text={t.s4_t1} start={0.26} end={0.272} />
                   </h2>
-                <p className="mt-2 md:mt-8 text-[11px] md:text-[15px] leading-[1.4] md:leading-relaxed text-black/80">
-                  <TypewriterScroll text={t.s4_t2} start={0.272} end={0.284} />
-                </p>
-                <p className="mt-2 md:mt-6 text-[11px] md:text-[15px] leading-[1.4] md:leading-relaxed text-black/80">
-                  <TypewriterScroll text={t.s4_t3} start={0.284} end={0.296} />
-                  {" "}
-                  <span className="font-bold text-[#00E573]">
-                    <TypewriterScroll text={t.s4_t4} start={0.296} end={0.308} />
-                  </span>
-                  {" "}
-                  <TypewriterScroll text={t.s4_t5} start={0.308} end={0.312} />
-                </p>
+                  <p className="mt-2 md:mt-8 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
+                    <TypewriterScroll text={t.s4_t2} start={0.272} end={0.284} />
+                  </p>
+                  <p className="mt-2 md:mt-6 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
+                    <TypewriterScroll text={t.s4_t3} start={0.284} end={0.296} />
+                    {" "}
+                    <span className="font-bold text-[#00E573]">
+                      <TypewriterScroll text={t.s4_t4} start={0.296} end={0.308} />
+                    </span>
+                    {" "}
+                    <TypewriterScroll text={t.s4_t5} start={0.308} end={0.312} />
+                  </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center px-6 py-2 md:py-24 md:pl-16" style={{ opacity: s4ImgOp }}>
-                <div style={{ transform: `scale(${s4Scale})` }}>
-                  <Image src={platformModule} alt="MEIRIS power module" className="w-full max-w-[200px] md:max-w-[560px]" placeholder="blur" />
+              <div className="flex items-center justify-center px-6 py-2 md:py-24 md:pl-16 mt-10 md:mt-16 mix-blend-darken md:mix-blend-screen" style={{ opacity: s4ImgOp }}>
+                <div className="relative w-full max-w-[280px] md:max-w-[650px] scale-[1.3] md:scale-[1.6]">
+                  <video
+                    className="w-full h-auto pointer-events-none hidden md:block contrast-125"
+                    src="/api/media?id=Platform_Section_4_-_PC_Version_mllwn7"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onContextMenu={(e) => e.preventDefault()}
+                  />
+                  <video
+                    className="w-full h-auto pointer-events-none md:hidden contrast-125"
+                    src="/api/media?id=Platform_Section_4_-_Mobile_Version_qm9hhe"
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    onContextMenu={(e) => e.preventDefault()}
+                  />
+                  {/* Invisible shield to prevent interaction/download */}
+                  <div className="absolute inset-0 z-10 bg-transparent" />
                 </div>
               </div>
             </div>
@@ -579,25 +656,56 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           </div>
 
           {/* ── SECTION 6 ───────────────────────────────────── */}
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyItems: "center", background: "linear-gradient(90deg, #00E573 0%, #002b5e 100%)", opacity: s6Op, willChange: "opacity" }}>
-            <div className="w-full max-w-[1200px] px-8 flex justify-center mx-auto" style={{ opacity: s6ImgOp }}>
-              {/* Using the platformModule as a placeholder for the video frame scroll */}
-              <Image src={platformModule} alt="Video Placeholder" className="w-full max-w-[900px] h-auto object-cover opacity-80 mix-blend-screen" />
+          {!isTablet && (
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyItems: "center", opacity: s6Op, willChange: "opacity" }}>
+              <div 
+                className="w-full h-full flex justify-center mx-auto relative overflow-hidden" 
+                style={{ 
+                  maskImage: s6MaskImage,
+                  WebkitMaskImage: s6MaskImage
+                }}
+              >
+                {/* 181 Frame scroll animation */}
+                <img src={s6FrameUrl} alt="Section 6 Animation" className="w-full h-full object-cover" />
+
+                {/* 16:9 Object Cover Overlay Container for Text Positioning */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[max(100vw,177.78vh)] h-[max(100vh,56.25vw)] pointer-events-none" style={{ opacity: s6TextOp }}>
+                  {/* Left Pill */}
+                  <div className="absolute left-[5.9%] top-[58.7%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                    <span className="text-white/90 font-medium text-sm md:text-base">Input</span>
+                  </div>
+
+                  {/* Right Pill */}
+                  <div className="absolute left-[94.1%] top-[58.7%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+                    <span className="text-white/90 font-medium text-sm md:text-base">Output</span>
+                  </div>
+
+                  {/* Middle Top */}
+                  <div className="absolute left-1/2 top-[34.5%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-full">
+                    <span className="text-white font-bold text-xl md:text-3xl drop-shadow-md">Bi-Directional Flow</span>
+                  </div>
+
+                  {/* Middle Bottom */}
+                  <div className="absolute left-1/2 top-[65%] -translate-x-1/2 -translate-y-1/2 flex items-center justify-center w-full">
+                    <span className="text-white font-bold text-xl md:text-3xl drop-shadow-md">MEIRIS Conversion Stage</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
 
           {/* ── SECTION 7 ───────────────────────────────────── */}
           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", opacity: s7Op, willChange: "opacity" }}>
             <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-4 md:gap-16 px-6 md:px-8 md:grid-cols-[1fr_1.1fr]">
               <div className="flex flex-col">
                 <h2 className="text-[clamp(1.5rem,4vw,4rem)] font-bold leading-[1.05] tracking-tight text-white">
-                  <TypewriterScroll text={t.s7_t1} start={0.44} end={0.46} />
+                  <TypewriterScroll text={t.s7_t1} start={0.51} end={0.53} />
                 </h2>
                 <p className="mt-2 md:mt-12 max-w-sm text-[11px] md:text-[13px] leading-[1.4] md:leading-relaxed text-white/70">
-                  <TypewriterScroll text={t.s7_t2} start={0.46} end={0.48} />
+                  <TypewriterScroll text={t.s7_t2} start={0.53} end={0.55} />
                 </p>
                 <p className="mt-2 md:mt-6 max-w-sm text-[11px] md:text-[13px] leading-[1.4] md:leading-relaxed text-white/70">
-                  <TypewriterScroll text={t.s7_t3} start={0.48} end={0.50} />
+                  <TypewriterScroll text={t.s7_t3} start={0.55} end={0.57} />
                 </p>
                 <div className="mt-3 md:mt-12 border-l-2 border-[#00E573] pl-3 md:pl-6" style={{ opacity: s7Quote }}>
                   <p className="max-w-md text-[10px] md:text-sm italic leading-[1.4] md:leading-relaxed text-white/80">
@@ -606,7 +714,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 </div>
               </div>
               <div className="relative flex flex-col items-center mt-4 md:mt-0" style={{ opacity: s7ImgOp }}>
-                <div 
+                <div
                   className="relative w-full max-w-[200px] md:max-w-[600px]"
                   style={{
                     maskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 90%)',
@@ -614,7 +722,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                   }}
                 >
                   <ProtectedVideo
-                    src="https://res.cloudinary.com/efi3yigo/video/upload/Platform_Section_7_jne46l.mp4"
+                    src="/api/media?id=Platform_Section_7_jne46l"
                     className="w-full h-auto object-cover mix-blend-screen"
                   />
                 </div>
@@ -625,7 +733,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           {/* ── SECTION 8 ───────────────────────────────────── */}
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: isMobile ? "flex-start" : "flex-start", paddingTop: isMobile ? "90px" : "15vh", opacity: s8Op, willChange: "opacity" }}>
             <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8" style={{ transform: `translateY(${s8PanY}vh)` }}>
-              
+
               <div style={{ opacity: s8TitleOp, transform: `translateY(${s8TitleY}px)` }}>
                 <h2 className="text-[clamp(1.75rem,4vw,3.5rem)] font-bold leading-[1.05] tracking-tight text-white">
                   {t.s8_t1}
@@ -637,7 +745,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                 </p>
               </div>
 
-              <div 
+              <div
                 className="mt-4 md:mt-12 flex md:grid flex-nowrap md:grid-cols-2 gap-4 md:gap-8 pb-6 md:pb-0 transition-transform duration-100 ease-out"
                 style={{ transform: isMobile ? `translateX(${s8MobileTranslateX}vw)` : "none" }}
               >
@@ -650,7 +758,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                     <p className="mt-2 text-[11px] md:text-[10px] text-white/80">{t.s8_c1_p}</p>
                   </div>
                 </div>
-                
+
                 {/* Card 2 */}
                 <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C2X}px)` }}>
                   <Image src="/images/Solar - Platform.png" alt={t.s8_c2_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
@@ -670,7 +778,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                     <p className="mt-2 text-[11px] md:text-[10px] text-white/80">{t.s8_c3_p}</p>
                   </div>
                 </div>
-                
+
                 {/* Card 4 */}
                 <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C4X}px)` }}>
                   <Image src="/images/BESS - Platform.png" alt={t.s8_c4_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
