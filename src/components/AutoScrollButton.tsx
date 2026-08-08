@@ -14,7 +14,7 @@ export default function AutoScrollButton() {
 
   // The speed of the auto-scroll in pixels per second.
   // 17 pixels per frame at 60fps = 1020 pixels per second.
-  const SCROLL_SPEED_PER_SECOND = 800;
+  const SCROLL_SPEED_PER_SECOND = 500;
 
   // Track if we should show the button based on scroll position
   const [showButton, setShowButton] = useState(true);
