@@ -34,10 +34,6 @@ export default function ProductsPage({ data }: { data?: any }) {
   const [animState, setAnimState] = useState<'idle' | 'exiting' | 'entering'>('idle');
   const [animationDirection, setAnimationDirection] = useState<'left' | 'right'>('right');
 
-  // Touch swipe state
-  const [touchStart, setTouchStart] = useState<number | null>(null);
-  const [touchEnd, setTouchEnd] = useState<number | null>(null);
-
   const heroRef = useRef<HTMLElement>(null);
   const productsRef = useRef<HTMLElement>(null);
   const servicesRef = useRef<HTMLElement>(null);
@@ -113,21 +109,47 @@ export default function ProductsPage({ data }: { data?: any }) {
     : 'opacity-0 transition-opacity duration-300';
 
 
-  // Touch swipe handlers
+  // Touch & Mouse swipe handlers
   const minSwipeDistance = 50;
+  const touchStartRef = useRef<number | null>(null);
+  const touchEndRef = useRef<number | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
+  // Bulletproof block against Lenis hijacking native scroll
+  useEffect(() => {
+    const el = scrollContainerRef.current;
+    if (!el) return;
+    const preventLenis = (e: Event) => e.stopPropagation();
+    el.addEventListener('wheel', preventLenis, { passive: false });
+    el.addEventListener('touchmove', preventLenis, { passive: false });
+    return () => {
+      el.removeEventListener('wheel', preventLenis);
+      el.removeEventListener('touchmove', preventLenis);
+    };
+  }, []);
+
+  const onTouchStart = (e: React.TouchEvent | React.MouseEvent) => {
+    touchEndRef.current = null;
+    if ('targetTouches' in e) {
+      touchStartRef.current = e.targetTouches[0].clientX;
+    } else {
+      touchStartRef.current = (e as React.MouseEvent).clientX;
+    }
   };
 
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+  const onTouchMove = (e: React.TouchEvent | React.MouseEvent) => {
+    if ('targetTouches' in e) {
+      touchEndRef.current = e.targetTouches[0].clientX;
+    } else {
+      if (e.buttons === 1 && touchStartRef.current !== null) {
+        touchEndRef.current = (e as React.MouseEvent).clientX;
+      }
+    }
   };
 
   const onTouchEndHandler = () => {
-    if (!touchStart || !touchEnd) return;
-    const distance = touchStart - touchEnd;
+    if (!touchStartRef.current || !touchEndRef.current) return;
+    const distance = touchStartRef.current - touchEndRef.current;
     const isLeftSwipe = distance > minSwipeDistance;
     const isRightSwipe = distance < -minSwipeDistance;
 
@@ -136,6 +158,9 @@ export default function ProductsPage({ data }: { data?: any }) {
     } else if (isRightSwipe && activeModelIndex > 0) {
       handleModelChange(activeModelIndex - 1);
     }
+    
+    touchStartRef.current = null;
+    touchEndRef.current = null;
   };
 
   const handleClose = () => {
@@ -152,19 +177,16 @@ export default function ProductsPage({ data }: { data?: any }) {
     if (activeCategory !== null) {
       document.body.style.overflow = 'hidden';
       document.documentElement.style.overflow = 'hidden';
-      if (lenis) lenis.stop();
     } else {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
-      if (lenis) lenis.start();
     }
     
     return () => {
       document.body.style.overflow = '';
       document.documentElement.style.overflow = '';
-      if (lenis) lenis.start();
     };
-  }, [activeCategory, lenis]);
+  }, [activeCategory]);
 
   const scrollToProducts = () => {
     if (productsRef.current) {
@@ -315,10 +337,17 @@ export default function ProductsPage({ data }: { data?: any }) {
 
           {/* Scrollable Modal Content */}
           <div 
+            ref={scrollContainerRef}
             className="flex-1 min-h-0 bg-white text-black overflow-y-auto lg:overflow-hidden relative overscroll-contain"
+            style={{ touchAction: 'pan-y' }}
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEndHandler}
+            onMouseDown={onTouchStart}
+            onMouseMove={onTouchMove}
+            onMouseUp={onTouchEndHandler}
+            onMouseLeave={onTouchEndHandler}
+            data-lenis-prevent="true"
           >
             <div className="flex flex-col min-h-full lg:h-full">
               {/* Top Header & Navigation */}
