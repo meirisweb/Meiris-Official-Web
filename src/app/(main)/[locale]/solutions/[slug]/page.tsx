@@ -363,9 +363,11 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
             <ScrollReveal staggerChildren={true} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuresSection.features.map((feature: any, i: number) => (
                 <div key={i} className="animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out border border-white/20 rounded-2xl p-8 flex flex-col gap-4 hover:bg-white/5">
-                  <div className="w-3.5 h-3.5 rounded-full bg-white/90 shadow-sm"></div>
-                  <h3 className="text-white font-bold text-lg mt-3 pr-4 leading-tight">{feature.title}</h3>
-                  <p className="text-white/50 text-[11px] leading-relaxed pr-2">{feature.desc}</p>
+                  <div className="flex items-start gap-4 mb-2 min-h-[3.5rem] md:min-h-[4rem]">
+                    <div className="w-3.5 h-3.5 rounded-full bg-white/90 shadow-sm flex-shrink-0 mt-1.5"></div>
+                    <h3 className="text-white font-bold text-xl md:text-2xl leading-tight">{feature.title}</h3>
+                  </div>
+                  <p className="text-white/75 text-sm md:text-base leading-relaxed pr-2">{feature.desc}</p>
                 </div>
               ))}
             </ScrollReveal>

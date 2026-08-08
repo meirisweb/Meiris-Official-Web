@@ -403,19 +403,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
       <div ref={containerRef} style={{ height: containerHeight, position: "relative" }}>
         <div style={{ position: "sticky", top: 0, width: "100%", height: "100vh", zIndex: 0, backgroundColor: "#000", overflow: "hidden" }}>
 
-          {/* ── SCROLL INDICATOR ────────────────────────────── */}
-          <div
-            className={`absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 transition-opacity duration-700 pointer-events-none z-50 ${showScrollIndicator ? 'opacity-100' : 'opacity-0'}`}
-          >
-            <span className="text-[9px] md:text-[10px] uppercase tracking-[0.25em] text-white/50 font-medium">Scroll</span>
-            <div className="w-[1px] h-8 md:h-12 bg-white/20 relative overflow-hidden rounded-full">
-              <motion.div
-                className="w-full h-1/2 bg-[#00E573] absolute top-0 left-0"
-                animate={{ y: ["-100%", "200%"] }}
-                transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-              />
-            </div>
-          </div>
+          {/* ── SCROLL INDICATOR REMOVED ────────────────────────────── */}
 
           {/* ── SECTION 1 ───────────────────────────────────── */}
           <div
