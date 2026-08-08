@@ -12,8 +12,9 @@ export default function AutoScrollButton() {
   const lenis = useLenis();
   const pathname = usePathname();
 
-  // The speed of the auto-scroll in pixels per frame.
-  const SCROLL_SPEED = 17;
+  // The speed of the auto-scroll in pixels per second.
+  // 17 pixels per frame at 60fps = 1020 pixels per second.
+  const SCROLL_SPEED_PER_SECOND = 1020;
 
   // Track if we should show the button based on scroll position
   const [showButton, setShowButton] = useState(true);
@@ -28,19 +29,29 @@ export default function AutoScrollButton() {
       return;
     }
 
+    let lastTime: number | null = null;
+
     // The loop that performs the scrolling
-    const scrollStep = () => {
+    const scrollStep = (currentTime: number) => {
+      if (!lastTime) lastTime = currentTime;
+      const deltaTime = currentTime - lastTime;
+      lastTime = currentTime;
+
+      // Cap delta time to 100ms so it doesn't jump wildly if they tab away and come back
+      const safeDelta = Math.min(deltaTime, 100);
+      const distanceToScroll = (SCROLL_SPEED_PER_SECOND * safeDelta) / 1000;
+
       if (lenis) {
         // If we reach the bottom, stop
         if (lenis.scroll >= lenis.limit) {
           setIsAutoScrolling(false);
           return;
         }
-        // Scroll down by SCROLL_SPEED pixels immediately without animation easing
-        lenis.scrollTo(lenis.scroll + SCROLL_SPEED, { immediate: true });
+        // Scroll down immediately without animation easing
+        lenis.scrollTo(lenis.scroll + distanceToScroll, { immediate: true });
       } else {
         // Fallback if Lenis isn't ready
-        window.scrollBy(0, SCROLL_SPEED);
+        window.scrollBy(0, distanceToScroll);
       }
       rafRef.current = requestAnimationFrame(scrollStep);
     };
