@@ -73,6 +73,13 @@ export const homePageType = defineType({
           type: 'string',
           description: 'E.g., /videos/Home Page.mp4',
         }),
+        defineField({
+          name: 'mobileImage',
+          title: 'Mobile Background Image',
+          type: 'image',
+          description: 'The background image displayed in the hero section on mobile devices.',
+          options: { hotspot: true },
+        }),
       ],
     }),
 

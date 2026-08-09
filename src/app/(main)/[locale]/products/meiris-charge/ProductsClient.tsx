@@ -400,7 +400,7 @@ export default function ProductsPage({ data }: { data?: any }) {
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6" /></svg>
                   </button>
                   <div className={`pointer-events-auto bg-[#00E573] text-white px-5 py-2 rounded-full text-[12px] font-bold tracking-wide shadow-sm text-center ${textClasses}`}>
-                    {activeModel.name}
+                    {activeModel?.name}
                   </div>
                   <button
                     onClick={() => handleModelChange(Math.min(currentModels.length - 1, activeModelIndex + 1))}
@@ -420,20 +420,20 @@ export default function ProductsPage({ data }: { data?: any }) {
                 {/* Left Text */}
                 <div className={`order-2 lg:order-1 w-full lg:w-[45%] p-4 sm:p-6 pt-0 lg:pt-10 md:p-12 xl:p-16 flex flex-col justify-center z-10 lg:overflow-y-auto scrollbar-hide ${textClasses}`}>
                   <h2 className="text-[1.75rem] sm:text-[2rem] md:text-[2.5rem] lg:text-[3.25rem] xl:text-[4rem] font-bold mb-4 sm:mb-6 md:mb-8 lg:mb-10 tracking-tight">
-                    Model {activeModel.name}
+                    Model {activeModel?.name}
                   </h2>
                   <div className="text-[1rem] sm:text-[1.1rem] md:text-[1.25rem] lg:text-[1.5rem] xl:text-[1.75rem] font-bold leading-[1.3] tracking-tight text-black flex flex-col gap-4 sm:gap-5 md:gap-8">
                     <div>
                       <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Form Factor</span>
-                      {activeModel.formFactor}
+                      {activeModel?.formFactor}
                     </div>
                     <div>
                       <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Key Use Case</span>
-                      {activeModel.useCase}
+                      {activeModel?.useCase}
                     </div>
                     <div>
                       <span className="text-[10px] sm:text-[11px] md:text-[12px] lg:text-[13px] uppercase tracking-widest text-black/40 block mb-1 md:mb-2">Notable Spec</span>
-                      {activeModel.spec}
+                      {activeModel?.spec}
                     </div>
                   </div>
 
@@ -447,14 +447,14 @@ export default function ProductsPage({ data }: { data?: any }) {
 
                 <div className={`order-1 lg:order-2 w-full lg:w-[55%] relative flex items-center justify-center lg:justify-start py-4 sm:py-8 md:py-12 lg:py-10 px-4 sm:px-6 lg:pl-0 lg:h-full`}>
                   <div className={`w-[140px] sm:w-[200px] md:w-[260px] lg:w-full lg:h-full flex-shrink-0 lg:flex-shrink relative z-10 ${textClasses}`}>
-                    <Image src={activeModel.imageUrl || "/images/ChargerDemo.png"} alt={`Model ${activeModel.name}`} width={480} height={900} className="w-full h-auto lg:h-full lg:w-auto lg:max-w-full object-contain object-center lg:object-left" />
+                    <Image src={activeModel?.imageUrl || "/images/ChargerDemo.png"} alt={`Model ${activeModel?.name}`} width={480} height={900} className="w-full h-auto lg:h-full lg:w-auto lg:max-w-full object-contain object-center lg:object-left" />
                   </div>
                 </div>
               </div>
 
               {/* Bottom Green Bar */}
               <div className={`w-full flex-shrink-0 bg-[#00E573] py-4 sm:py-6 px-4 sm:px-6 md:py-8 md:px-10 text-white font-bold text-[1.25rem] sm:text-[1.5rem] md:text-[1.75rem] tracking-tight ${textClasses}`}>
-                Model {activeModel.name}
+                Model {activeModel?.name}
               </div>
             </div>
           </div>

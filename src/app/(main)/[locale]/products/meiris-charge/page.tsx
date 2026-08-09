@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import dynamic from 'next/dynamic';
 
-const ProductsClient = dynamic(() => import('./ProductsClient'));
+const ProductsClient = dynamic(() => import('./ProductsClient'), { ssr: false });
 import { client } from "@/sanity/lib/client";
 
 import { resolveSanitySeo, getBreadcrumbJsonLd } from "@/lib/seo";

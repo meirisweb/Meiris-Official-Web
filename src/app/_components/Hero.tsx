@@ -36,11 +36,19 @@ export default function Hero({ data }: { data: any }) {
 
   return (
     <section className={styles.hero}>
-      {/* Background video */}
+      {/* Background video / image */}
       <div className={styles.background}>
+        {data.mobileImageUrl && (
+          <img
+            src={data.mobileImageUrl}
+            alt="Background"
+            className={styles.mobileImageBackground}
+            aria-hidden="true"
+          />
+        )}
         <video
           ref={videoRef}
-          className={styles.videoBackground}
+          className={`${styles.videoBackground} ${data.mobileImageUrl ? styles.hideOnMobile : ''}`}
           autoPlay
           loop
           muted

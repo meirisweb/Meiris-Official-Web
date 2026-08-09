@@ -39,6 +39,10 @@ export default async function Home({ params: { locale } }: { params: { locale: s
   const homePage = await sanityFetch<any>({
     query: `*[_type == "homePage" && language == $locale][0] {
       ...,
+      hero {
+        ...,
+        "mobileImageUrl": mobileImage.asset->url
+      },
       solutionsSection {
         ...,
         solutions[] {
@@ -55,6 +59,10 @@ export default async function Home({ params: { locale } }: { params: { locale: s
   }) || await sanityFetch<any>({
     query: `*[_type == "homePage" && language == "en"][0] {
       ...,
+      hero {
+        ...,
+        "mobileImageUrl": mobileImage.asset->url
+      },
       solutionsSection {
         ...,
         solutions[] {
