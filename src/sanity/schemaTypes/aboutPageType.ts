@@ -26,11 +26,6 @@ export const aboutPageType = defineType({
           type: 'string',
           validation: (rule) => rule.required(),
         }),
-        defineField({
-          name: 'subtitle',
-          title: 'Subtitle',
-          type: 'text',
-        }),
       ],
     }),
     defineField({

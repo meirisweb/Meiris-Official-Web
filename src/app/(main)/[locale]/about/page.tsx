@@ -54,9 +54,6 @@ export default async function AboutPage({ params: { locale } }: { params: { loca
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-black mb-4 md:mb-5">
             {aboutPage.hero?.title || "About Us"}
           </h1>
-          <p className="text-[15px] md:text-[17px] text-black/80 leading-relaxed font-medium">
-            {aboutPage.hero?.subtitle}
-          </p>
         </div>
 
         {/* Main Content Block */}

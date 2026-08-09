@@ -80,7 +80,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
         const total = window.innerHeight * 50; // Reference 5000vh track length
         let p = scrolled / total;
         // Skip Section 6 (0.40 - 0.50) on tablet & mobile
-        if (isTablet && p > 0.40) {
+        if (isTablet && p > 0.42) {
           p += 0.10;
         }
         setProgress(Math.max(0, p));
@@ -99,11 +99,11 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
         const currentScrolled = -rect.top;
         const currentTotal = window.innerHeight * 50;
         let currentP = currentScrolled / currentTotal;
-        if (isTablet && currentP > 0.40) {
+        if (isTablet && currentP > 0.42) {
           currentP += 0.10;
         }
 
-        if (currentP < 0.78) {
+        if (currentP < 0.80) {
           setShowScrollIndicator(true);
         }
       }, 3000);
@@ -187,74 +187,74 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s3FrameUrl = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${s3FramePadded}.jpg`;
 
 
-  // S4 (0.24 → 0.34)
+  // S4 (0.24 → 0.36)
   const s4In = lerp(0.24, 0.248);
-  const s4Out = 1 - lerp(0.332, 0.34);
+  const s4Out = 1 - lerp(0.352, 0.36);
   const s4Op = Math.min(s4In, s4Out);
-  const s4TextFadeOut = 1 - lerp(0.316, 0.328);
-  const s4BoxScaleX = lerp(0.24, 0.26) * (1 - lerp(0.328, 0.34));
+  const s4TextFadeOut = 1 - lerp(0.336, 0.348);
+  const s4BoxScaleX = lerp(0.24, 0.26) * (1 - lerp(0.348, 0.36));
   const s4ImgOp = Math.min(lerp(0.26, 0.288), s4TextFadeOut);
-  const s4Scale = rng(0.26, 0.328, 0.92, 1.06);
+  const s4Scale = rng(0.26, 0.348, 0.92, 1.06);
 
-  // S5 (0.34 → 0.40)
-  const s5In = lerp(0.34, 0.348);
-  const s5Out = 1 - lerp(0.392, 0.40);
+  // S5 (0.36 → 0.42)
+  const s5In = lerp(0.36, 0.368);
+  const s5Out = 1 - lerp(0.412, 0.42);
   const s5Op = Math.min(s5In, s5Out);
-  const s5TitleOp = Math.min(lerp(0.34, 0.348), s5Out);
-  const s5TitleY = rng(0.34, 0.348, 30, 0);
-  const s5C1Op = Math.min(lerp(0.352, 0.364), s5Out);
-  const s5C1X = rng(0.352, 0.364, isMobile ? -30 : -60, 0);
-  const s5C2Op = Math.min(lerp(0.364, 0.376), s5Out);
-  const s5C2X = rng(0.364, 0.376, isMobile ? -30 : -60, 0);
-  const s5QuoteOp = Math.min(lerp(0.376, 0.380), s5Out);
+  const s5TitleOp = Math.min(lerp(0.36, 0.368), s5Out);
+  const s5TitleY = rng(0.36, 0.368, 30, 0);
+  const s5C1Op = Math.min(lerp(0.372, 0.384), s5Out);
+  const s5C1X = rng(0.372, 0.384, isMobile ? -30 : -60, 0);
+  const s5C2Op = Math.min(lerp(0.384, 0.396), s5Out);
+  const s5C2X = rng(0.384, 0.396, isMobile ? -30 : -60, 0);
+  const s5QuoteOp = Math.min(lerp(0.396, 0.400), s5Out);
 
-  // S6: Left-to-Right Wipe Entry (0.40 → 0.42) -> Play Sequence (0.42 → 0.48) -> Wipe Out (0.48 -> 0.50)
-  const s6In = lerp(0.40, 0.401);
-  const s6Out = 1 - lerp(0.499, 0.50);
+  // S6: Left-to-Right Wipe Entry (0.42 → 0.44) -> Play Sequence (0.44 → 0.50) -> Wipe Out (0.50 -> 0.52)
+  const s6In = lerp(0.42, 0.421);
+  const s6Out = 1 - lerp(0.519, 0.52);
   const s6Op = Math.min(s6In, s6Out);
 
-  const s6WipeIn = rng(0.40, 0.42, -20, 120);
-  const s6WipeOut = rng(0.48, 0.50, 120, -20);
+  const s6WipeIn = rng(0.42, 0.44, -20, 120);
+  const s6WipeOut = rng(0.50, 0.52, 120, -20);
 
   const s6WipePos = Math.min(s6WipeIn, s6WipeOut);
   const s6MaskImage = `linear-gradient(to right, black ${s6WipePos - 15}%, transparent ${s6WipePos + 15}%)`;
 
-  const s6TextOp = Math.min(lerp(0.42, 0.43), 1 - lerp(0.48, 0.49));
+  const s6TextOp = Math.min(lerp(0.44, 0.45), 1 - lerp(0.50, 0.51));
 
-  const s6FrameProgress = lerp(0.42, 0.48);
+  const s6FrameProgress = lerp(0.44, 0.50);
   const s6FrameIndex = Math.min(181, Math.max(1, Math.floor(s6FrameProgress * 181) + 1));
   const s6FrameUrl = `https://res.cloudinary.com/efi3yigo/image/upload/v1786135471/platform-section6_${s6FrameIndex}.jpg`;
 
-  // S7: Firmware Text Showcase (0.50 → 0.63)
-  const s7In = lerp(0.50, 0.51);
-  const s7Out = 1 - lerp(0.61, 0.63);
+  // S7: Firmware Text Showcase (0.52 → 0.67)
+  const s7In = lerp(0.52, 0.53);
+  const s7Out = 1 - lerp(0.65, 0.67);
   const s7Op = Math.min(s7In, s7Out);
-  const s7Quote = lerp(0.57, 0.59);
-  const s7ImgOp = lerp(0.51, 0.53);
+  const s7Quote = lerp(0.61, 0.63);
+  const s7ImgOp = lerp(0.53, 0.55);
 
-  // S8: 4 Cards Reveal and Upward Pan (0.63 → 0.79)
-  const s8In = lerp(0.63, 0.65);
+  // S8: 4 Cards Reveal and Upward Pan (0.67 → 0.83)
+  const s8In = lerp(0.67, 0.69);
   const s8Op = s8In;
 
-  // Title & Intro (0.65 -> 0.68)
-  const s8TitleOp = lerp(0.65, 0.67);
-  const s8TitleY = rng(0.65, 0.67, 30, 0);
-  const s8IntroOp = lerp(0.66, 0.68);
+  // Title & Intro (0.69 -> 0.72)
+  const s8TitleOp = lerp(0.69, 0.71);
+  const s8TitleY = rng(0.69, 0.71, 30, 0);
+  const s8IntroOp = lerp(0.70, 0.72);
 
-  // Row 1 (Cards 1 & 2) slides in (0.68 -> 0.70)
-  const s8R1Op = lerp(0.68, 0.70);
-  const s8C1X = rng(0.68, 0.70, isMobile ? -50 : -150, 0);
-  const s8C2X = rng(0.68, 0.70, isMobile ? 50 : 150, 0);
+  // Row 1 (Cards 1 & 2) slides in (0.72 -> 0.74)
+  const s8R1Op = lerp(0.72, 0.74);
+  const s8C1X = rng(0.72, 0.74, isMobile ? -50 : -150, 0);
+  const s8C2X = rng(0.72, 0.74, isMobile ? 50 : 150, 0);
 
-  // Pan Upwards (0.73 -> 0.79)
+  // Pan Upwards (0.77 -> 0.83)
   const maxPan = isMobile ? 0 : -45; // No panning on mobile, just center it
-  const s8PanY = rng(0.73, 0.79, 0, maxPan);
+  const s8PanY = rng(0.77, 0.83, 0, maxPan);
 
-  // Row 2 (Cards 3 & 4) slides in as space is revealed (0.75 -> 0.79)
-  const s8R2Op = lerp(0.75, 0.79);
-  const s8C3X = rng(0.75, 0.79, isMobile ? -50 : -150, 0);
-  const s8C4X = rng(0.75, 0.79, isMobile ? 50 : 150, 0);
-  const s8MobileTranslateX = isMobile ? rng(0.71, 0.79, 0, -267) : 0;
+  // Row 2 (Cards 3 & 4) slides in as space is revealed (0.79 -> 0.83)
+  const s8R2Op = lerp(0.79, 0.83);
+  const s8C3X = rng(0.79, 0.83, isMobile ? -50 : -150, 0);
+  const s8C4X = rng(0.79, 0.83, isMobile ? 50 : 150, 0);
+  const s8MobileTranslateX = isMobile ? rng(0.75, 0.83, 0, -267) : 0;
 
   function TypewriterScroll({ text, start, end, className }: { text: string, start: number, end: number, className?: string }) {
     const tokens = text.split(/(\n| )/);
@@ -296,16 +296,14 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s3_c1_h: "Base de silicio",
     s3_c1_p: "Módulos de potencia bidireccionales basados en SiC. Topologías de conmutación patentadas. 30 kW por módulo, escalable en paralelo.",
     s3_c2_h: "Arquitectura de control",
-    s3_c2_p: "Controlador SoC exclusivo. Conmutación en tiempo real controlada por DSP. Coordinación multimódulo y comunicación BMS.",
+    s3_c2_p: "Controlador SoC, conmutación en tiempo real, protocolos de comunicación",
     s3_c3_h: "Inteligencia de firmware",
     s3_c3_p: "Algoritmos de control patentados. Enrutamiento de energía V2X. Respuesta a la demanda de la red, ISO 15118, OCPP y gestión predictiva.",
 
     s4_t1: "Conversión de energía,\nrepensada a nivel\nde silicio",
-    s4_t2: "El núcleo de la plataforma está construido en torno al Carburo de Silicio — un semiconductor de banda prohibida ancha que opera a voltajes más altos, frecuencias de conmutación más altas y temperaturas de unión más altas que los dispositivos de silicio convencionales.",
-    s4_t3: "Cada módulo integra un rectificador activo bidireccional basado en MOSFET de SiC con Corrección Activa del Factor de Potencia. El resultado:",
-    s4_t4: "conversión limpia para la red, distorsión armónica mínima y cero desperdicio de energía reactiva",
-    s4_t5: "en la etapa de conversión.",
-
+    s4_t2: "El núcleo de la plataforma está construido en torno al Carburo de Silicio — un semiconductor de banda prohibida ancha que opera a voltajes más altos, frecuencias de conmutación más altas y temperaturas de unión más altas que los dispositivos de silicio convencionales. Esta elección de material no es casual. Es la base de todas las ventajas de rendimiento posteriores.",
+    s4_t3: "Cada módulo integra un rectificador activo basado en MOSFET de SiC en una configuración de puente activo trifásico, con Corrección Activa del Factor de Potencia que mantiene un factor de potencia cercano a la unidad. Diseñado para minimizar la energía reactiva y mejorar la calidad de energía del lado de la red. El resultado: conversión limpia para la red, distorsión armónica mínima y máxima utilización de la energía.",
+    s4_t4: "Los módulos se combinan en paralelo. Cada bloque modular de 30 kW escala la salida total del sistema de 30 kW a 360 kW dentro de una sola arquitectura de sistema. Aumentar la capacidad de potencia ya no implica reemplazos ni modificaciones mayores.",
     s5_t1: "La energía tiene una dirección.\nNosotros eliminamos la restricción.",
     s5_t2: "La bidireccionalidad no es una característica. Es la arquitectura.",
     s5_c1: "La bidireccionalidad es nativa de los dispositivos de SiC. El mismo firmware que gestiona la carga puede gestionar la descarga. No hay cambio de modo.",
@@ -319,6 +317,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
 
     s7_t1: "El firmware\nhace que la\nplataforma\nsea lo que es.",
     s7_t1_mobile: "El firmware hace que la\nplataforma sea lo que es.",
+    s7_sub: "Algoritmos exclusivos. Orquestación de energía en tiempo real. Aplicación definida por software.",
     s7_t2: "Las unidades de control, basadas en una arquitectura y un firmware exclusivos, forman la capa de inteligencia que da coherencia a la plataforma en todas las condiciones de operación, perfiles de carga y contextos de aplicación.",
     s7_t3: "El firmware patentado orquesta el control de potencia en tiempo real, la gestión dinámica de carga, la optimización predictiva de energía y la integración a la red sin la latencia del middleware.",
     s7_q: "“El hardware define el límite de lo posible. El firmware define lo que realmente sucede. MEIRIS posee ambos.”",
@@ -354,16 +353,14 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s3_c1_h: "Silicon Foundation",
     s3_c1_p: "SiC-based bidirectional power modules. Patented switching topologies. 30kW per module, scalable in parallel.",
     s3_c2_h: "Control Architecture",
-    s3_c2_p: "Proprietary SoC controller. DSP driven real-time switching. Multi module coordination and BMS communication.",
+    s3_c2_p: "System on Chip controller, real-time switching, communication protocols",
     s3_c3_h: "Firmware Intelligence",
     s3_c3_p: "Patented control algorithms. V2X energy routing. Grid demand response, ISO 15118, OCPP, and predictive management.",
 
     s4_t1: "Power Conversion,\nrethought at the\nSilicon Level",
-    s4_t2: "The platform's core is built around Silicon Carbide — a wide-bandgap semiconductor that operates at higher voltages, higher switching frequencies, and higher junction temperatures than conventional Silicon devices.",
-    s4_t3: "Each module integrates a bidirectional active rectifier built on SiC MOSFETs with Active Power Factor Correction. The result:",
-    s4_t4: "grid-clean conversion, minimal harmonic distortion, and zero reactive power waste",
-    s4_t5: "at the conversion stage.",
-
+    s4_t2: "The platform's core is built around Silicon Carbide — a wide-bandgap semiconductor that operates at higher voltages, higher switching frequencies, and higher junction temperatures than conventional Silicon devices. This material choice is not incidental. It is the foundation of every performance advantage that follows.",
+    s4_t3: "Each module integrates an active rectifier built on SiC MOSFETs in a three-phase active bridge configuration with Active Power Factor Correction that maintains a power factor approaching unity. Designed to minimize reactive power and improve grid-side power quality. The result: grid-clean conversion, minimal harmonic distortion and maximum energy utilization.",
+    s4_t4: "Modules combine in parallel. Each 30kW building block scales total system output from 30kW to 360kW within a single system architecture. Scaling up of power ratings no longer means replacement or major modifications.",
     s5_t1: "Power has a direction.\nWe removed the constraint.",
     s5_t2: "Bidirectionality is not a feature. It is the architecture.",
     s5_c1: "Bidirectionality is native to SiC devices. The same firmware that manages charging can manage discharge. There is no mode switch.",
@@ -377,6 +374,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
 
     s7_t1: "The firmware\nmakes the\nplatform\nwhat it is.",
     s7_t1_mobile: "The firmware makes the\nplatform what it is.",
+    s7_sub: "Proprietary algorithms. Real-time energy orchestration. Software-defined application.",
     s7_t2: "The controller units built on a proprietary architecture and firmware form the intelligence layer that makes the platform coherent across all operating conditions, load profiles, and application contexts",
     s7_t3: "Patented firmware orchestrates real-time power control, dynamic load management, predictive energy optimization, and grid integration without middleware latency.",
     s7_q: "“Hardware defines the boundary of what is possible. Firmware defines what actually happens. MEIRIS owns both.”",
@@ -396,7 +394,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s8_c4_p: "Power Conversion System (PCS)"
   };
 
-  const containerHeight = isTablet ? "3550vh" : "4050vh";
+  const containerHeight = isTablet ? "3750vh" : "4250vh";
 
   return (
     <>
@@ -595,19 +593,16 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
               <div className="px-6 py-4 md:py-24 md:px-16 lg:px-24 xl:px-32 flex flex-col justify-center" style={{ opacity: s4TextFadeOut }}>
                 <div className="w-full text-black">
                   <h2 className="text-[clamp(1.75rem,5vw,4.5rem)] font-bold leading-[1.05] tracking-tight">
-                    <TypewriterScroll text={t.s4_t1} start={0.26} end={0.272} />
+                    <TypewriterScroll text={t.s4_t1} start={0.26} end={0.275} />
                   </h2>
                   <p className="mt-2 md:mt-8 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
-                    <TypewriterScroll text={t.s4_t2} start={0.272} end={0.284} />
+                    <TypewriterScroll text={t.s4_t2} start={0.275} end={0.295} />
                   </p>
                   <p className="mt-2 md:mt-6 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
-                    <TypewriterScroll text={t.s4_t3} start={0.284} end={0.296} />
-                    {" "}
-                    <span className="font-bold text-[#00E573]">
-                      <TypewriterScroll text={t.s4_t4} start={0.296} end={0.308} />
-                    </span>
-                    {" "}
-                    <TypewriterScroll text={t.s4_t5} start={0.308} end={0.312} />
+                    <TypewriterScroll text={t.s4_t3} start={0.295} end={0.315} />
+                  </p>
+                  <p className="mt-2 md:mt-6 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
+                    <TypewriterScroll text={t.s4_t4} start={0.315} end={0.335} />
                   </p>
                 </div>
               </div>
@@ -706,20 +701,23 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", opacity: s7Op, willChange: "opacity" }}>
             <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-4 md:gap-16 px-6 md:px-8 md:grid-cols-[1fr_1.1fr]">
               <div className="flex flex-col">
-                <h2 className="text-[clamp(1.75rem,4vw,4rem)] font-bold leading-[1.05] tracking-tight text-white hidden md:block">
-                  <TypewriterScroll text={t.s7_t1} start={0.51} end={0.53} />
+                <h2 className="text-[clamp(1.85rem,4.5vw,4.25rem)] font-bold leading-[1.05] tracking-tight text-white hidden md:block">
+                  <TypewriterScroll text={t.s7_t1} start={0.53} end={0.55} />
                 </h2>
-                <h2 className="text-[clamp(1.75rem,4vw,4rem)] font-bold leading-[1.05] tracking-tight text-white md:hidden">
-                  <TypewriterScroll text={(t as any).s7_t1_mobile || t.s7_t1} start={0.51} end={0.53} />
+                <h2 className="text-[clamp(1.85rem,4.5vw,4.25rem)] font-bold leading-[1.05] tracking-tight text-white md:hidden">
+                  <TypewriterScroll text={(t as any).s7_t1_mobile || t.s7_t1} start={0.53} end={0.55} />
                 </h2>
-                <p className="mt-2 md:mt-12 max-w-sm text-[13px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/70">
-                  <TypewriterScroll text={t.s7_t2} start={0.53} end={0.55} />
+                <h3 className="mt-4 md:mt-5 text-[15px] md:text-[18px] lg:text-[20px] font-semibold text-[#00E573] max-w-xl leading-tight">
+                  <TypewriterScroll text={(t as any).s7_sub} start={0.55} end={0.57} />
+                </h3>
+                <p className="mt-4 md:mt-7 max-w-lg text-[13px] md:text-[15px] lg:text-[16px] leading-[1.5] md:leading-relaxed text-white/75">
+                  <TypewriterScroll text={t.s7_t2} start={0.57} end={0.59} />
                 </p>
-                <p className="mt-2 md:mt-6 max-w-sm text-[13px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/70">
-                  <TypewriterScroll text={t.s7_t3} start={0.55} end={0.57} />
+                <p className="mt-3 md:mt-5 max-w-lg text-[13px] md:text-[15px] lg:text-[16px] leading-[1.5] md:leading-relaxed text-white/75">
+                  <TypewriterScroll text={t.s7_t3} start={0.59} end={0.61} />
                 </p>
-                <div className="mt-3 md:mt-12 border-l-2 border-[#00E573] pl-3 md:pl-6" style={{ opacity: s7Quote }}>
-                  <p className="max-w-md text-[12px] md:text-sm italic leading-[1.4] md:leading-relaxed text-white/80">
+                <div className="mt-6 md:mt-10 border-l-2 border-[#00E573] pl-3 md:pl-6" style={{ opacity: s7Quote }}>
+                  <p className="max-w-lg text-[12px] md:text-[14px] lg:text-[15px] italic leading-[1.5] md:leading-relaxed text-white/85">
                     {t.s7_q}
                   </p>
                 </div>

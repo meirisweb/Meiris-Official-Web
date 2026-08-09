@@ -56,7 +56,6 @@ export default function Hero({ data }: { data: any }) {
           preload="metadata"
           disablePictureInPicture
           disableRemotePlayback
-          poster="/images/Depot.png"
           aria-hidden="true"
         >
           <source src={data.videoUrl} type="video/mp4" />
