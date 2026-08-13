@@ -166,7 +166,7 @@ export async function sendEmail(formData: FormData) {
     const { data: resData, error } = await resend.emails.send({
       from: "Meiris <onboarding@resend.dev>", // update to your verified domain later
       to: ["meirisweb@gmail.com"], // Must be your Resend account email for testing
-      reply_to: email,
+      replyTo: email,
       subject: subject,
       react: ContactEmailTemplate({ name, email, message }),
       attachments: attachments.length > 0 ? attachments : undefined,
