@@ -30,7 +30,7 @@ const markersDataEn = [
     id: 3,
     title: "Over-heating & de-rating",
     desc: "Back-to-back charging sessions in extreme heat push chargers past their thermal limits. Once they de-rate, charging slows down – exactly when the depot needs every vehicle topped up before its next shift.",
-    top: "52%",
+    top: "48%",
     left: "40%"
   },
   {
@@ -91,7 +91,7 @@ const markersDataEs = [
     id: 3,
     title: "Sobrecalentamiento y\nreducción de potencia",
     desc: "Las sesiones de carga consecutivas en condiciones de calor extremo llevan a los cargadores más allá de sus límites térmicos. Una vez que reducen su potencia, la carga se ralentiza, justo cuando el patio de carga necesita que cada vehículo esté completamente cargado antes de su siguiente turno.",
-    top: "52%",
+    top: "48%",
     left: "40%"
   },
   {

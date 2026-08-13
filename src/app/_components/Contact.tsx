@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { toast } from 'sonner';
-import { validateContactForm } from "@/actions/sendEmail";
+import { sendEmail } from "@/actions/sendEmail";
 import { trackContactSubmit } from '@/lib/analytics';
 import styles from './Contact.module.css';
 
@@ -43,54 +43,29 @@ export default function Contact({ data }: { data: any }) {
     const botField = document.querySelector<HTMLInputElement>('#contact-form-bot');
     if (botField?.value) formData.append("bot-field", botField.value);
 
-    // 1. Validate on server (MX DNS validation via Google DNS over HTTPS, spam check, disposable email check)
-    const valResult = await validateContactForm(formData);
-    if (!valResult.success) {
-      setIsSubmitting(false);
-      const errorMsg = valResult.error || "Please check the form fields and try again.";
-      setServerError(errorMsg);
-      toast.error(errorMsg);
-      if (valResult.fieldErrors) {
-        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
-          form.setError(field as any, { type: "server", message: msg as string });
-        });
-      }
-      return;
-    }
-
-    // 2. Submit directly from client browser to Web3Forms to bypass Free Plan server blocks
+    // Send email (and validate) on server via Resend
+    formData.append("subject", `New Inquiry (Home Page Contact) from ${values.name}`);
     try {
-      const accessKey =
-        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
-        "8104f760-2d45-4607-a202-8d3d5992582b";
-
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          subject: `New Inquiry (Home Page Contact) from ${values.name}`,
-          replyto: values.email,
-          ...values,
-        }),
-      });
-
-      const result = await response.json();
+      const submitResult = await sendEmail(formData);
       setIsSubmitting(false);
 
-      if (response.ok && result.success) {
-        trackContactSubmit({ source: "home_page_contact", formType: "general" });
-        toast.success("Thank you! Your message has been sent successfully.");
-        form.reset();
-        setServerError(null);
-      } else {
-        const errorMsg = result.message || "We could not send your message at this time. Please try again later.";
+      if (!submitResult.success) {
+        const errorMsg = submitResult.error || "Please check the form fields and try again.";
         setServerError(errorMsg);
         toast.error(errorMsg);
+        if (submitResult.fieldErrors) {
+          Object.entries(submitResult.fieldErrors).forEach(([field, msg]) => {
+            form.setError(field as any, { type: "server", message: msg as string });
+          });
+        }
+        return;
       }
+
+      // Success
+      trackContactSubmit({ source: "home_page_contact", formType: "general" });
+      toast.success("Thank you! Your message has been sent successfully.");
+      form.reset();
+      setServerError(null);
     } catch (err: any) {
       setIsSubmitting(false);
       const errorMsg = "We could not deliver your message automatically at this moment. Please email us directly at reachus@siriem.com.";

@@ -58,16 +58,6 @@ export const homePageType = defineType({
           type: 'text',
         }),
         defineField({
-          name: 'btnExplore',
-          title: 'Explore Button Text',
-          type: 'string',
-        }),
-        defineField({
-          name: 'btnSolutions',
-          title: 'Solutions Button Text',
-          type: 'string',
-        }),
-        defineField({
           name: 'videoUrl',
           title: 'Background Video (URL)',
           type: 'string',

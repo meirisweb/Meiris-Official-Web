@@ -243,12 +243,12 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
         )}
 
         {/* Left Content */}
-        <div className="w-full lg:w-1/2 px-6 md:px-12 lg:pl-20 lg:pr-12 py-12 md:py-16 relative z-10 flex flex-col flex-1 justify-center">
+        <div className="w-full lg:w-[45%] px-6 md:px-12 lg:pl-20 lg:pr-8 py-12 md:py-16 relative z-10 flex flex-col justify-center">
           <ScrollReveal>
-            <h1 className="text-[clamp(2.5rem,4.5vw,4.5rem)] font-bold text-white leading-[1.05] tracking-tight mb-6 max-w-xl">
+            <h1 className="text-[clamp(2rem,min(5vw,6vh),4.5rem)] 2xl:text-[clamp(2.5rem,min(5vw,6vh),5rem)] font-bold text-white leading-[1.05] tracking-tight mb-4 md:mb-6 max-w-xl">
               {hero?.heroTitle}
             </h1>
-            <p className="text-[15px] md:text-[16px] text-white/80 max-w-xl mb-10 leading-relaxed font-[family-name:var(--font-secondary)]">
+            <p className="text-[13px] md:text-[15px] xl:text-[16px] text-white/80 max-w-sm md:max-w-xl mb-8 md:mb-10 leading-relaxed font-[family-name:var(--font-secondary)]">
               {hero?.heroSubtitle}
             </p>
             <SolutionHeroButtons
@@ -409,7 +409,7 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
         </div>
       </section>
 
-      <PersistentContactPrompt segmentName={hero?.heroTitle || urlSlug} />
+      <PersistentContactPrompt segmentName={content.title || urlSlug} />
     </div>
   );
 }

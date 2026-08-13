@@ -73,7 +73,7 @@ export function IntlPhoneInput({
 }: IntlPhoneInputProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
-  const [selectedCode, setSelectedCode] = useState<string>("US");
+  const [selectedCode, setSelectedCode] = useState<string>("IN");
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const selectedCountry =

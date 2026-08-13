@@ -80,7 +80,7 @@ export default async function TeamPage({ params: { locale } }: { params: { local
               <div key={member._id} className="grid grid-cols-1 md:grid-cols-[1fr_1fr] gap-12 md:gap-24 items-center">
                 
                 {/* Image */}
-                <div className={`w-full aspect-[4/5] bg-[#e5e5e5] shadow-lg relative overflow-hidden ${isEven ? 'order-1' : 'order-1 md:order-2'}`}>
+                <div className={`w-[85%] max-w-[320px] md:w-[85%] md:max-w-[400px] aspect-[4/5] bg-[#e5e5e5] shadow-lg relative overflow-hidden ${isEven ? 'order-1' : 'order-1 md:order-2'}`}>
                   {member.image ? (
                     <Image src={urlFor(member.image).width(800).height(1000).url()} alt={member.name} fill className="absolute inset-0 w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
                   ) : (

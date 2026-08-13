@@ -13,6 +13,7 @@ export default function Navbar({ data }: { data?: any }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [optimisticLocale, setOptimisticLocale] = useState<string | null>(null);
+  const [forceClose, setForceClose] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations('Navbar');
@@ -61,7 +62,17 @@ export default function Navbar({ data }: { data?: any }) {
     setIsMenuOpen(false);
     setActiveDropdown(null);
     setOptimisticLocale(null); // Reset optimistic state on navigation complete
+
+    setForceClose(true);
   }, [pathname]);
+
+  const isActive = (rawPath: string) => {
+    const resolvedPath = localePath(rawPath);
+    if (resolvedPath === `/${currentLocale}` || resolvedPath === `/${currentLocale}/`) {
+      return pathname === resolvedPath || pathname === `${resolvedPath}/`;
+    }
+    return pathname === resolvedPath || (pathname && pathname.startsWith(resolvedPath + '/'));
+  };
 
   const toggleDropdown = (name: string) => {
     setActiveDropdown(activeDropdown === name ? null : name);
@@ -113,9 +124,10 @@ export default function Navbar({ data }: { data?: any }) {
           {navLinks.map((link: any, index: number) => {
             const hasDropdown = link.dropdownItems && link.dropdownItems.length > 0;
             if (hasDropdown) {
+              const isDropdownActive = link.dropdownItems.some((item: any) => isActive(item.path));
               return (
-                <li key={index} className={`${styles.dropdown} ${activeDropdown === link.label ? styles.dropdownActive : ''}`} onClick={() => toggleDropdown(link.label)}>
-                  <span className={styles.dropdownTrigger}>
+                <li key={index} className={`${styles.dropdown} ${activeDropdown === link.label ? styles.dropdownActive : ''} ${forceClose ? styles.forceClose : ''}`} onClick={() => toggleDropdown(link.label)} onPointerLeave={() => setForceClose(false)}>
+                  <span className={`${styles.dropdownTrigger} ${isDropdownActive ? styles.activeLink : ''}`}>
                     {link.label}
                     <svg className={styles.chevronIcon} viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1 1l4 4 4-4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round"/>
@@ -123,19 +135,19 @@ export default function Navbar({ data }: { data?: any }) {
                   </span>
                   <div className={styles.dropdownPanel}>
                     {link.dropdownItems.map((item: any, i: number) => (
-                      <Link key={i} href={localePath(item.path)} className={styles.dropdownItem}>{item.label}</Link>
+                      <Link key={i} href={localePath(item.path)} prefetch={true} className={`${styles.dropdownItem} ${isActive(item.path) ? styles.activeDropdownItem : ''}`}>{item.label}</Link>
                     ))}
                   </div>
                 </li>
               );
             }
             return (
-              <li key={index}><Link href={localePath(link.path)}>{link.label}</Link></li>
+              <li key={index}><Link href={localePath(link.path)} prefetch={true} className={isActive(link.path) ? styles.activeLink : ''}>{link.label}</Link></li>
             );
           })}
           
           <li className={styles.mobileCta}>
-            <Link href={localePath('/contact')} className={styles.contactBtn}>
+            <Link href={localePath('/contact')} prefetch={true} className={styles.contactBtn}>
               {ctaBtn}
             </Link>
           </li>
@@ -165,7 +177,8 @@ export default function Navbar({ data }: { data?: any }) {
           </div>
           <Link 
             href={localePath('/contact')} 
-            className={`${styles.contactBtnWrapper} ${styles.contactBtn}`}
+            prefetch={true}
+            className={`${styles.contactBtnWrapper} ${styles.contactBtn} ${isActive('/contact') ? styles.activeContactBtn : ''}`}
             onClick={() => trackCtaClick({ location: 'navbar', label: ctaBtn, targetUrl: '/contact' })}
           >
             {ctaBtn}

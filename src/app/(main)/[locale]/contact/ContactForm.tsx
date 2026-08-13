@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
-import { sendEmail, validateContactForm } from "@/actions/sendEmail";
+import { sendEmail } from "@/actions/sendEmail";
 import { trackContactSubmit } from "@/lib/analytics";
 import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
 
@@ -102,7 +102,7 @@ export default function ContactForm({ data }: { data?: FormProps }) {
       name: "",
       company: "",
       email: "",
-      countryCode: "+1",
+      countryCode: "+91",
       phone: "",
       message: "",
     },
@@ -121,61 +121,39 @@ export default function ContactForm({ data }: { data?: FormProps }) {
     const botField = document.querySelector<HTMLInputElement>('#contact-form-page-bot');
     if (botField?.value) formData.append("bot-field", botField.value);
 
-    // 1. Run server-side spam, MX DNS (via Google DNS over HTTPS), and phone number validation
-    const valResult = await validateContactForm(formData);
-    if (!valResult.success) {
-      setIsSubmitting(false);
-      const errorMsg = valResult.error || "Please check the form fields and try again.";
-      setServerError(errorMsg);
-      toast.error(errorMsg);
-      if (valResult.fieldErrors) {
-        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
-          form.setError(field as any, { type: "server", message: msg as string });
-        });
-      }
-      return;
+    // 1. Map fields and format the message body for the email template
+    let formattedPhone = String(values.phone || "").trim();
+    if (values.countryCode && !formattedPhone.startsWith("+")) {
+      formattedPhone = `${values.countryCode} ${formattedPhone}`.trim();
     }
 
-    // 2. Submit to Web3Forms directly from the browser (Client-Side) to comply with Web3Forms Free Plan
+    const messageBody = `Inquiry Type: ${inquiryType}\nCompany: ${values.company || "Not provided"}\nPhone: ${formattedPhone}\n\nMessage:\n${values.message}`;
+    
+    formData.set("message", messageBody); // Overwrite the raw message with the formatted one
+    formData.append("subject", `New Inquiry (${inquiryType}) from ${values.name || "Visitor"}`);
+
+    // 2. Send email via Resend (validates on server internally)
     try {
-      const accessKey =
-        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
-        "8104f760-2d45-4607-a202-8d3d5992582b";
-
-      let formattedPhone = String(values.phone || "").trim();
-      if (values.countryCode && !formattedPhone.startsWith("+")) {
-        formattedPhone = `${values.countryCode} ${formattedPhone}`.trim();
-      }
-
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          subject: `New Inquiry (${inquiryType}) from ${values.name || "Visitor"}`,
-          replyto: values.email,
-          ...values,
-          phone: formattedPhone,
-          inquiryType: inquiryType,
-        }),
-      });
-
-      const result = await response.json();
+      const submitResult = await sendEmail(formData);
       setIsSubmitting(false);
 
-      if (response.ok && result.success) {
-        trackContactSubmit({ source: "contact_page", formType: inquiryType });
-        toast.success("Thank you! Your message has been sent successfully.");
-        form.reset();
-        setServerError(null);
-      } else {
-        const errorMsg = result.message || "We could not send your message at this time. Please try again later.";
+      if (!submitResult.success) {
+        const errorMsg = submitResult.error || "Please check the form fields and try again.";
         setServerError(errorMsg);
         toast.error(errorMsg);
+        if (submitResult.fieldErrors) {
+          Object.entries(submitResult.fieldErrors).forEach(([field, msg]) => {
+            form.setError(field as any, { type: "server", message: msg as string });
+          });
+        }
+        return;
       }
+
+      // Success
+      trackContactSubmit({ source: "contact_page", formType: inquiryType });
+      toast.success("Thank you! Your message has been sent successfully.");
+      form.reset();
+      setServerError(null);
     } catch (err: any) {
       setIsSubmitting(false);
       const errorMsg = "We could not deliver your message automatically at this moment. Please email us directly at reachus@siriem.com.";

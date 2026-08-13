@@ -16,7 +16,7 @@ const markersDataEn = [
     id: 2,
     title: "Product quality",
     desc: "Chargers run outdoors, 24x7, through heat, dust and monsoon. Frequent component failures translate directly into downtime, repair costs and bad reviews from drivers.",
-    top: "32%",
+    top: "30%",
     left: "60%"
   },
   {
@@ -56,7 +56,7 @@ const markersDataEs = [
     id: 2,
     title: "Calidad del producto",
     desc: "Los cargadores funcionan al aire libre, 24/7, soportando calor, polvo y lluvias torrenciales. Las fallas frecuentes de los componentes se traducen directamente en tiempo de inactividad, costos de reparación y malas reseñas por parte de los conductores.",
-    top: "32%",
+    top: "30%",
     left: "60%"
   },
   {

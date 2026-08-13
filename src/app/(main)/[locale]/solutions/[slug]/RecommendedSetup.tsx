@@ -76,67 +76,44 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
     const botField = document.querySelector<HTMLInputElement>('#setup-form-bot');
     if (botField?.value) formData.append("bot-field", botField.value);
 
-    // 1. Run server-side spam & MX DNS validation (over Google DNS HTTPS)
-    const valResult = await validateContactForm(formData);
-    if (!valResult.success) {
-      setIsSubmitting(false);
-      const errorMsg = valResult.error || "Please check the form fields and try again.";
-      setServerError(errorMsg);
-      toast.error(errorMsg);
-      if (valResult.fieldErrors) {
-        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
-          if (field === "email" || field === "orgContact") {
-            form.setError("orgContact" as any, { type: "server", message: msg as string });
-          } else if (field in form.getValues()) {
-            form.setError(field as any, { type: "server", message: msg as string });
-          }
-        });
-      }
-      return;
-    }
+    // Add required fields for sendEmail action
+    formData.append("name", "Solutions Inquiry");
+    formData.append("email", values.orgContact);
+    const messageBody = `Application Domain: ${values.appDomain}\nPower Rating: ${values.powerRating}\nConstraints: ${values.constraints || "None specified"}\nTimeline: ${values.timeline}`;
+    formData.append("message", messageBody);
+    formData.append("subject", `New Inquiry (${values.appDomain || "Solutions Page"}) from ${values.orgContact}`);
 
-    // 2. Submit to Web3Forms directly from the browser (Client-Side) to avoid Free Plan 403 blocks
+    // Send email via Resend (validates on server internally)
     try {
-      const accessKey =
-        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
-        "8104f760-2d45-4607-a202-8d3d5992582b";
-
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          subject: `New Inquiry (${values.appDomain || "Solutions Page"}) from ${values.orgContact}`,
-          replyto: values.orgContact,
-          email: values.orgContact,
-          "Application Domain": values.appDomain,
-          "Power Rating": values.powerRating,
-          "Constraints": values.constraints || "None specified",
-          "Timeline": values.timeline,
-        }),
-      });
-
-      const result = await response.json();
+      const submitResult = await sendEmail(formData);
       setIsSubmitting(false);
 
-      if (response.ok && result.success) {
-        toast.success("Thank you! Our expert will be in touch shortly.");
-        form.reset({
-          appDomain: "",
-          powerRating: "",
-          constraints: "",
-          orgContact: "",
-          timeline: "",
-        });
-        setServerError(null);
-      } else {
-        const errorMsg = result.message || "We could not submit your request at this time. Please try again later.";
+      if (!submitResult.success) {
+        const errorMsg = submitResult.error || "Please check the form fields and try again.";
         setServerError(errorMsg);
         toast.error(errorMsg);
+        if (submitResult.fieldErrors) {
+          Object.entries(submitResult.fieldErrors).forEach(([field, msg]) => {
+            if (field === "email" || field === "orgContact") {
+              form.setError("orgContact" as any, { type: "server", message: msg as string });
+            } else if (field in form.getValues()) {
+              form.setError(field as any, { type: "server", message: msg as string });
+            }
+          });
+        }
+        return;
       }
+
+      // Success
+      toast.success("Thank you! Our expert will be in touch shortly.");
+      form.reset({
+        appDomain: "",
+        powerRating: "",
+        constraints: "",
+        orgContact: "",
+        timeline: "",
+      });
+      setServerError(null);
     } catch (err: any) {
       setIsSubmitting(false);
       const errorMsg = "We could not deliver your request automatically at this moment. Please email us directly at reachus@siriem.com.";

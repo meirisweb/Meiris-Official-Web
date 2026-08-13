@@ -2,6 +2,10 @@
 
 import { headers } from "next/headers";
 import { isValidPhoneNumber } from "libphonenumber-js";
+import { Resend } from "resend";
+import { ContactEmailTemplate } from "@/components/emails/ContactEmailTemplate";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // Simple In-Memory Rate Limiter (Note: In a multi-instance edge deployment like Vercel, 
 // this is per-instance, but it is sufficient for basic anti-spam without Redis).
@@ -140,5 +144,42 @@ export async function sendEmail(formData: FormData) {
   if (!validation.success) {
     return validation;
   }
-  return { success: true };
+  
+  const data = Object.fromEntries(formData.entries());
+  const name = String(data.name || "Unknown");
+  const email = String(data.email || "");
+  const message = String(data.message || "");
+  const subject = data.subject ? String(data.subject) : `New Inquiry from ${name}`;
+
+  let attachments = [];
+  const attachment = formData.get("attachment") as File | null;
+  if (attachment && attachment.size > 0) {
+    const arrayBuffer = await attachment.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    attachments.push({
+      filename: attachment.name,
+      content: buffer,
+    });
+  }
+
+  try {
+    const { data: resData, error } = await resend.emails.send({
+      from: "Meiris <onboarding@resend.dev>", // update to your verified domain later
+      to: ["meirisweb@gmail.com"], // Must be your Resend account email for testing
+      reply_to: email,
+      subject: subject,
+      react: ContactEmailTemplate({ name, email, message }),
+      attachments: attachments.length > 0 ? attachments : undefined,
+    });
+
+    if (error) {
+      console.error("Resend API Error:", error);
+      return { success: false, error: "Failed to send email via Resend." };
+    }
+
+    return { success: true };
+  } catch (err) {
+    console.error("Error sending email:", err);
+    return { success: false, error: "An unexpected error occurred while sending the email." };
+  }
 }

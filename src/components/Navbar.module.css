@@ -85,6 +85,11 @@
   color: #ffffff;
 }
 
+.activeLink {
+  color: #00D384 !important;
+  font-weight: 600 !important;
+}
+
 /* ─── Dropdown trigger ──────────────────────────────────────────────────────── */
 .dropdownTrigger {
   font-family: var(--font-primary);
@@ -102,7 +107,7 @@
 }
 
 @media (min-width: 1025px) {
-  .dropdown:hover .dropdownTrigger {
+  .dropdown:not(.forceClose):hover .dropdownTrigger {
     color: #ffffff;
   }
 }
@@ -117,7 +122,7 @@
 }
 
 @media (min-width: 1025px) {
-  .dropdown:hover .chevronIcon {
+  .dropdown:not(.forceClose):hover .chevronIcon {
     transform: rotate(180deg);
     color: var(--primary-color);
   }
@@ -160,7 +165,7 @@
 }
 
 @media (min-width: 1025px) {
-  .dropdown:hover .dropdownPanel {
+  .dropdown:not(.forceClose):hover .dropdownPanel {
     visibility: visible;
     opacity: 1;
     transform: translateX(-50%) translateY(0);
@@ -189,6 +194,14 @@
   color: #ffffff;
   padding-left: 28px;
   /* subtle indent on hover */
+}
+
+.activeDropdownItem {
+  color: #00D384 !important;
+  font-weight: 600 !important;
+  background-color: rgba(0, 211, 132, 0.08);
+  border-left: 2px solid #00D384;
+  padding-left: 26px !important;
 }
 
 /* ─── CTA button ─────────────────────────────────────────────────────────────── */
@@ -245,6 +258,13 @@
   color: #000000 !important;
   border-color: var(--primary-color);
   box-shadow: 0 0 18px rgba(0, 211, 132, 0.35);
+}
+
+.activeContactBtn {
+  background-color: var(--primary-color) !important;
+  color: #000000 !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 18px rgba(0, 211, 132, 0.25);
 }
 
 /* ─── Scroll progress bar ────────────────────────────────────────────────────── */

@@ -13,51 +13,36 @@ export default function AutoScrollButton() {
   const pathname = usePathname();
 
   // The speed of the auto-scroll in pixels per second.
-  // 17 pixels per frame at 60fps = 1020 pixels per second.
-  const SCROLL_SPEED_PER_SECOND = 500;
+  // Reduced to 300 for a slower, more cinematic scroll experience.
+  const SCROLL_SPEED_PER_SECOND = 300;
 
   // Track if we should show the button based on scroll position
   const [showButton, setShowButton] = useState(true);
 
   useEffect(() => {
-    // If not auto-scrolling, clear any active RAF
     if (!isAutoScrolling) {
-      if (rafRef.current !== null) {
-        cancelAnimationFrame(rafRef.current);
-        rafRef.current = null;
+      if (lenis) {
+        // Stop the auto-scroll immediately
+        lenis.scrollTo(lenis.scroll, { immediate: true });
       }
       return;
     }
 
-    let lastTime: number | null = null;
-
-    // The loop that performs the scrolling
-    const scrollStep = (currentTime: number) => {
-      if (!lastTime) lastTime = currentTime;
-      const deltaTime = currentTime - lastTime;
-      lastTime = currentTime;
-
-      // Cap delta time to 100ms so it doesn't jump wildly if they tab away and come back
-      const safeDelta = Math.min(deltaTime, 100);
-      const distanceToScroll = (SCROLL_SPEED_PER_SECOND * safeDelta) / 1000;
-
-      if (lenis) {
-        // If we reach the bottom, stop
-        if (lenis.scroll >= lenis.limit) {
-          setIsAutoScrolling(false);
-          return;
-        }
-        // Scroll down immediately without animation easing
-        lenis.scrollTo(lenis.scroll + distanceToScroll, { immediate: true });
-      } else {
-        // Fallback if Lenis isn't ready
-        window.scrollBy(0, distanceToScroll);
+    if (lenis) {
+      // Calculate remaining distance and required duration for constant speed
+      const remainingDistance = lenis.limit - lenis.scroll;
+      if (remainingDistance <= 0) {
+        setIsAutoScrolling(false);
+        return;
       }
-      rafRef.current = requestAnimationFrame(scrollStep);
-    };
-
-    // Start loop
-    rafRef.current = requestAnimationFrame(scrollStep);
+      const durationSeconds = remainingDistance / SCROLL_SPEED_PER_SECOND;
+      
+      // Let Lenis handle the perfectly smooth animation internally
+      lenis.scrollTo(lenis.limit, {
+        duration: durationSeconds,
+        easing: (t: number) => t, // Linear easing for constant speed
+      });
+    }
 
     // Event listeners to detect manual interaction and abort auto-scroll
     const handleInterrupt = (e: Event) => {
@@ -82,8 +67,8 @@ export default function AutoScrollButton() {
     window.addEventListener("mousedown", handleDocumentInterrupt, { passive: true });
 
     return () => {
-      if (rafRef.current !== null) {
-        cancelAnimationFrame(rafRef.current);
+      if (lenis && isAutoScrolling) {
+        lenis.scrollTo(lenis.scroll, { immediate: true });
       }
       window.removeEventListener("wheel", handleDocumentInterrupt);
       window.removeEventListener("touchstart", handleDocumentInterrupt);

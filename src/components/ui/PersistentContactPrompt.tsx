@@ -111,60 +111,40 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
       formData.append("bot-field", botField.value);
     }
 
-    // 1. Server-side spam & MX DNS check
-    const valResult = await validateContactForm(formData);
-    if (!valResult.success) {
-      setIsSubmitting(false);
-      const errorMsg = valResult.error || "Please check the form fields and try again.";
-      setServerError(errorMsg);
-      toast.error(errorMsg);
-      if (valResult.fieldErrors) {
-        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
-          if (field === "contactInfo") {
-            form.setError("contactInfo" as any, { type: "server", message: msg as string });
-          }
-        });
-      }
-      return;
-    }
+    // Map fields for sendEmail to use
+    formData.append("email", values.contactInfo);
+    
+    const messageBody = `Segment: ${values.segment}\nPreferred Time: ${values.preferredTime || "Anytime"}`;
+    formData.append("message", messageBody);
+    formData.append("subject", `New Inquiry (${segmentName}) from ${values.name || "Visitor"}`);
 
-    // 2. Submit to Web3Forms client-side
+    // Send email via Resend
     try {
-      const accessKey =
-        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
-        "8104f760-2d45-4607-a202-8d3d5992582b";
-
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-        },
-        body: JSON.stringify({
-          access_key: accessKey,
-          subject: `New Inquiry (${segmentName}) from ${values.name || "Visitor"}`,
-          replyto: values.contactInfo,
-          name: values.name,
-          email: values.contactInfo,
-          segment: values.segment,
-          preferredTime: values.preferredTime || "Anytime",
-        }),
-      });
-
-      const result = await response.json();
+      const submitResult = await sendEmail(formData);
       setIsSubmitting(false);
 
-      if (response.ok && result.success) {
-        trackContactSubmit({ source: "persistent_prompt", formType: segmentName });
-        toast.success("Thank you! Our expert will be in touch shortly.");
-        setIsOpen(false);
-        setServerError(null);
-        form.reset({ ...form.getValues(), name: "", contactInfo: "", preferredTime: "" });
-      } else {
-        const errorMsg = result.message || "We could not submit your inquiry at this time. Please try again later.";
+      if (!submitResult.success) {
+        const errorMsg = submitResult.error || "Please check the form fields and try again.";
         setServerError(errorMsg);
         toast.error(errorMsg);
+        if (submitResult.fieldErrors) {
+          Object.entries(submitResult.fieldErrors).forEach(([field, msg]) => {
+            if (field === "contactInfo") {
+              form.setError("contactInfo" as any, { type: "server", message: msg as string });
+            } else if (field in form.getValues()) {
+              form.setError(field as any, { type: "server", message: msg as string });
+            }
+          });
+        }
+        return;
       }
+
+      // Success
+      trackContactSubmit({ source: "persistent_prompt", formType: segmentName });
+      toast.success("Thank you! Our expert will be in touch shortly.");
+      setIsOpen(false);
+      setServerError(null);
+      form.reset({ ...form.getValues(), name: "", contactInfo: "", preferredTime: "" });
     } catch (err: any) {
       setIsSubmitting(false);
       const errorMsg = "We could not deliver your message automatically at this moment. Please email us directly at reachus@siriem.com.";
@@ -186,11 +166,11 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
 
       {/* Expandable Form Modal */}
       <div 
-        className={`absolute bottom-[72px] right-0 bg-white text-black rounded-[2rem] shadow-[0_12px_40px_rgb(0,0,0,0.15)] border border-gray-100 p-6 md:p-8 w-[calc(100vw-3rem)] max-w-[360px] sm:max-w-[400px] transition-all duration-500 origin-bottom-right
+        className={`absolute bottom-[72px] right-0 bg-white text-black rounded-[1.5rem] md:rounded-[2rem] shadow-[0_12px_40px_rgb(0,0,0,0.15)] border border-gray-100 p-5 md:p-8 w-[calc(100vw-3rem)] max-w-[360px] sm:max-w-[400px] max-h-[calc(100vh-100px)] overflow-y-auto transition-all duration-500 origin-bottom-right
           ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4 pointer-events-none'}`}
       >
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-[18px] md:text-[20px] font-bold">Contact an expert</h3>
+        <div className="flex justify-between items-center mb-4 md:mb-6">
+          <h3 className="text-[17px] md:text-[20px] font-bold">Contact our expert</h3>
           <button 
             onClick={() => setIsOpen(false)}
             className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
@@ -200,7 +180,7 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 md:space-y-4">
             <input type="text" name="bot-field" className="hidden" tabIndex={-1} autoComplete="off" />
             <FormField
               control={form.control}
@@ -208,7 +188,7 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <input {...field} type="text" placeholder="Full Name" className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-5 py-3.5 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" />
+                    <input {...field} type="text" placeholder="Full Name" className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-4 py-2.5 md:px-5 md:py-3.5 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" />
                   </FormControl>
                   <FormMessage className="text-[11px] text-red-500" />
                 </FormItem>
@@ -221,7 +201,7 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <input {...field} type="email" placeholder="Email address" className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-5 py-3.5 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" />
+                    <input {...field} type="email" placeholder="Email address" className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-4 py-2.5 md:px-5 md:py-3.5 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" />
                   </FormControl>
                   <FormMessage className="text-[11px] text-red-500" />
                 </FormItem>
@@ -234,7 +214,7 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <input {...field} type="text" placeholder="Segment" className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-5 py-3.5 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" />
+                    <input {...field} type="text" placeholder="Segment" className="w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-4 py-2.5 md:px-5 md:py-3.5 text-[13px] outline-none focus:ring-1 focus:ring-[#00E573] aria-[invalid=true]:ring-1 aria-[invalid=true]:ring-red-500 transition-all" />
                   </FormControl>
                   <FormMessage className="text-[11px] text-red-500" />
                 </FormItem>

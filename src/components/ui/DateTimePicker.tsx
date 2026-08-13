@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import { Calendar as CalendarIcon, Clock, ChevronLeft, ChevronRight, X, Check } from "lucide-react";
 
 interface DateTimePickerProps {
@@ -30,6 +31,11 @@ export default function DateTimePicker({
 }: DateTimePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Internal selection state
   const today = new Date();
@@ -181,7 +187,7 @@ export default function DateTimePicker({
       {/* Trigger Button */}
       <div
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-4 py-3.5 text-[13px] border border-black/10 focus-within:border-[#00E573] transition-all cursor-pointer flex items-center justify-between gap-2 select-none hover:bg-[#f2f2f2] ${className}`}
+        className={`w-full bg-[#f9f9f9] text-gray-900 rounded-xl px-4 py-2.5 md:py-3.5 text-[13px] border border-black/10 focus-within:border-[#00E573] transition-all cursor-pointer flex items-center justify-between gap-2 select-none hover:bg-[#f2f2f2] ${className}`}
       >
         <div className="flex items-center gap-2.5 overflow-hidden">
           <CalendarIcon className="w-4 h-4 text-[#00E573] flex-shrink-0" />
@@ -203,8 +209,14 @@ export default function DateTimePicker({
       </div>
 
       {/* Popover Card */}
-      {isOpen && (
-        <div className="absolute bottom-full mb-2 right-0 sm:left-0 z-[200] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 w-[290px] sm:w-[320px] text-gray-900 animate-in fade-in zoom-in-95 duration-200">
+      {isOpen && mounted && createPortal(
+        <>
+          {/* Background Overlay */}
+          <div 
+            className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-[2px]" 
+            onClick={(e) => { e.stopPropagation(); setIsOpen(false); }} 
+          />
+          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 w-[290px] sm:w-[320px] text-gray-900 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
           {/* Calendar Header */}
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-bold tracking-tight text-gray-900">
@@ -361,6 +373,8 @@ export default function DateTimePicker({
             <span>Confirm Date & Time</span>
           </button>
         </div>
+        </>,
+        document.body
       )}
     </div>
   );

@@ -247,7 +247,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
   const s8C2X = rng(0.72, 0.74, isMobile ? 50 : 150, 0);
 
   // Pan Upwards (0.77 -> 0.83)
-  const maxPan = isMobile ? 0 : -45; // No panning on mobile, just center it
+  const maxPan = 0; // Removed -45 pan to prevent massive empty space before footer
   const s8PanY = rng(0.77, 0.83, 0, maxPan);
 
   // Row 2 (Cards 3 & 4) slides in as space is revealed (0.79 -> 0.83)
@@ -280,19 +280,19 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
 
   const t = locale === 'es-419' ? {
     s1_title: "Conversión\nInteligente\nde Energía.",
-    s1_subtitle: "Desde la entrada de red hasta la salida de precisión: una sola arquitectura integrada verticalmente.",
-    s1_desc: "La Plataforma MEIRIS es una plataforma de conversión de energía de integración vertical, desarrollada con dispositivos de Carburo de Silicio (SiC) y firmware exclusivo, diseñada para convertir, gestionar y orquestar la energía con precisión a un 96 % de eficiencia del sistema.",
+    s1_subtitle: "Desde la entrada de red hasta la salida de precisión, una sola arquitectura integrada verticalmente.",
+    s1_desc: "La Plataforma MEIRIS es una plataforma de conversión de energía de integración vertical, desarrollada con dispositivos de Carburo de Silicio (SiC) y firmware exclusivo, diseñada para convertir, gestionar y orquestar la energía con precisión.",
 
     s2_t1: "La energía está en todas partes.\nLa inteligencia no.",
     s2_t2: "La transición energética no es un problema de hardware.\nEs un problema de conversión.",
-    s2_t3: "Cada megavatio de generación renovable, cada vehículo eléctrico, cada sistema de baterías requiere conversión. Cada aspecto de la generación y el consumo de electricidad implica un elemento de conversión. La energía eléctrica bruta de la red debe transformarse, regularse y suministrarse con precisión a cada carga, cada 10 ms. Con fuentes variables y perfiles de carga cambiantes, el problema de la conversión se ha vuelto más complejo. La eficiencia de esa conversión determina la eficiencia de todo el sistema energético. La eficiencia de conversión ya no se puede ignorar.",
+    s2_t3: "Cada Megavatio de generación renovable, cada vehículo eléctrico, cada sistema de baterías requiere conversión. Cada aspecto de la generación y el consumo de electricidad implica un elemento de conversión. La energía eléctrica bruta de la red debe transformarse, regularse y suministrarse con precisión a cada carga, cada vez. Con fuentes variables y perfiles de carga cambiantes, el problema de la conversión se ha vuelto más complejo. La eficiencia de esa conversión determina la eficiencia de todo el sistema energético. La eficiencia de conversión ya no se puede ignorar.",
     s2_t4: "MEIRIS se creó para solucionarlo de forma diferente.",
     s2_q: "“La brecha entre la energía eléctrica bruta y el suministro de energía inteligente y preciso es donde se construye la próxima generación de infraestructura energética.”",
     s2_qa: "— MEIRIS ENGINEERING",
 
     s3_t1: "ARQUITECTURA",
     s3_t2: "Tres capas.\nUna arquitectura.",
-    s3_t3: "La base de silicio de los dispositivos de módulos de potencia de SiC de banda prohibida ancha, la precisión de una arquitectura de control exclusiva, la inteligencia de los algoritmos de firmware patentados que orquestan la conversión de energía en tiempo real. Cada capa de la Plataforma MEIRIS está diseñada, desarrollada y es propiedad de MEIRIS.",
+    s3_t3: "La base de silicio de los dispositivos de módulos de potencia de SiC de banda prohibida ancha, la precisión de una arquitectura de control exclusiva y algoritmos de firmware inteligentes que orquestan la conversión de energía en tiempo real. La Plataforma MEIRIS integra electrónica de potencia, arquitectura de control e inteligencia de firmware en un sistema unificado diseñado para la conversión de energía de alto rendimiento. Cada capa de la Plataforma MEIRIS está diseñada, desarrollada y es propiedad de MEIRIS.",
     s3_c1_h: "Base de silicio",
     s3_c1_p: "Módulos de potencia bidireccionales basados en SiC. Topologías de conmutación patentadas. 30 kW por módulo, escalable en paralelo.",
     s3_c2_h: "Arquitectura de control",
@@ -337,19 +337,19 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s8_c4_p: "Sistema de conversión de potencia (PCS)"
   } : {
     s1_title: "Intelligent\nPower\nConversion.",
-    s1_subtitle: "From grid input to precision output — a single vertically integrated architecture.",
-    s1_desc: "The MEIRIS Platform is a vertically integrated power conversion platform built using Silicon Carbide (SiC) devices & proprietary firmware, engineered to convert, manage, and orchestrate energy with precision at 96% system efficiency.",
+    s1_subtitle: "From grid input to precision output, a single vertically integrated architecture.",
+    s1_desc: "The MEIRIS Platform is a vertically integrated power conversion platform built using Silicon Carbide (SiC) devices & proprietary firmware, engineered to convert, manage, and orchestrate energy with precision.",
 
     s2_t1: "Energy is everywhere.\nIntelligence is not.",
     s2_t2: "The Energy Transition is not a hardware problem.\nIt is a conversion problem.",
-    s2_t3: "Every megawatt of renewable generation, every EV, every battery system requires conversion. Every aspect of electricity generation and consumption involves an element of conversion. Raw electrical energy from the grid must be transformed, regulated, and delivered with precision to every load, every 10ms. With variable sources and changing load profiles the conversion problem has become more complex. The efficiency of that conversion determines the efficiency of the entire energy system. Conversion efficiency can no longer be ignored.",
+    s2_t3: "Every Megawatt of renewable generation, every EV, every battery system requires conversion. Every aspect of electricity generation and consumption involves an element of conversion. Raw electrical energy from the grid must be transformed, regulated, and delivered with precision to every load, every time. With variable sources and changing load profiles the conversion problem has become more complex. The efficiency of that conversion determines the efficiency of the entire energy system. Conversion efficiency can no longer be ignored.",
     s2_t4: "MEIRIS was built to solve it differently.",
     s2_q: "“The gap between raw electrical energy and intelligent, precise power delivery is where the next generation of energy infrastructure is built.”",
     s2_qa: "— MEIRIS Engineering",
 
     s3_t1: "Architecture",
     s3_t2: "Three Layers.\nOne Architecture.",
-    s3_t3: "The silicon foundation of wide-bandgap SiC power module devices, the precision of a proprietary control architecture, the intelligence of patented firmware algorithms that orchestrate energy conversion in real time. Every layer of the MEIRIS Platform is designed, developed, and owned by MEIRIS.",
+    s3_t3: "The silicon foundation of wide-bandgap SiC power module devices, the precision of a proprietary control architecture and intelligent firmware algorithms that orchestrate energy conversion in real time. The MEIRIS Platform integrates power electronics, control architecture and firmware intelligence into a unified system designed for high-performance energy conversion. Every layer of the MEIRIS Platform is designed, developed, and owned by MEIRIS.",
     s3_c1_h: "Silicon Foundation",
     s3_c1_p: "SiC-based bidirectional power modules. Patented switching topologies. 30kW per module, scalable in parallel.",
     s3_c2_h: "Control Architecture",
@@ -415,7 +415,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           >
             <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-12 md:gap-20 px-6 sm:px-10 md:grid-cols-[1.15fr_1fr] lg:px-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-backwards pt-28 md:pt-0">
               <div>
-                <h1 className="text-[clamp(2.25rem,6vw,5.5rem)] font-bold leading-[1.02] tracking-[-0.03em] text-white">
+                <h1 className="text-[clamp(2.25rem,min(6.0vw,9.0vh),5.5rem)] font-bold leading-[1.02] tracking-[-0.03em] text-white">
                   {t.s1_title.split('\n').map((line, i) => (
                     <React.Fragment key={i}>
                       {line}
@@ -423,10 +423,10 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                     </React.Fragment>
                   ))}
                 </h1>
-                <p className="mt-6 md:mt-16 max-w-xl text-[14px] md:text-[clamp(1rem,1.8vw,1.35rem)] font-semibold leading-snug text-white">
+                <p className="mt-6 md:mt-16 max-w-xl text-[14px] md:text-[clamp(1rem,min(1.8vw,2.7vh),1.35rem)] font-semibold leading-snug text-white">
                   {t.s1_subtitle}
                 </p>
-                <p className="mt-4 md:mt-12 max-w-xl text-[12px] md:text-[clamp(0.85rem,1.3vw,1rem)] leading-[1.55] text-white/60">
+                <p className="mt-4 md:mt-12 max-w-xl text-[12px] md:text-[clamp(0.85rem,min(1.3vw,2.0vh),1rem)] leading-[1.55] text-white/60">
                   {t.s1_desc}
                 </p>
               </div>
@@ -461,30 +461,30 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           <div
             style={{
               position: "absolute", inset: 0,
-              display: "flex", alignItems: "center", justifyContent: "center",
+              display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "center",
               opacity: s2Op,
               transform: `translateY(${s2Y}px)`,
               willChange: "opacity, transform",
             }}
           >
-            <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-12 md:gap-20 px-6 sm:px-10 md:grid-cols-[1.15fr_1fr] lg:px-16">
+            <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-4 md:gap-20 px-6 sm:px-10 md:grid-cols-[1.15fr_1fr] lg:px-16 pt-24 md:pt-0">
               <div>
-                <h2 className="text-[clamp(1.75rem,5vw,3.75rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white">
+                <h2 className="text-[clamp(1.25rem,min(4vw,5vh),2.1rem)] 2xl:text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white">
                   <TypewriterScroll text={t.s2_t1} start={0.032} end={0.044} />
                 </h2>
-                <p className="mt-2 md:mt-10 max-w-xl text-[12px] md:text-[clamp(1rem,1.8vw,1.35rem)] font-semibold leading-snug text-white">
+                <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[4vh] max-w-xl text-[12px] xl:text-[13px] 2xl:text-[clamp(1.1rem,min(1.8vw,2.7vh),1.35rem)] font-semibold leading-snug text-white">
                   <TypewriterScroll text={t.s2_t2} start={0.044} end={0.056} />
                 </p>
                 <div>
-                  <p className="mt-2 md:mt-10 max-w-xl text-[11px] md:text-[clamp(0.85rem,1.4vw,1.1rem)] leading-[1.4] md:leading-[1.55] text-white/55">
+                  <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[4vh] max-w-xl text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,min(1.4vw,2.1vh),1.1rem)] leading-[1.4] 2xl:leading-[1.55] text-white/55">
                     <TypewriterScroll text={t.s2_t3} start={0.056} end={0.088} />
                   </p>
-                  <p className="mt-1 md:mt-6 text-[11px] md:text-[clamp(0.9rem,1.5vw,1.2rem)] text-white">
+                  <p className="mt-1 md:mt-[1.5vh] 2xl:mt-[2.5vh] text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,min(1.5vw,2.2vh),1.2rem)] text-white">
                     <TypewriterScroll text={t.s2_t4} start={0.088} end={0.096} />
                   </p>
                 </div>
-                <div className="mt-2 md:mt-12 border-l-2 pl-3 md:pl-6" style={{ borderColor: GREEN, opacity: s2Quote }}>
-                  <p className="max-w-lg text-[12px] md:text-[clamp(0.85rem,1.2vw,1rem)] italic leading-[1.5] md:leading-[1.8] text-white/65">
+                <div className="mt-2 md:mt-[2vh] 2xl:mt-[5vh] border-l-2 pl-3 md:pl-6" style={{ borderColor: GREEN, opacity: s2Quote }}>
+                  <p className="max-w-lg text-[12px] md:text-[clamp(0.85rem,min(1.2vw,1.8vh),1rem)] italic leading-[1.5] md:leading-[1.8] text-white/65">
                     {t.s2_q}
                   </p>
                   <p className="mt-1 md:mt-3 text-[11px] md:text-[12px] uppercase tracking-widest" style={{ color: GREEN }}>
@@ -494,7 +494,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
               </div>
               <div className="flex items-center justify-center md:justify-end mt-2 md:mt-0 w-full" style={{ opacity: s2Net }}>
                 <div
-                  className="relative w-full scale-[1.25] md:scale-150 origin-center md:origin-right md:translate-x-16 lg:translate-x-24"
+                  className="relative w-full scale-[1.25] md:scale-125 2xl:scale-150 origin-center md:origin-right md:translate-x-16 lg:translate-x-24"
                   style={{
                     maskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)',
                     WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)'
@@ -520,30 +520,30 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           <div
             style={{
               position: "absolute", inset: 0,
-              display: "flex", alignItems: "center", justifyContent: "center",
+              display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "center",
               opacity: s3Op,
               willChange: "opacity",
             }}
           >
-            <div className="mx-auto w-full max-w-[1180px] flex flex-col justify-center relative px-4 md:px-6 sm:px-8 py-6 md:py-8 lg:px-10">
+            <div className="mx-auto w-full max-w-[1180px] flex flex-col justify-center relative px-4 md:px-6 sm:px-8 py-6 md:py-8 lg:px-10 pt-24 md:pt-0">
               <div
                 className="hidden md:block absolute top-16 bottom-8 left-0 rounded-l-[2rem] z-0"
                 style={{ width: `${s3BoxW}%`, opacity: s3BoxOp, background: "#e6e6e6" }}
               />
               <div className="relative z-10 flex flex-col">
                 <div className="flex flex-col md:flex-row flex-1 min-h-0 items-center">
-                  <div className="w-full md:w-[45%] p-0 md:p-10 pt-0 md:pt-12 text-white md:text-black">
+                  <div className="w-full md:w-[45%] p-0 md:p-[2vh] 2xl:p-[4vh] pt-0 md:pt-[3vh] 2xl:pt-[5vh] text-white md:text-black">
                     <p className="text-[9px] md:text-[10px] font-bold tracking-widest text-[#00E573] md:text-black/50 uppercase">
                       <TypewriterScroll text={t.s3_t1} start={0.152} end={0.16} />
                     </p>
-                    <h2 className="mt-1 md:mt-8 text-[clamp(1.75rem,3.5vw,3.5rem)] font-bold leading-[1.05] tracking-tight text-white md:text-black">
+                    <h2 className="mt-1 md:mt-[1.5vh] 2xl:mt-[3vh] text-[clamp(1.5rem,min(3.5vw,5.2vh),2.5rem)] 2xl:text-[clamp(1.75rem,min(3.5vw,5.2vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white md:text-black">
                       <TypewriterScroll text={t.s3_t2} start={0.16} end={0.176} />
                     </h2>
-                    <p className="mt-2 md:mt-6 text-[12px] md:text-sm text-white/70 md:text-black/70 leading-[1.4] md:leading-relaxed">
+                    <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[2.5vh] text-[11px] lg:text-[13px] 2xl:text-[clamp(12px,1.5vh,14px)] text-white/70 md:text-black/70 leading-[1.4] 2xl:leading-[1.5]">
                       <TypewriterScroll text={t.s3_t3} start={0.176} end={0.208} />
                     </p>
                   </div>
-                  <div className="flex w-full md:w-[55%] items-center justify-center md:justify-end p-4 md:p-8 md:pr-4 lg:pr-12" style={{ opacity: s3DiagOp }}>
+                  <div className="flex w-full md:w-[55%] items-center justify-center md:justify-end p-4 md:p-[2vh] 2xl:p-[3.5vh] md:pr-4 lg:pr-12" style={{ opacity: s3DiagOp }}>
                     <div className="w-full max-w-[200px] md:max-w-none flex justify-center md:justify-end">
                       <img
 
@@ -555,18 +555,18 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
                   </div>
                 </div>
                 <div
-                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-8 mt-4 md:-mt-10 lg:-mt-16"
+                  className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-[2vh] 2xl:pb-[3.5vh] mt-4 md:-mt-[2vh] 2xl:-mt-16"
                   style={{ transform: isMobile ? `translateX(${s3MobileTranslateX}vw)` : "none" }}
                 >
-                  <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none md:rounded-l-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C1Op, transform: isMobile ? "none" : `translateY(${s3C1Y}px)` }}>
+                  <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-[2vh] 2xl:p-[3.5vh] text-white rounded-[1rem] md:rounded-none md:rounded-l-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C1Op, transform: isMobile ? "none" : `translateY(${s3C1Y}px)` }}>
                     <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c1_h}</h3>
-                    <p className="mt-2 md:mt-4 text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c1_p}</p>
+                    <p className="mt-2 md:mt-[1vh] 2xl:mt-[2vh] text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c1_p}</p>
                   </div>
-                  <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none" style={{ opacity: isMobile ? s3MobileCardsOp : s3C2Op, transform: isMobile ? "none" : `translateY(${s3C2Y}px)` }}>
+                  <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-[2vh] 2xl:p-[3.5vh] text-white rounded-[1rem] md:rounded-none" style={{ opacity: isMobile ? s3MobileCardsOp : s3C2Op, transform: isMobile ? "none" : `translateY(${s3C2Y}px)` }}>
                     <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c2_h}</h3>
-                    <p className="mt-2 md:mt-4 text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c2_p}</p>
+                    <p className="mt-2 md:mt-[1vh] 2xl:mt-[2vh] text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c2_p}</p>
                   </div>
-                  <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-8 text-white rounded-[1rem] md:rounded-none md:rounded-r-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C3Op, transform: isMobile ? "none" : `translateY(${s3C3Y}px)` }}>
+                  <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-[2vh] 2xl:p-[3.5vh] text-white rounded-[1rem] md:rounded-none md:rounded-r-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C3Op, transform: isMobile ? "none" : `translateY(${s3C3Y}px)` }}>
                     <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c3_h}</h3>
                     <p className="mt-2 md:mt-4 text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c3_p}</p>
                   </div>
@@ -580,7 +580,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
             style={{
               position: "absolute", inset: 0,
               zIndex: 0,
-              display: "flex", alignItems: "center", justifyContent: "center",
+              display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "center",
               opacity: s4Op,
               willChange: "opacity",
             }}
@@ -589,25 +589,25 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
               <div className="w-full bg-[#e6e6e6] md:w-1/2 h-full origin-left" style={{ transform: `scaleX(${s4BoxScaleX})` }} />
               <div className="hidden w-1/2 bg-black md:block h-full" />
             </div>
-            <div className="grid w-full grid-cols-1 md:grid-cols-2">
-              <div className="px-6 py-4 md:py-24 md:px-16 lg:px-24 xl:px-32 flex flex-col justify-center" style={{ opacity: s4TextFadeOut }}>
+            <div className="grid w-full grid-cols-1 md:grid-cols-2 pt-16 md:pt-0">
+              <div className="px-6 py-4 md:py-0 2xl:py-[10vh] md:px-16 lg:px-24 xl:px-32 flex flex-col justify-center" style={{ opacity: s4TextFadeOut }}>
                 <div className="w-full text-black">
-                  <h2 className="text-[clamp(1.75rem,5vw,4.5rem)] font-bold leading-[1.05] tracking-tight">
+                  <h2 className="text-[clamp(1.25rem,min(4vw,5vh),2.1rem)] 2xl:text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight">
                     <TypewriterScroll text={t.s4_t1} start={0.26} end={0.275} />
                   </h2>
-                  <p className="mt-2 md:mt-8 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
+                  <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[3vh] text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,2vh,1.15rem)] leading-[1.4] 2xl:leading-[1.5] text-black/80">
                     <TypewriterScroll text={t.s4_t2} start={0.275} end={0.295} />
                   </p>
-                  <p className="mt-2 md:mt-6 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
+                  <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[2.5vh] text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,2vh,1.15rem)] leading-[1.4] 2xl:leading-[1.5] text-black/80">
                     <TypewriterScroll text={t.s4_t3} start={0.295} end={0.315} />
                   </p>
-                  <p className="mt-2 md:mt-6 text-[11px] md:text-[1.15rem] leading-[1.4] md:leading-relaxed text-black/80">
+                  <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[2.5vh] text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,2vh,1.15rem)] leading-[1.4] 2xl:leading-[1.5] text-black/80">
                     <TypewriterScroll text={t.s4_t4} start={0.315} end={0.335} />
                   </p>
                 </div>
               </div>
-              <div className="flex items-center justify-center px-6 py-2 md:py-24 md:pl-16 mt-10 md:mt-16 mix-blend-darken md:mix-blend-screen" style={{ opacity: s4ImgOp }}>
-                <div className="relative w-full max-w-[280px] md:max-w-[650px] scale-[1.3] md:scale-[1.6]">
+              <div className="flex items-center justify-center px-6 py-2 md:py-[4vh] 2xl:py-[10vh] md:pl-16 -mt-16 md:mt-[2vh] 2xl:mt-16 mix-blend-darken md:mix-blend-screen" style={{ opacity: s4ImgOp }}>
+                <div className="relative w-full max-w-[320px] md:max-w-[550px] 2xl:max-w-[650px] scale-100 md:scale-[1.35] 2xl:scale-[1.6]">
                   <video
                     className="w-full h-auto pointer-events-none hidden md:block contrast-125"
                     src="/api/media?id=Platform_Section_4_-_PC_Version_mllwn7"
@@ -634,23 +634,23 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           </div>
 
           {/* ── SECTION 5 ───────────────────────────────────── */}
-          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", opacity: s5Op, willChange: "opacity" }}>
-            <div className="mx-auto flex w-full max-w-[1240px] flex-col justify-center px-6 sm:px-10 lg:px-12">
-              <h2 className="text-[clamp(1.75rem,4vw,3.75rem)] font-bold leading-[1.05] tracking-tight text-white" style={{ transform: `translateY(${s5TitleY}px)`, opacity: s5TitleOp }}>
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: isMobile ? "flex-start" : "center", opacity: s5Op, willChange: "opacity" }}>
+            <div className="mx-auto flex w-full max-w-[1240px] flex-col justify-center px-6 sm:px-10 lg:px-12 pt-24 md:pt-0">
+              <h2 className="text-[clamp(1.75rem,min(4.0vw,6.0vh),3.75rem)] font-bold leading-[1.05] tracking-tight text-white" style={{ transform: `translateY(${s5TitleY}px)`, opacity: s5TitleOp }}>
                 <TypewriterScroll text={t.s5_t1} start={0.34} end={0.348} />
               </h2>
               <p className="mt-1 md:mt-4 text-[13px] md:text-lg font-medium text-[#00E573]" style={{ transform: `translateY(${s5TitleY}px)`, opacity: s5TitleOp }}>
                 {t.s5_t2}
               </p>
-              <div className="mt-4 md:mt-16 grid w-full grid-cols-1 gap-3 md:gap-6 md:grid-cols-2">
-                <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-4 md:p-8" style={{ opacity: s5C1Op, transform: `translateX(${s5C1X}px)` }}>
+              <div className="mt-4 md:mt-[4vh] 2xl:mt-16 grid w-full grid-cols-1 gap-3 md:gap-[2vh] 2xl:gap-6 md:grid-cols-2">
+                <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-4 md:p-[3vh] 2xl:p-[3.5vh]" style={{ opacity: s5C1Op, transform: `translateX(${s5C1X}px)` }}>
                   <p className="text-[12px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/80">{t.s5_c1}</p>
                 </div>
-                <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-4 md:p-8" style={{ opacity: s5C2Op, transform: `translateX(${s5C2X}px)` }}>
+                <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-4 md:p-[3vh] 2xl:p-[3.5vh]" style={{ opacity: s5C2Op, transform: `translateX(${s5C2X}px)` }}>
                   <p className="text-[12px] md:text-[14px] leading-[1.4] md:leading-relaxed text-white/80">{t.s5_c2}</p>
                 </div>
               </div>
-              <div className="mt-4 md:mt-20 border-l-2 pl-3 md:pl-6" style={{ borderColor: GREEN, opacity: s5QuoteOp }}>
+              <div className="mt-4 md:mt-[5vh] 2xl:mt-20 border-l-2 pl-3 md:pl-6" style={{ borderColor: GREEN, opacity: s5QuoteOp }}>
                 <p className="max-w-4xl text-[12px] md:text-[14px] italic leading-[1.4] md:leading-relaxed text-white/80">
                   {t.s5_q}
                 </p>
@@ -698,33 +698,33 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
           )}
 
           {/* ── SECTION 7 ───────────────────────────────────── */}
-          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", opacity: s7Op, willChange: "opacity" }}>
-            <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-4 md:gap-16 px-6 md:px-8 md:grid-cols-[1fr_1.1fr]">
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: isMobile ? "flex-start" : "center", opacity: s7Op, willChange: "opacity" }}>
+            <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-4 md:gap-16 px-6 md:px-8 md:grid-cols-[1fr_1.1fr] pt-24 md:pt-0">
               <div className="flex flex-col">
-                <h2 className="text-[clamp(1.85rem,4.5vw,4.25rem)] font-bold leading-[1.05] tracking-tight text-white hidden md:block">
+                <h2 className="text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight text-white hidden xl:block">
                   <TypewriterScroll text={t.s7_t1} start={0.53} end={0.55} />
                 </h2>
-                <h2 className="text-[clamp(1.85rem,4.5vw,4.25rem)] font-bold leading-[1.05] tracking-tight text-white md:hidden">
+                <h2 className="text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight text-white xl:hidden">
                   <TypewriterScroll text={(t as any).s7_t1_mobile || t.s7_t1} start={0.53} end={0.55} />
                 </h2>
-                <h3 className="mt-4 md:mt-5 text-[15px] md:text-[18px] lg:text-[20px] font-semibold text-[#00E573] max-w-xl leading-tight">
+                <h3 className="mt-4 md:mt-[1.5vh] 2xl:mt-[2vh] text-[14px] md:text-[15px] lg:text-[16px] 2xl:text-[clamp(15px,2.2vh,20px)] font-semibold text-[#00E573] max-w-xl leading-tight">
                   <TypewriterScroll text={(t as any).s7_sub} start={0.55} end={0.57} />
                 </h3>
-                <p className="mt-4 md:mt-7 max-w-lg text-[13px] md:text-[15px] lg:text-[16px] leading-[1.5] md:leading-relaxed text-white/75">
+                <p className="mt-4 md:mt-[1.5vh] 2xl:mt-[3vh] max-w-lg text-[11px] lg:text-[13px] 2xl:text-[clamp(13px,1.8vh,16px)] leading-[1.4] 2xl:leading-[1.5] text-white/75">
                   <TypewriterScroll text={t.s7_t2} start={0.57} end={0.59} />
                 </p>
-                <p className="mt-3 md:mt-5 max-w-lg text-[13px] md:text-[15px] lg:text-[16px] leading-[1.5] md:leading-relaxed text-white/75">
+                <p className="mt-3 md:mt-[1.5vh] 2xl:mt-[2vh] max-w-lg text-[11px] lg:text-[13px] 2xl:text-[clamp(13px,1.8vh,16px)] leading-[1.4] 2xl:leading-[1.5] text-white/75">
                   <TypewriterScroll text={t.s7_t3} start={0.59} end={0.61} />
                 </p>
-                <div className="mt-6 md:mt-10 border-l-2 border-[#00E573] pl-3 md:pl-6" style={{ opacity: s7Quote }}>
+                <div className="mt-6 md:mt-[3vh] 2xl:mt-[4vh] border-l-2 border-[#00E573] pl-3 md:pl-6" style={{ opacity: s7Quote }}>
                   <p className="max-w-lg text-[12px] md:text-[14px] lg:text-[15px] italic leading-[1.5] md:leading-relaxed text-white/85">
                     {t.s7_q}
                   </p>
                 </div>
               </div>
-              <div className="relative flex flex-col items-center mt-4 md:mt-0" style={{ opacity: s7ImgOp }}>
+              <div className="relative flex flex-col items-center -mt-16 md:mt-0" style={{ opacity: s7ImgOp }}>
                 <div
-                  className="relative w-full max-w-[280px] md:max-w-[600px]"
+                  className="relative w-full max-w-[280px] md:max-w-[600px] scale-125 md:scale-100 mt-6 md:mt-0"
                   style={{
                     maskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 90%)',
                     WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 40%, transparent 90%)'
@@ -741,59 +741,59 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
 
           {/* ── SECTION 8 ───────────────────────────────────── */}
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: isMobile ? "flex-start" : "flex-start", paddingTop: isMobile ? "90px" : "15vh", opacity: s8Op, willChange: "opacity" }}>
-            <div className="mx-auto w-full max-w-[1200px] px-4 md:px-8" style={{ transform: `translateY(${s8PanY}vh)` }}>
+            <div className="mx-auto w-full max-w-[min(1200px,100vh)] 2xl:max-w-[min(1400px,120vh)] px-4 md:px-8" style={{ transform: `translateY(${s8PanY}vh)` }}>
 
               <div style={{ opacity: s8TitleOp, transform: `translateY(${s8TitleY}px)` }}>
-                <h2 className="text-[clamp(1.75rem,4vw,3.5rem)] font-bold leading-[1.05] tracking-tight text-white">
+                <h2 className="text-[clamp(1.75rem,min(4.0vw,6.0vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white">
                   {t.s8_t1}
                 </h2>
               </div>
               <div style={{ opacity: s8IntroOp }}>
-                <p className="mt-6 max-w-4xl text-[13px] leading-relaxed text-white/70">
+                <p className="mt-[2vh] 2xl:mt-[2.5vh] max-w-4xl text-[13px] leading-relaxed text-white/70">
                   {t.s8_t2}
                 </p>
               </div>
 
               <div
-                className="mt-4 md:mt-12 flex md:grid flex-nowrap md:grid-cols-2 gap-4 md:gap-8 pb-6 md:pb-0"
+                className="mt-4 md:mt-[4vh] 2xl:mt-[5vh] flex md:grid flex-nowrap md:grid-cols-2 gap-4 md:gap-[2vh] 2xl:gap-8 pb-6 md:pb-0"
                 style={{ transform: isMobile ? `translateX(${s8MobileTranslateX}vw)` : "none" }}
               >
                 {/* Card 1 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C1X}px)` }}>
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-video overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C1X}px)` }}>
                   <Image src="/images/EV Charging Solutions - Platform.png" alt={t.s8_c1_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
-                  <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
-                    <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c1_t}</h3>
+                  <div className="absolute bottom-0 left-0 p-6 md:p-[3vh] 2xl:p-[4vh] pointer-events-none">
+                    <h3 className="text-[clamp(1.5rem,min(3.0vw,4.5vh),2rem)] font-bold tracking-tight text-white">{t.s8_c1_t}</h3>
                     <p className="mt-2 text-[11px] md:text-[10px] text-white/80">{t.s8_c1_p}</p>
                   </div>
                 </div>
 
                 {/* Card 2 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C2X}px)` }}>
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-video overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R1Op, transform: isMobile ? "none" : `translateX(${s8C2X}px)` }}>
                   <Image src="/images/Solar - Platform.png" alt={t.s8_c2_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
-                  <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
-                    <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c2_t}</h3>
+                  <div className="absolute bottom-0 left-0 p-6 md:p-[3vh] 2xl:p-[4vh] pointer-events-none">
+                    <h3 className="text-[clamp(1.5rem,min(3.0vw,4.5vh),2rem)] font-bold tracking-tight text-white">{t.s8_c2_t}</h3>
                     <p className="mt-2 text-[11px] md:text-[10px] text-white/80">{t.s8_c2_p}</p>
                   </div>
                 </div>
 
                 {/* Card 3 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C3X}px)` }}>
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-video overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C3X}px)` }}>
                   <Image src="/images/Railway - Platform.png" alt={t.s8_c3_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
-                  <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
-                    <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c3_t}</h3>
+                  <div className="absolute bottom-0 left-0 p-6 md:p-[3vh] 2xl:p-[4vh] pointer-events-none">
+                    <h3 className="text-[clamp(1.5rem,min(3.0vw,4.5vh),2rem)] font-bold tracking-tight text-white">{t.s8_c3_t}</h3>
                     <p className="mt-2 text-[11px] md:text-[10px] text-white/80">{t.s8_c3_p}</p>
                   </div>
                 </div>
 
                 {/* Card 4 */}
-                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-[5/4] overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C4X}px)` }}>
+                <div className="shrink-0 w-[85vw] md:w-auto relative aspect-[4/3] sm:aspect-square md:aspect-video overflow-hidden border border-white/10 rounded-2xl md:rounded-none group" style={{ opacity: isMobile ? s8R1Op : s8R2Op, transform: isMobile ? "none" : `translateX(${s8C4X}px)` }}>
                   <Image src="/images/BESS - Platform.png" alt={t.s8_c4_t} fill sizes="(max-width: 768px) 85vw, 50vw" className="absolute inset-0 h-full w-full object-cover opacity-60 transition-all duration-700 group-hover:scale-105 group-hover:opacity-85" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none"></div>
-                  <div className="absolute bottom-0 left-0 p-6 md:p-10 pointer-events-none">
-                    <h3 className="text-[clamp(1.5rem,3vw,2rem)] font-bold tracking-tight text-white">{t.s8_c4_t}</h3>
+                  <div className="absolute bottom-0 left-0 p-6 md:p-[3vh] 2xl:p-[4vh] pointer-events-none">
+                    <h3 className="text-[clamp(1.5rem,min(3.0vw,4.5vh),2rem)] font-bold tracking-tight text-white">{t.s8_c4_t}</h3>
                     <p className="mt-2 text-[11px] md:text-[10px] text-white/80">{t.s8_c4_p}</p>
                   </div>
                 </div>

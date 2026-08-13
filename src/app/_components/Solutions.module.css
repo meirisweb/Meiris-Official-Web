@@ -41,9 +41,9 @@
 /* ─── Cards grid ────────── */
 .cardsGrid {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   justify-content: center;
-  gap: clamp(20px, 4vw, 70px);
+  gap: clamp(16px, 2.5vw, 70px);
   width: 100%;
 }
 
@@ -153,19 +153,6 @@
 }
 
 /* ─── Responsive ─────────────────────────────────────────────────────────────── */
-
-@media (max-width: 1400px) {
-  .cardsGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-
-/* Tablets landscape (1024–1280px) */
-@media (max-width: 1280px) {
-  .cardsGrid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
 
 /* Tablets portrait (768–1024px) */
 @media (max-width: 1024px) {

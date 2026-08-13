@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
-import { validateContactForm } from "@/actions/sendEmail";
+import { sendEmail } from "@/actions/sendEmail";
 import { useRef, useState } from "react";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -18,6 +18,8 @@ const ACCEPTED_FILE_TYPES = [
 const formSchema = z.object({
   name: z.string().min(2, { message: "Full Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
+  domain: z.string().min(1, { message: "Please select a domain." }),
+  coverLetter: z.string().min(10, { message: "Please provide a brief cover letter." }),
   cvFile: z
     .any()
     .refine((files) => files?.length === 1, "Please attach a CV/Resume.")
@@ -39,6 +41,8 @@ export default function CareersForm({ locale }: { locale: string }) {
     defaultValues: {
       name: "",
       email: "",
+      domain: "",
+      coverLetter: "",
     },
   });
 
@@ -56,59 +60,41 @@ export default function CareersForm({ locale }: { locale: string }) {
     const botField = document.querySelector<HTMLInputElement>("#careers-form-bot");
     if (botField?.value) formData.append("bot-field", botField.value);
 
-    // 1. Run server-side spam and MX DNS validation
-    const valResult = await validateContactForm(formData);
-    if (!valResult.success) {
-      setIsSubmitting(false);
-      const errorMsg = valResult.error || "Please check the form fields and try again.";
-      setServerError(errorMsg);
-      toast.error(errorMsg);
-      if (valResult.fieldErrors) {
-        Object.entries(valResult.fieldErrors).forEach(([field, msg]) => {
-          if (field === "email" || field === "name") {
-            form.setError(field as any, { type: "server", message: msg as string });
-          }
-        });
-      }
-      return;
-    }
-
-    // 2. Submit to Web3Forms directly from the browser (Client-Side) with FormData (handles file attachment!)
+    // Send email via Resend (validates on server internally)
     try {
-      const accessKey =
-        process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY ||
-        "8104f760-2d45-4607-a202-8d3d5992582b";
+      formData.append("subject", `New Inquiry (Careers Application) from ${values.name}`);
+      const messageBody = `
+Domain: ${values.domain}
 
-      const submitData = new FormData();
-      submitData.append("access_key", accessKey);
-      submitData.append("subject", `New Inquiry (Careers Application) from ${values.name}`);
-      submitData.append("replyto", values.email);
-      submitData.append("name", values.name);
-      submitData.append("email", values.email);
-
+Cover Letter:
+${values.coverLetter}
+      `.trim();
+      formData.append("message", messageBody);
       if (values.cvFile && values.cvFile[0]) {
-        submitData.append("attachment", values.cvFile[0]);
+        formData.append("attachment", values.cvFile[0]);
       }
 
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: submitData, // The browser sets multipart/form-data headers automatically for file attachments!
-      });
-
-      const result = await response.json();
+      const submitResult = await sendEmail(formData);
       setIsSubmitting(false);
 
-      if (response.ok && result.success) {
-        toast.success("Thank you! Your application has been submitted.");
-        form.reset();
-        setServerError(null);
-      } else {
-        const errorMsg =
-          result.message ||
-          "We could not submit your application at this time. Please try again later.";
+      if (!submitResult.success) {
+        const errorMsg = submitResult.error || "Please check the form fields and try again.";
         setServerError(errorMsg);
         toast.error(errorMsg);
+        if (submitResult.fieldErrors) {
+          Object.entries(submitResult.fieldErrors).forEach(([field, msg]) => {
+            if (field === "email" || field === "name") {
+              form.setError(field as any, { type: "server", message: msg as string });
+            }
+          });
+        }
+        return;
       }
+
+      // Success
+      toast.success("Thank you! Your application has been submitted.");
+      form.reset();
+      setServerError(null);
     } catch (err: any) {
       setIsSubmitting(false);
       const errorMsg =
@@ -164,6 +150,56 @@ export default function CareersForm({ locale }: { locale: string }) {
                       type="email"
                       placeholder="john@example.com"
                       className="w-full bg-transparent border border-black/20 rounded-md px-4 py-3.5 text-[13px] outline-none focus:border-[#00E573] transition-colors"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 font-medium text-xs" />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6">
+            <FormField
+              control={form.control}
+              name="domain"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-2">
+                  <label className="text-[10px] uppercase tracking-widest text-black/50 font-bold">
+                    Domain
+                  </label>
+                  <FormControl>
+                    <select
+                      className="w-full bg-transparent border border-black/20 rounded-md px-4 py-3.5 text-[13px] outline-none focus:border-[#00E573] transition-colors appearance-none"
+                      {...field}
+                    >
+                      <option value="" disabled>Choose your option</option>
+                      <option value="Business Development">Business Development</option>
+                      <option value="Research and Development">Research and Development</option>
+                      <option value="Sales">Sales</option>
+                      <option value="Operations">Operations</option>
+                      <option value="Marketing">Marketing</option>
+                      <option value="Commercial">Commercial</option>
+                    </select>
+                  </FormControl>
+                  <FormMessage className="text-red-500 font-medium text-xs" />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="coverLetter"
+              render={({ field }) => (
+                <FormItem className="flex flex-col gap-2">
+                  <label className="text-[10px] uppercase tracking-widest text-black/50 font-bold">
+                    Cover Letter
+                  </label>
+                  <FormControl>
+                    <textarea
+                      placeholder="*Please write your cover letter here describing why would you like to join SIRI...."
+                      rows={5}
+                      className="w-full bg-transparent border border-black/20 rounded-md px-4 py-3.5 text-[13px] outline-none focus:border-[#00E573] transition-colors resize-y"
                       {...field}
                     />
                   </FormControl>
