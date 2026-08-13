@@ -23,7 +23,7 @@ export async function generateMetadata({ params: { locale } }: { params: { local
 
 import { client } from "@/sanity/lib/client";
 
-import AutoScrollButton from "@/components/AutoScrollButton";
+
 
 export default async function LocaleLayout({
   children,
@@ -62,7 +62,6 @@ export default async function LocaleLayout({
       <LenisProvider>
         <ClientLayout navbarData={navbarData} footerData={footerData}>{children}</ClientLayout>
         {showPrompt && <LanguagePrompt />}
-        <AutoScrollButton />
       </LenisProvider>
     </NextIntlClientProvider>
   );
