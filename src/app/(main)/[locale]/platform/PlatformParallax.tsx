@@ -10,10 +10,11 @@ interface Props {
   cmsData?: any;
 }
 
-const ProtectedVideo = ({ src, className }: { src: string, className?: string }) => {
-  const [blobUrl, setBlobUrl] = useState<string>("");
+const ProtectedVideo = ({ src, className, instantLoad = false }: { src: string, className?: string, instantLoad?: boolean }) => {
+  const [blobUrl, setBlobUrl] = useState<string>(instantLoad ? src : "");
 
   useEffect(() => {
+    if (instantLoad) return;
     let objectUrl = "";
     fetch(src)
       .then(res => res.blob())
@@ -26,7 +27,7 @@ const ProtectedVideo = ({ src, className }: { src: string, className?: string })
     return () => {
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [src]);
+  }, [src, instantLoad]);
 
   if (!blobUrl) {
     return <div className={className} />;
@@ -40,6 +41,7 @@ const ProtectedVideo = ({ src, className }: { src: string, className?: string })
         loop
         muted
         playsInline
+        preload={instantLoad ? "auto" : "none"}
         className={className}
         controlsList="nodownload"
         disablePictureInPicture
@@ -65,7 +67,7 @@ const Section1 = ({ t }: { t: any }) => (
       </div>
       <div className="flex items-center justify-center md:justify-end w-full relative">
         <div className="relative w-full scale-[1.25] md:scale-150 origin-center md:origin-right md:translate-x-16 lg:translate-x-24" style={{ maskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)', WebkitMaskImage: 'radial-gradient(50% 50% at 50% 50%, black 50%, transparent 100%)' }}>
-          <ProtectedVideo src="/api/media?id=Platform_Section_1_nnqcxk" className="w-full h-auto mix-blend-screen" />
+          <ProtectedVideo src="/api/media?id=Platform_Section_1_nnqcxk" className="w-full h-auto mix-blend-screen" instantLoad={true} />
         </div>
       </div>
     </div>

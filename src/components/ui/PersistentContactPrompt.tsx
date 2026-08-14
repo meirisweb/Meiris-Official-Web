@@ -154,19 +154,26 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
-      {/* Nudge Tooltip */}
-      <div 
-        className={`absolute bottom-[72px] right-0 mb-4 bg-white text-black px-4 py-3 rounded-2xl shadow-xl border border-gray-100 w-max max-w-[220px] text-[13px] font-medium leading-tight transition-all duration-500 origin-bottom-right
-          ${showNudge && !isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2 pointer-events-none'}`}
-      >
-        We can get in touch at your convenience.
-        <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white border-b border-r border-gray-100 transform rotate-45"></div>
-      </div>
+    <>
+      {isOpen && (
+        <div 
+          className="fixed inset-0 z-[99] bg-transparent" 
+          onClick={() => setIsOpen(false)} 
+        />
+      )}
+      <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end pointer-events-none">
+        {/* Nudge Tooltip */}
+        <div 
+          className={`absolute bottom-[72px] right-0 mb-4 bg-white text-black px-4 py-3 rounded-2xl shadow-xl border border-gray-100 w-max max-w-[220px] text-[13px] font-medium leading-tight transition-all duration-500 origin-bottom-right pointer-events-auto
+            ${showNudge && !isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2 pointer-events-none'}`}
+        >
+          We can get in touch at your convenience.
+          <div className="absolute -bottom-2 right-4 w-4 h-4 bg-white border-b border-r border-gray-100 transform rotate-45"></div>
+        </div>
 
       {/* Expandable Form Modal */}
       <div 
-        className={`absolute bottom-[72px] right-0 bg-white text-black rounded-[1.5rem] md:rounded-[2rem] shadow-[0_12px_40px_rgb(0,0,0,0.15)] border border-gray-100 p-5 md:p-8 w-[calc(100vw-3rem)] max-w-[360px] sm:max-w-[400px] max-h-[calc(100vh-100px)] overflow-y-auto transition-all duration-500 origin-bottom-right
+        className={`absolute bottom-[72px] right-0 bg-white text-black rounded-[1.5rem] md:rounded-[2rem] shadow-[0_12px_40px_rgb(0,0,0,0.15)] border border-gray-100 p-5 md:p-8 w-[calc(100vw-3rem)] max-w-[360px] sm:max-w-[400px] max-h-[calc(100vh-100px)] overflow-y-auto transition-all duration-500 origin-bottom-right pointer-events-auto
           ${isOpen ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4 pointer-events-none'}`}
       >
         <div className="flex justify-between items-center mb-4 md:mb-6">
@@ -263,7 +270,7 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
           setIsOpen(!isOpen);
           setShowNudge(false);
         }}
-        className={`relative flex items-center justify-center w-14 h-14 rounded-full bg-[#00E573] text-black shadow-[0_8px_20px_rgba(0,229,115,0.4)] transition-transform duration-300 hover:scale-110 z-10`}
+        className={`relative flex items-center justify-center w-14 h-14 rounded-full bg-[#00E573] text-black shadow-[0_8px_20px_rgba(0,229,115,0.4)] transition-transform duration-300 hover:scale-110 z-10 pointer-events-auto`}
       >
         {isOpen ? <X size={24} /> : <MessageCircle size={24} fill="currentColor" strokeWidth={1} />}
         {/* Subtle Pulse Ring */}
@@ -272,5 +279,6 @@ export default function PersistentContactPrompt({ segmentName }: { segmentName: 
         )}
       </button>
     </div>
+    </>
   );
 }
