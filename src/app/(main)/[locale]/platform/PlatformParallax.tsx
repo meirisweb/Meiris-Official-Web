@@ -34,20 +34,25 @@ const ProtectedVideo = ({ src, className, instantLoad = false }: { src: string, 
   }
 
   return (
-    <div className="relative w-full h-full" onContextMenu={(e) => e.preventDefault()}>
-      <video
-        src={blobUrl}
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload={instantLoad ? "auto" : "none"}
-        className={className}
-        controlsList="nodownload"
-        disablePictureInPicture
-      />
-      <div className="absolute inset-0 z-10 bg-transparent" />
-    </div>
+    <>
+      {instantLoad && (
+        <link rel="preload" as="video" href={blobUrl} type="video/mp4" />
+      )}
+      <div className="relative w-full h-full" onContextMenu={(e) => e.preventDefault()}>
+        <video
+          src={blobUrl}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload={instantLoad ? "auto" : "none"}
+          className={className}
+          controlsList="nodownload"
+          disablePictureInPicture
+        />
+        <div className="absolute inset-0 z-10 bg-transparent" />
+      </div>
+    </>
   );
 };
 
