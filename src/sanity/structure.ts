@@ -5,7 +5,7 @@ const LANGUAGES = [
   { id: 'es-419', title: 'Español (Latinoamérica)' },
 ]
 
-const I18N_TYPES = ['teamMember', 'solution', 'homePage', 'productsPage', 'aboutPage', 'careersPage', 'contactPage', 'footer', 'navbar', 'resourcesPage', 'insightsPage', 'insightPost', 'resourcePost']
+const I18N_TYPES = ['teamMember', 'solution', 'homePage', 'platformPage', 'productsPage', 'aboutPage', 'careersPage', 'contactPage', 'footer', 'navbar', 'resourcesPage', 'insightsPage', 'insightPost', 'resourcePost']
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -84,6 +84,32 @@ export const structure: StructureResolver = (S) =>
                       .apiVersion('2023-01-01')
                       .initialValueTemplates([
                         S.initialValueTemplateItem(`homePage-${lang.id}`)
+                      ])
+                  )
+              )
+            )
+        ),
+
+      S.divider(),
+
+      // ── Platform Page (multilingual singleton) ────────────────────────────────
+      S.listItem()
+        .title('Platform Page')
+        .child(
+          S.list()
+            .title('Platform Page')
+            .items(
+              LANGUAGES.map((lang) =>
+                S.listItem()
+                  .title(lang.title)
+                  .child(
+                    S.documentList()
+                      .title(`${lang.title} — Platform Page`)
+                      .filter('_type == "platformPage" && (language == $lang || ($lang == "en" && !defined(language)))')
+                      .params({ lang: lang.id })
+                      .apiVersion('2023-01-01')
+                      .initialValueTemplates([
+                        S.initialValueTemplateItem(`platformPage-${lang.id}`)
                       ])
                   )
               )

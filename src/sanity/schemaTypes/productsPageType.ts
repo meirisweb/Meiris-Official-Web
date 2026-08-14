@@ -79,8 +79,10 @@ export const productsPageType = defineType({
           fields: [
             defineField({ name: 'title', title: 'Title', type: 'string' }),
             defineField({ name: 'subtitles', title: 'Subtitles (One per line)', type: 'text', description: 'E.g. 3.3 · 7.4 · 11 · 22 kW\nBidirectional Distributed Dispenser Systems' }),
-            defineField({ name: 'btnText', title: 'Button Text', type: 'string' }),
-            defineField({ name: 'image', title: 'Background Image', type: 'image', options: { hotspot: true } }),
+            { name: 'btnText', title: 'Button Text', type: 'string' },
+            { name: 'downloadBtnText', title: 'Download Button Text', type: 'string', description: 'E.g., Download AC Chargers Brochure' },
+            { name: 'image', title: 'Background Image', type: 'image', options: { hotspot: true } },
+            { name: 'brochureFile', title: 'Brochure File (Downloadable)', type: 'file', options: { accept: '.pdf,.doc,.docx' }, description: 'File to be downloaded when clicking the download brochure button on the card.' },
           ],
         }),
         defineField({
@@ -90,8 +92,10 @@ export const productsPageType = defineType({
           fields: [
             defineField({ name: 'title', title: 'Title', type: 'string' }),
             defineField({ name: 'subtitles', title: 'Subtitles (One per line)', type: 'text', description: 'E.g. 30 · 60 · 120 · 180 · 240 · 360 kW\nBidirectional Distributed Dispenser Systems' }),
-            defineField({ name: 'btnText', title: 'Button Text', type: 'string' }),
-            defineField({ name: 'image', title: 'Background Image', type: 'image', options: { hotspot: true } }),
+            { name: 'btnText', title: 'Button Text', type: 'string' },
+            { name: 'downloadBtnText', title: 'Download Button Text', type: 'string', description: 'E.g., Download DC Chargers Brochure' },
+            { name: 'image', title: 'Background Image', type: 'image', options: { hotspot: true } },
+            { name: 'brochureFile', title: 'Brochure File (Downloadable)', type: 'file', options: { accept: '.pdf,.doc,.docx' }, description: 'File to be downloaded when clicking the download brochure button on the card.' },
           ],
         }),
       ],

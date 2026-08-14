@@ -107,7 +107,7 @@
 }
 
 @media (min-width: 1025px) {
-  .dropdown:not(.forceClose):hover .dropdownTrigger {
+  .dropdown.dropdownHovered .dropdownTrigger {
     color: #ffffff;
   }
 }
@@ -122,7 +122,7 @@
 }
 
 @media (min-width: 1025px) {
-  .dropdown:not(.forceClose):hover .chevronIcon {
+  .dropdown.dropdownHovered .chevronIcon {
     transform: rotate(180deg);
     color: var(--primary-color);
   }
@@ -165,7 +165,7 @@
 }
 
 @media (min-width: 1025px) {
-  .dropdown:not(.forceClose):hover .dropdownPanel {
+  .dropdown.dropdownHovered .dropdownPanel {
     visibility: visible;
     opacity: 1;
     transform: translateX(-50%) translateY(0);

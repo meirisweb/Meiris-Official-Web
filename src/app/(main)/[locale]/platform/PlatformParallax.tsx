@@ -7,6 +7,7 @@ import { GREEN } from "./Graphics";
 interface Props {
   platformModule: StaticImageData;
   locale?: string;
+  cmsData?: any;
 }
 
 const ProtectedVideo = ({ src, className }: { src: string, className?: string }) => {
@@ -49,16 +50,16 @@ const ProtectedVideo = ({ src, className }: { src: string, className?: string })
 };
 
 const Section1 = ({ t }: { t: any }) => (
-  <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-28 pb-20">
+  <section className="relative min-h-screen flex items-center justify-center bg-black overflow-hidden pt-28 pb-0 md:pt-36">
     <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-12 md:gap-20 px-6 sm:px-10 md:grid-cols-[1.15fr_1fr] lg:px-16 z-10">
       <div>
-        <h1 className="text-[clamp(2.25rem,min(6.0vw,9.0vh),5.5rem)] font-bold leading-[1.02] tracking-[-0.03em] text-white whitespace-pre-line">
+        <h1 className="text-[clamp(2.5rem,min(6.0vw,9.0vh),5.5rem)] font-bold leading-[1.02] tracking-[-0.03em] text-white whitespace-pre-line">
           {t.s1_title}
         </h1>
-        <p className="mt-6 md:mt-16 max-w-xl text-[14px] md:text-[clamp(1rem,min(1.8vw,2.7vh),1.35rem)] font-semibold leading-snug text-white">
+        <p className="mt-6 md:mt-16 max-w-xl text-[14px] md:text-[16px] 2xl:text-[clamp(1.1rem,min(2vw,3vh),1.6rem)] font-semibold leading-snug text-white">
           {t.s1_subtitle}
         </p>
-        <p className="mt-4 md:mt-12 max-w-xl text-[12px] md:text-[clamp(0.85rem,min(1.3vw,2.0vh),1rem)] leading-[1.55] text-white/60">
+        <p className="mt-4 md:mt-12 max-w-xl text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.55] text-white/60">
           {t.s1_desc}
         </p>
       </div>
@@ -72,25 +73,25 @@ const Section1 = ({ t }: { t: any }) => (
 );
 
 const Section2 = ({ t }: { t: any }) => (
-  <section className="relative py-24 md:py-32 bg-black flex items-center justify-center">
+  <section className="relative pt-8 md:pt-12 pb-16 md:pb-24 bg-black flex items-center justify-center">
     <div className="mx-auto grid w-full max-w-[1440px] grid-cols-1 items-center gap-12 md:gap-20 px-6 sm:px-10 md:grid-cols-[1.15fr_1fr] lg:px-16">
       <div>
-        <h2 className="text-[clamp(1.25rem,min(4vw,5vh),2.1rem)] 2xl:text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white whitespace-pre-line">
+        <h2 className="text-[clamp(1.75rem,min(4.5vw,5.5vh),3rem)] 2xl:text-[clamp(2rem,min(4.5vw,6vh),3.5rem)] font-bold leading-[1.08] tracking-[-0.02em] text-white whitespace-pre-line">
           {t.s2_t1}
         </h2>
-        <p className="mt-4 max-w-xl text-[12px] xl:text-[13px] 2xl:text-[clamp(1.1rem,min(1.8vw,2.7vh),1.35rem)] font-semibold leading-snug text-white whitespace-pre-line">
+        <p className="mt-4 max-w-xl text-[13px] md:text-[15px] 2xl:text-[clamp(1.1rem,min(2vw,3vh),1.6rem)] font-semibold leading-snug text-white whitespace-pre-line">
           {t.s2_t2}
         </p>
         <div className="mt-6">
-          <p className="max-w-xl text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,min(1.4vw,2.1vh),1.1rem)] leading-[1.4] 2xl:leading-[1.55] text-white/55">
+          <p className="max-w-xl text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.55] text-white/55">
             {t.s2_t3}
           </p>
-          <p className="mt-4 text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,min(1.5vw,2.2vh),1.2rem)] text-white">
+          <p className="mt-4 max-w-xl text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.55] text-white">
             {t.s2_t4}
           </p>
         </div>
         <div className="mt-8 border-l-2 pl-4 md:pl-6 border-[#00E573]">
-          <p className="max-w-lg text-[12px] md:text-[clamp(0.85rem,min(1.2vw,1.8vh),1rem)] italic leading-[1.5] md:leading-[1.8] text-white/65">
+          <p className="max-w-lg text-[13px] md:text-[15px] italic leading-[1.5] md:leading-[1.8] text-white/65">
             {t.s2_q}
           </p>
           <p className="mt-2 text-[11px] md:text-[12px] uppercase tracking-widest text-[#00E573]">
@@ -107,6 +108,60 @@ const Section2 = ({ t }: { t: any }) => (
   </section>
 );
 
+const Section3Mobile = ({ t }: { t: any }) => {
+  const [frame, setFrame] = useState(1);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFrame((prev) => (prev >= 181 ? 1 : prev + 1));
+    }, 40);
+    return () => clearInterval(interval);
+  }, []);
+
+  const s3FramePadded = String(frame).padStart(3, '0');
+  const s3FrameUrl = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${s3FramePadded}.jpg`;
+
+  return (
+    <section className="relative py-16 bg-black flex flex-col justify-center">
+      <div className="mx-auto flex w-full max-w-[1240px] flex-col justify-center px-6 sm:px-10 z-10">
+        <div className="flex flex-col items-center gap-12">
+          <div className="w-full text-white">
+            <p className="text-[11px] font-bold tracking-widest text-white/50 uppercase">
+              {t.s3_t1}
+            </p>
+            <h2 className="mt-2 text-[clamp(1.75rem,min(4.5vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line">
+              {t.s3_t2}
+            </h2>
+            <p className="mt-4 text-[12px] text-white/70 leading-[1.4]">
+              {t.s3_t3}
+            </p>
+          </div>
+          <div className="flex w-full justify-center">
+            <div className="w-full max-w-[300px] sm:max-w-[400px] h-auto flex justify-center">
+              <img src={s3FrameUrl} alt="Three Layers Architecture" className="w-full h-auto object-contain mix-blend-screen" />
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-16 grid w-full grid-cols-1 gap-6">
+          <div className="rounded-[1rem] border border-white/10 bg-[#111111] p-6">
+            <h3 className="text-[14px] font-semibold text-white">{t.s3_c1_h}</h3>
+            <p className="mt-3 text-[12px] leading-relaxed text-white/60">{t.s3_c1_p}</p>
+          </div>
+          <div className="rounded-[1rem] border border-white/10 bg-[#111111] p-6">
+            <h3 className="text-[14px] font-semibold text-white">{t.s3_c2_h}</h3>
+            <p className="mt-3 text-[12px] leading-relaxed text-white/60">{t.s3_c2_p}</p>
+          </div>
+          <div className="rounded-[1rem] border border-white/10 bg-[#111111] p-6">
+            <h3 className="text-[14px] font-semibold text-white">{t.s3_c3_h}</h3>
+            <p className="mt-3 text-[12px] leading-relaxed text-white/60">{t.s3_c3_p}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 const Section3Parallax = ({ t, isMobile, isTablet }: { t: any, isMobile: boolean, isTablet: boolean }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
@@ -116,13 +171,11 @@ const Section3Parallax = ({ t, isMobile, isTablet }: { t: any, isMobile: boolean
       const el = containerRef.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      if (rect.top <= 0) {
+      if (rect.top <= window.innerHeight) {
         const scrolled = -rect.top;
         const total = rect.height - window.innerHeight;
         let p = scrolled / total;
-        setProgress(Math.max(0, Math.min(1, p)));
-      } else if (rect.top > 0) {
-        setProgress(0);
+        setProgress(Math.max(-0.5, Math.min(1, p)));
       }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -139,61 +192,63 @@ const Section3Parallax = ({ t, isMobile, isTablet }: { t: any, isMobile: boolean
     return outS + lerp(inS, inE) * (outE - outS);
   }
 
-  const s3BoxOp = Math.min(lerp(0.0, 0.08), 1);
-  const s3BoxW = rng(0.0, 0.12, 0, isMobile ? 100 : 45);
-  const s3TextY = rng(0.0, 0.08, 40, 0);
-  const s3DiagOp = lerp(0.05, 0.25);
-  const s3MobileCardsOp = isMobile ? lerp(0.2, 0.3) : 1;
-  const s3MobileTranslateX = isMobile ? rng(0.4, 0.95, 0, -178) : 0;
-  
-  const s3C1Op = lerp(0.35, 0.45);
-  const s3C1Y = rng(0.35, 0.45, 40, 0);
-  const s3C2Op = lerp(0.40, 0.50);
-  const s3C2Y = rng(0.40, 0.50, 40, 0);
-  const s3C3Op = lerp(0.45, 0.55);
-  const s3C3Y = rng(0.45, 0.55, 40, 0);
+  const s3BoxOp = Math.min(lerp(-0.35, 0.0), 1);
+  const s3BoxW = rng(-0.35, 0.0, 0, 45);
 
-  const s3FrameProgress = lerp(0.0, 1.0);
+  const s3TextOp = lerp(-0.05, 0.1);
+  const s3TextY = rng(-0.05, 0.1, 40, 0);
+  const s3DiagOp = lerp(-0.05, 0.1);
+  const s3DiagY = rng(-0.05, 0.1, 20, 0);
+  
+  const s3C1Op = lerp(0.30, 0.42);
+  const s3C1Y = rng(0.30, 0.42, 40, 0);
+  const s3C2Op = lerp(0.36, 0.48);
+  const s3C2Y = rng(0.36, 0.48, 40, 0);
+  const s3C3Op = lerp(0.42, 0.54);
+  const s3C3Y = rng(0.42, 0.54, 40, 0);
+
+  const s3FrameProgress = lerp(0.0, 0.85);
   const s3FrameIndex = Math.min(181, Math.max(1, Math.floor(s3FrameProgress * 181) + 1));
   const s3FramePadded = String(s3FrameIndex).padStart(3, '0');
   const s3FrameUrl = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${s3FramePadded}.jpg`;
 
   return (
     <div ref={containerRef} style={{ height: "350vh", position: "relative" }}>
-      <div style={{ position: "sticky", top: 0, width: "100%", height: "100vh", backgroundColor: "#000", overflow: "hidden", display: "flex", alignItems: isMobile ? "flex-start" : "center", justifyContent: "center" }}>
-        <div className="mx-auto w-full max-w-[1180px] flex flex-col justify-center relative px-4 md:px-6 sm:px-8 py-6 md:py-8 lg:px-10 pt-24 md:pt-0">
-          <div className="hidden md:block absolute top-16 bottom-8 left-0 rounded-l-[2rem] z-0" style={{ width: `${s3BoxW}%`, opacity: s3BoxOp, background: "#e6e6e6" }} />
+      <div style={{ position: "sticky", top: 0, width: "100%", height: "100vh", backgroundColor: "#000", overflow: "hidden", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="mx-auto w-full max-w-[1180px] flex flex-col justify-center relative px-4 md:px-8 lg:px-10 py-0 pt-24 md:pt-0">
           <div className="relative z-10 flex flex-col">
-            <div className="flex flex-col md:flex-row flex-1 min-h-0 items-center">
-              <div className="w-full md:w-[45%] p-0 md:p-[2vh] 2xl:p-[4vh] pt-0 md:pt-[3vh] 2xl:pt-[5vh] text-white md:text-black" style={{ opacity: s3BoxOp, transform: `translateY(${s3TextY}px)` }}>
-                <p className="text-[9px] md:text-[10px] font-bold tracking-widest text-[#00E573] md:text-black/50 uppercase">
+            <div className="relative flex flex-col md:flex-row flex-1 min-h-0 items-center">
+              <div className="absolute top-[1vh] md:top-4 lg:top-8 2xl:top-[4vh] bottom-[-2rem] lg:bottom-[-3rem] 2xl:bottom-[-10vh] left-[-2rem] md:left-0 rounded-r-[2rem] md:rounded-l-[2rem] md:rounded-r-none z-0" style={{ width: `${s3BoxW}%`, opacity: s3BoxOp, background: "#e6e6e6" }} />
+              <div className="w-full md:w-[48%] p-0 md:p-8 md:pr-2 lg:pr-10 2xl:p-[6vh] 2xl:pr-16 pt-0 md:pt-10 lg:pt-12 2xl:pt-[8vh] text-black" style={{ opacity: s3TextOp, transform: `translateY(${s3TextY}px)` }}>
+                <p className="text-[11px] md:text-[12px] font-bold tracking-widest text-black/50 uppercase">
                   {t.s3_t1}
                 </p>
-                <h2 className="mt-1 md:mt-[1.5vh] 2xl:mt-[3vh] text-[clamp(1.5rem,min(3.5vw,5.2vh),2.5rem)] 2xl:text-[clamp(1.75rem,min(3.5vw,5.2vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white md:text-black whitespace-pre-line">
+                <h2 className="mt-1 md:mt-[1.5vh] 2xl:mt-[3vh] text-[clamp(1.5rem,min(3.5vw,5vh),2.5rem)] 2xl:text-[clamp(1.7rem,min(3.5vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight text-black whitespace-pre">
                   {t.s3_t2}
                 </h2>
-                <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[2.5vh] text-[11px] lg:text-[13px] 2xl:text-[clamp(12px,1.5vh,14px)] text-white/70 md:text-black/70 leading-[1.4] 2xl:leading-[1.5]">
+                <p className="mt-2 md:mt-[1.5vh] 2xl:mt-[2.5vh] text-[12px] md:text-[14px] 2xl:text-[16px] text-black/70 leading-[1.4] 2xl:leading-[1.5]">
                   {t.s3_t3}
                 </p>
               </div>
-              <div className="flex w-full md:w-[55%] items-center justify-center md:justify-end p-4 md:p-[2vh] 2xl:p-[3.5vh] md:pr-4 lg:pr-12" style={{ opacity: s3DiagOp }}>
+              <div className="flex w-full md:w-[52%] items-center justify-center md:justify-end p-4 pt-16 md:p-8 2xl:p-[6vh] md:pt-8 2xl:pt-[6vh] md:pr-4 lg:pr-12" style={{ opacity: s3DiagOp, transform: `translateY(${s3DiagY}px)` }}>
                 <div className="w-full max-w-[200px] md:max-w-none flex justify-center md:justify-end">
-                  <img src={s3FrameUrl} alt="Three Layers Architecture" className="w-full max-w-[280px] sm:max-w-[350px] md:max-w-[450px] lg:max-w-[600px] h-auto object-contain mix-blend-screen" />
+                  <img src={s3FrameUrl} alt="Three Layers Architecture" className="w-full max-w-[280px] sm:max-w-[350px] md:max-w-[380px] lg:max-w-[450px] 2xl:max-w-[600px] h-auto object-contain mix-blend-screen" />
                 </div>
               </div>
             </div>
-            <div className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-[2vh] 2xl:pb-[3.5vh] mt-4 md:-mt-[2vh] 2xl:-mt-16" style={{ transform: isMobile ? `translateX(${s3MobileTranslateX}vw)` : "none" }}>
-              <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-[2vh] 2xl:p-[3.5vh] text-white rounded-[1rem] md:rounded-none md:rounded-l-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C1Op, transform: isMobile ? "none" : `translateY(${s3C1Y}px)` }}>
-                <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c1_h}</h3>
-                <p className="mt-2 md:mt-[1vh] 2xl:mt-[2vh] text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c1_p}</p>
+
+            <div className="flex md:grid flex-nowrap md:grid-cols-3 gap-4 px-4 md:px-12 pb-4 md:pb-6 2xl:pb-[3.5vh] mt-[-2rem] lg:mt-[-3rem] 2xl:mt-[-6vh] relative z-20">
+              <div className="shrink-0 w-auto bg-[#2c2d2e] p-6 md:p-4 lg:p-6 2xl:p-[3.5vh] text-white rounded-none md:rounded-l-[1.5rem]" style={{ opacity: s3C1Op, transform: `translateY(${s3C1Y}px)` }}>
+                <h3 className="text-[14px] md:text-[15px] lg:text-[16px] font-semibold">{t.s3_c1_h}</h3>
+                <p className="mt-2 md:mt-2 lg:mt-[1vh] 2xl:mt-[2vh] text-[12px] md:text-[12px] lg:text-[14px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c1_p}</p>
               </div>
-              <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-[2vh] 2xl:p-[3.5vh] text-white rounded-[1rem] md:rounded-none" style={{ opacity: isMobile ? s3MobileCardsOp : s3C2Op, transform: isMobile ? "none" : `translateY(${s3C2Y}px)` }}>
-                <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c2_h}</h3>
-                <p className="mt-2 md:mt-[1vh] 2xl:mt-[2vh] text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c2_p}</p>
+              <div className="shrink-0 w-auto bg-[#2c2d2e] p-6 md:p-4 lg:p-6 2xl:p-[3.5vh] text-white rounded-none" style={{ opacity: s3C2Op, transform: `translateY(${s3C2Y}px)` }}>
+                <h3 className="text-[14px] md:text-[15px] lg:text-[16px] font-semibold">{t.s3_c2_h}</h3>
+                <p className="mt-2 md:mt-2 lg:mt-[1vh] 2xl:mt-[2vh] text-[12px] md:text-[12px] lg:text-[14px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c2_p}</p>
               </div>
-              <div className="shrink-0 w-[85vw] md:w-auto bg-[#2c2d2e] p-6 md:p-[2vh] 2xl:p-[3.5vh] text-white rounded-[1rem] md:rounded-none md:rounded-r-[1.5rem]" style={{ opacity: isMobile ? s3MobileCardsOp : s3C3Op, transform: isMobile ? "none" : `translateY(${s3C3Y}px)` }}>
-                <h3 className="text-[13px] md:text-base font-semibold">{t.s3_c3_h}</h3>
-                <p className="mt-2 md:mt-4 text-[12px] md:text-[13px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c3_p}</p>
+              <div className="shrink-0 w-auto bg-[#2c2d2e] p-6 md:p-4 lg:p-6 2xl:p-[3.5vh] text-white rounded-none md:rounded-r-[1.5rem]" style={{ opacity: s3C3Op, transform: `translateY(${s3C3Y}px)` }}>
+                <h3 className="text-[14px] md:text-[15px] lg:text-[16px] font-semibold">{t.s3_c3_h}</h3>
+                <p className="mt-2 md:mt-2 lg:mt-[1vh] 2xl:mt-[2vh] text-[12px] md:text-[12px] lg:text-[14px] leading-[1.6] md:leading-relaxed text-white/50">{t.s3_c3_p}</p>
               </div>
             </div>
           </div>
@@ -206,23 +261,23 @@ const Section3Parallax = ({ t, isMobile, isTablet }: { t: any, isMobile: boolean
 const Section4 = ({ t }: { t: any }) => (
   <section className="relative bg-white md:bg-black flex flex-col md:flex-row overflow-hidden">
     <div className="grid w-full grid-cols-1 md:grid-cols-2 relative flex-1 h-full">
-      <div className="relative z-20 bg-white md:bg-[#e6e6e6] px-6 py-20 md:py-32 2xl:py-[10vh] md:px-16 lg:px-24 xl:px-32 flex flex-col justify-center">
+      <div className="relative z-20 bg-white md:bg-[#e6e6e6] px-6 py-16 md:py-24 2xl:py-[8vh] md:px-16 lg:px-24 xl:px-32 flex flex-col justify-center">
         <div className="w-full text-black">
-          <h2 className="text-[clamp(1.25rem,min(4vw,5vh),2.1rem)] 2xl:text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight whitespace-pre-line">
+          <h2 className="text-[clamp(1.75rem,min(4.5vw,5.5vh),3rem)] 2xl:text-[clamp(2rem,min(4.5vw,6vh),3.5rem)] font-bold leading-[1.05] tracking-tight whitespace-pre-line">
             {t.s4_t1}
           </h2>
-          <p className="mt-6 text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,2vh,1.15rem)] leading-[1.4] 2xl:leading-[1.5] text-black/80">
+          <p className="mt-6 text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.5] text-black/80">
             {t.s4_t2}
           </p>
-          <p className="mt-4 text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,2vh,1.15rem)] leading-[1.4] 2xl:leading-[1.5] text-black/80">
+          <p className="mt-4 text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.5] text-black/80">
             {t.s4_t3}
           </p>
-          <p className="mt-4 text-[11px] md:text-[12px] xl:text-[13px] 2xl:text-[clamp(1rem,2vh,1.15rem)] leading-[1.4] 2xl:leading-[1.5] text-black/80">
+          <p className="mt-4 text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.5] text-black/80">
             {t.s4_t4}
           </p>
         </div>
       </div>
-      <div className="relative z-10 flex items-center justify-center px-6 py-6 md:py-32 2xl:py-[10vh] md:pl-16 mix-blend-normal md:mix-blend-screen bg-white md:bg-black">
+      <div className="relative z-10 flex items-center justify-center px-6 py-6 md:py-24 2xl:py-[8vh] md:pl-16 mix-blend-normal md:mix-blend-screen bg-white md:bg-black">
         <div className="relative w-full max-w-[320px] md:max-w-[550px] 2xl:max-w-[650px] scale-100 md:scale-[1.35] 2xl:scale-[1.6]">
           <ProtectedVideo src="/api/media?id=Platform_Section_4_-_PC_Version_mllwn7" className="w-full h-auto hidden md:block contrast-125" />
           <ProtectedVideo src="/api/media?id=Platform_Section_4_-_Mobile_Version_qm9hhe" className="w-full h-auto md:hidden contrast-125" />
@@ -233,24 +288,24 @@ const Section4 = ({ t }: { t: any }) => (
 );
 
 const Section5 = ({ t }: { t: any }) => (
-  <section className="relative pt-6 md:pt-10 pb-16 md:pb-24 bg-[#050505] flex flex-col justify-center overflow-hidden">
+  <section className="relative py-16 md:py-24 bg-[#050505] flex flex-col justify-center overflow-hidden">
     <div className="mx-auto flex w-full max-w-[1240px] flex-col justify-center px-6 sm:px-10 lg:px-12 z-10">
-      <h2 className="text-[clamp(1.75rem,min(4.0vw,6.0vh),3.75rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line">
+      <h2 className="text-[clamp(1.75rem,min(4.5vw,5.5vh),3rem)] 2xl:text-[clamp(2rem,min(4.5vw,6vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line">
         {t.s5_t1}
       </h2>
-      <p className="mt-4 text-[13px] md:text-lg font-medium text-[#00E573]">
+      <p className="mt-4 text-[14px] md:text-[16px] 2xl:text-[20px] font-semibold text-[#00E573]">
         {t.s5_t2}
       </p>
       <div className="mt-8 md:mt-12 grid w-full grid-cols-1 gap-6 md:grid-cols-2">
         <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-6 md:p-[3.5vh]">
-          <p className="text-[12px] md:text-[14px] leading-relaxed text-white/80">{t.s5_c1}</p>
+          <p className="text-[12px] md:text-[14px] 2xl:text-[16px] leading-relaxed text-white/80">{t.s5_c1}</p>
         </div>
         <div className="rounded-[1rem] md:rounded-[1.5rem] border border-white/20 p-6 md:p-[3.5vh]">
-          <p className="text-[12px] md:text-[14px] leading-relaxed text-white/80">{t.s5_c2}</p>
+          <p className="text-[12px] md:text-[14px] 2xl:text-[16px] leading-relaxed text-white/80">{t.s5_c2}</p>
         </div>
       </div>
       <div className="mt-12 border-l-2 pl-4 md:pl-6 border-[#00E573]">
-        <p className="max-w-4xl text-[12px] md:text-[14px] italic leading-relaxed text-white/80">
+        <p className="max-w-4xl text-[13px] md:text-[15px] italic leading-relaxed text-white/80">
           {t.s5_q}
         </p>
       </div>
@@ -265,26 +320,26 @@ const Section5 = ({ t }: { t: any }) => (
 );
 
 const Section7 = ({ t }: { t: any }) => (
-  <section className="relative py-24 md:py-32 bg-black">
-    <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-12 md:gap-16 px-6 md:px-8 md:grid-cols-[1fr_1.1fr]">
+  <section className="relative py-16 md:py-24 bg-black">
+    <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-12 md:gap-20 px-6 md:px-8 md:grid-cols-[1.15fr_1fr]">
       <div className="flex flex-col">
-        <h2 className="text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line hidden xl:block">
+        <h2 className="text-[clamp(1.75rem,min(4.5vw,5.5vh),3rem)] 2xl:text-[clamp(2rem,min(4.5vw,6vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line hidden xl:block">
           {t.s7_t1}
         </h2>
-        <h2 className="text-[clamp(1.5rem,min(4vw,5.5vh),3rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line xl:hidden">
+        <h2 className="text-[clamp(1.75rem,min(4.5vw,5.5vh),3rem)] 2xl:text-[clamp(2rem,min(4.5vw,6vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line xl:hidden">
           {t.s7_t1_mobile || t.s7_t1}
         </h2>
         <h3 className="mt-6 text-[14px] md:text-[16px] 2xl:text-[20px] font-semibold text-[#00E573] max-w-xl leading-tight">
           {t.s7_sub}
         </h3>
-        <p className="mt-6 max-w-lg text-[11px] lg:text-[13px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.5] text-white/75">
+        <p className="mt-6 max-w-xl text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.55] text-white/75">
           {t.s7_t2}
         </p>
-        <p className="mt-4 max-w-lg text-[11px] lg:text-[13px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.5] text-white/75">
+        <p className="mt-4 max-w-xl text-[12px] md:text-[14px] 2xl:text-[16px] leading-[1.4] 2xl:leading-[1.55] text-white/75">
           {t.s7_t3}
         </p>
         <div className="mt-8 border-l-2 border-[#00E573] pl-4 md:pl-6">
-          <p className="max-w-lg text-[12px] md:text-[15px] italic leading-[1.5] md:leading-relaxed text-white/85">
+          <p className="max-w-xl text-[13px] md:text-[15px] italic leading-[1.5] md:leading-[1.8] text-white/85">
             {t.s7_q}
           </p>
         </div>
@@ -299,13 +354,13 @@ const Section7 = ({ t }: { t: any }) => (
 );
 
 const Section8 = ({ t }: { t: any }) => (
-  <section className="relative py-24 md:py-32 bg-[#050505] pb-48">
+  <section className="relative pt-16 pb-32 md:pt-24 md:pb-40 bg-[#050505]">
     <div className="mx-auto w-full max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1600px] px-6 md:px-10 lg:px-16">
       <div>
-        <h2 className="text-[clamp(1.75rem,min(4.0vw,6.0vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line">
+        <h2 className="text-[clamp(1.75rem,min(4.5vw,5.5vh),3rem)] 2xl:text-[clamp(2rem,min(4.5vw,6vh),3.5rem)] font-bold leading-[1.05] tracking-tight text-white whitespace-pre-line">
           {t.s8_t1}
         </h2>
-        <p className="mt-6 max-w-4xl text-[13px] md:text-[14px] leading-relaxed text-white/70 whitespace-pre-line">
+        <p className="mt-6 max-w-4xl text-[12px] md:text-[14px] 2xl:text-[16px] leading-relaxed text-white/70 whitespace-pre-line">
           {t.s8_t2}
         </p>
       </div>
@@ -347,7 +402,7 @@ const Section8 = ({ t }: { t: any }) => (
   </section>
 );
 
-export default function PlatformParallax({ platformModule, locale }: Props) {
+export default function PlatformParallax({ platformModule, locale, cmsData }: Props) {
   const [isMobile, setIsMobile] = useState(false);
   const [isTablet, setIsTablet] = useState(false);
 
@@ -361,7 +416,7 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     return () => window.removeEventListener("resize", checkDevice);
   }, []);
 
-  const t = locale === 'es-419' ? {
+  const TRANSLATIONS = locale === 'es-419' ? {
     s1_title: "Conversión\nInteligente\nde Energía.",
     s1_subtitle: "Desde la entrada de red hasta la salida de precisión, una sola arquitectura integrada verticalmente.",
     s1_desc: "La Plataforma MEIRIS es una plataforma de conversión de energía de integración vertical, desarrollada con dispositivos de Carburo de Silicio (SiC) y firmware exclusivo, diseñada para convertir, gestionar y orquestar la energía con precisión.",
@@ -477,11 +532,73 @@ export default function PlatformParallax({ platformModule, locale }: Props) {
     s8_c4_p: "Power Conversion System (PCS)"
   };
 
+  // Merge CMS Data over hardcoded translations
+  const t = {
+    ...TRANSLATIONS,
+    ...(cmsData?.hero?.title && { s1_title: cmsData.hero.title }),
+    ...(cmsData?.hero?.subtitle && { s1_subtitle: cmsData.hero.subtitle }),
+    ...(cmsData?.hero?.description && { s1_desc: cmsData.hero.description }),
+
+    ...(cmsData?.intro?.t1 && { s2_t1: cmsData.intro.t1 }),
+    ...(cmsData?.intro?.t2 && { s2_t2: cmsData.intro.t2 }),
+    ...(cmsData?.intro?.t3 && { s2_t3: cmsData.intro.t3 }),
+    ...(cmsData?.intro?.t4 && { s2_t4: cmsData.intro.t4 }),
+    ...(cmsData?.intro?.q && { s2_q: cmsData.intro.q }),
+    ...(cmsData?.intro?.qa && { s2_qa: cmsData.intro.qa }),
+
+    ...(cmsData?.architecture?.t1 && { s3_t1: cmsData.architecture.t1 }),
+    ...(cmsData?.architecture?.t2 && { s3_t2: cmsData.architecture.t2 }),
+    ...(cmsData?.architecture?.t3 && { s3_t3: cmsData.architecture.t3 }),
+    ...(cmsData?.architecture?.c1_h && { s3_c1_h: cmsData.architecture.c1_h }),
+    ...(cmsData?.architecture?.c1_p && { s3_c1_p: cmsData.architecture.c1_p }),
+    ...(cmsData?.architecture?.c2_h && { s3_c2_h: cmsData.architecture.c2_h }),
+    ...(cmsData?.architecture?.c2_p && { s3_c2_p: cmsData.architecture.c2_p }),
+    ...(cmsData?.architecture?.c3_h && { s3_c3_h: cmsData.architecture.c3_h }),
+    ...(cmsData?.architecture?.c3_p && { s3_c3_p: cmsData.architecture.c3_p }),
+
+    ...(cmsData?.silicon?.t1 && { s4_t1: cmsData.silicon.t1 }),
+    ...(cmsData?.silicon?.t2 && { s4_t2: cmsData.silicon.t2 }),
+    ...(cmsData?.silicon?.t3 && { s4_t3: cmsData.silicon.t3 }),
+    ...(cmsData?.silicon?.t4 && { s4_t4: cmsData.silicon.t4 }),
+
+    ...(cmsData?.bidirectional?.t1 && { s5_t1: cmsData.bidirectional.t1 }),
+    ...(cmsData?.bidirectional?.t2 && { s5_t2: cmsData.bidirectional.t2 }),
+    ...(cmsData?.bidirectional?.c1 && { s5_c1: cmsData.bidirectional.c1 }),
+    ...(cmsData?.bidirectional?.c2 && { s5_c2: cmsData.bidirectional.c2 }),
+    ...(cmsData?.bidirectional?.q && { s5_q: cmsData.bidirectional.q }),
+
+    ...(cmsData?.diagram?.in && { s6_in: cmsData.diagram.in }),
+    ...(cmsData?.diagram?.out && { s6_out: cmsData.diagram.out }),
+    ...(cmsData?.diagram?.flow && { s6_flow: cmsData.diagram.flow }),
+    ...(cmsData?.diagram?.stage && { s6_stage: cmsData.diagram.stage }),
+
+    ...(cmsData?.firmware?.t1 && { s7_t1: cmsData.firmware.t1 }),
+    ...(cmsData?.firmware?.t1_mobile && { s7_t1_mobile: cmsData.firmware.t1_mobile }),
+    ...(cmsData?.firmware?.sub && { s7_sub: cmsData.firmware.sub }),
+    ...(cmsData?.firmware?.t2 && { s7_t2: cmsData.firmware.t2 }),
+    ...(cmsData?.firmware?.t3 && { s7_t3: cmsData.firmware.t3 }),
+    ...(cmsData?.firmware?.q && { s7_q: cmsData.firmware.q }),
+    ...(cmsData?.firmware?.img && { s7_img: cmsData.firmware.img }),
+
+    ...(cmsData?.applications?.t1 && { s8_t1: cmsData.applications.t1 }),
+    ...(cmsData?.applications?.t2 && { s8_t2: cmsData.applications.t2 }),
+    ...(cmsData?.applications?.m_t && { s8_m_t: cmsData.applications.m_t }),
+    ...(cmsData?.applications?.m_s && { s8_m_s: cmsData.applications.m_s }),
+    ...(cmsData?.applications?.c1_t && { s8_c1_t: cmsData.applications.c1_t }),
+    ...(cmsData?.applications?.c1_p && { s8_c1_p: cmsData.applications.c1_p }),
+    ...(cmsData?.applications?.c2_t && { s8_c2_t: cmsData.applications.c2_t }),
+    ...(cmsData?.applications?.c2_p && { s8_c2_p: cmsData.applications.c2_p }),
+    ...(cmsData?.applications?.c3_t && { s8_c3_t: cmsData.applications.c3_t }),
+    ...(cmsData?.applications?.c3_p && { s8_c3_p: cmsData.applications.c3_p }),
+    ...(cmsData?.applications?.c4_t && { s8_c4_t: cmsData.applications.c4_t }),
+    ...(cmsData?.applications?.c4_p && { s8_c4_p: cmsData.applications.c4_p }),
+  };
+
   return (
     <div className="w-full bg-black text-white relative flex flex-col">
        <Section1 t={t} />
        <Section2 t={t} />
-       <Section3Parallax t={t} isMobile={isMobile} isTablet={isTablet} />
+       {isMobile ? <Section3Mobile t={t} /> : <Section3Parallax t={t} isMobile={isMobile} isTablet={isTablet} />}
        <Section4 t={t} />
        <Section5 t={t} />
        <Section7 t={t} />

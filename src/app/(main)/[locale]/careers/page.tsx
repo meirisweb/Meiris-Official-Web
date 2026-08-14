@@ -68,10 +68,10 @@ export default async function CareersPage({ params: { locale } }: { params: { lo
             <p className="text-[10px] font-bold tracking-[0.2em] text-[#00E573] uppercase mb-6">
               {hero?.eyebrow || "WORK WITH US"}
             </p>
-            <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-[1.05] tracking-tight text-black">
+            <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-bold leading-[1.05] tracking-tight text-black font-[family-name:var(--font-primary)]">
               {hero?.title || "Powering the Future of Mobility"}
             </h1>
-            <p className="mt-8 text-[14px] leading-relaxed text-black/60">
+            <p className="mt-8 text-[13px] md:text-[14px] leading-[1.6] text-gray-500 font-medium font-[family-name:var(--font-secondary)]">
               {hero?.description}
             </p>
           </div>
@@ -99,13 +99,13 @@ export default async function CareersPage({ params: { locale } }: { params: { lo
       <section className="bg-[#111111] py-16 md:py-24 lg:py-32 text-white">
         <div className="mx-auto max-w-[1200px] px-6 md:px-8 lg:px-12 grid grid-cols-1 lg:grid-cols-[1fr_1.1fr] gap-16 items-center">
           <div>
-            <h2 className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-white">
+            <h2 className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-white font-[family-name:var(--font-primary)]">
               {cvUpload?.headingLine1 || "Don't see a fit?"}
             </h2>
-            <h2 className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-[#00E573]">
+            <h2 className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold leading-[1.1] tracking-tight text-[#00E573] font-[family-name:var(--font-primary)]">
               {cvUpload?.headingLine2 || "Send us your CV"}
             </h2>
-            <p className="mt-6 text-[12px] leading-relaxed text-white/70 max-w-md">
+            <p className="mt-6 text-[13px] md:text-[14px] leading-[1.6] text-white/60 font-medium font-[family-name:var(--font-secondary)] max-w-md">
               {cvUpload?.description}
             </p>
             <div className="mt-12 flex items-center gap-3 text-white/90">

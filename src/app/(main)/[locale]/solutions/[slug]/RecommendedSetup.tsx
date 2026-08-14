@@ -151,9 +151,9 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
     <section className={`bg-white px-6 md:px-12 lg:px-24 ${isForm ? "py-12 md:py-16" : "py-16 md:py-32"}`}>
       <div className="max-w-[1440px] mx-auto w-full">
         {/* Header & Tabs */}
-        <ScrollReveal className={isForm ? "mb-6 md:mb-8 text-center" : "mb-16 md:mb-24"}>
+        <ScrollReveal className={isForm ? "mb-6 md:mb-8 text-center" : "mb-10 md:mb-14"}>
           {headingText && (
-            <h2 className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold text-[#1f2937] mb-8 tracking-tight font-[family-name:var(--font-primary)]">
+            <h2 className="text-[clamp(2.5rem,4vw,3.5rem)] font-bold text-[#1f2937] mb-6 tracking-tight font-[family-name:var(--font-primary)]">
               {headingText}
             </h2>
           )}
@@ -305,7 +305,7 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
                 className="flex flex-col items-center animate-in fade-in-0 slide-in-from-bottom-6 duration-700 ease-out fill-mode-both"
                 style={{ animationDelay: `${idx * 100}ms` }}
               >
-                <div className="w-full aspect-[4/3] bg-gray-100 rounded-[2rem] overflow-hidden relative shadow-sm mb-8 transition-transform duration-500 hover:scale-[1.02]">
+                <div className="w-full aspect-[4/3] bg-gray-100 rounded-[2rem] overflow-hidden relative shadow-sm mb-3 transition-transform duration-500 hover:scale-[1.02]">
                   <Image
                     src={feature.image}
                     alt={feature.title}
@@ -313,10 +313,10 @@ export default function RecommendedSetup({ setupData }: { setupData?: any }) {
                     className="object-cover"
                   />
                 </div>
-                <h3 className="text-2xl md:text-[1.75rem] font-bold text-[#1f2937] mb-4 text-center font-[family-name:var(--font-primary)]">
+                <h3 className="text-2xl md:text-[1.75rem] font-bold text-[#1f2937] mb-1 text-center font-[family-name:var(--font-primary)]">
                   {feature.title}
                 </h3>
-                <p className="text-[13px] md:text-[14px] text-gray-600 leading-relaxed text-center max-w-[320px] font-[family-name:var(--font-secondary)]">
+                <p className="text-[13px] md:text-[14px] text-gray-500 leading-[1.6] text-center max-w-[320px] font-medium font-[family-name:var(--font-secondary)]">
                   {feature.text}
                 </p>
               </div>

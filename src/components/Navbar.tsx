@@ -13,7 +13,8 @@ export default function Navbar({ data }: { data?: any }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [optimisticLocale, setOptimisticLocale] = useState<string | null>(null);
-  const [forceClose, setForceClose] = useState(false);
+  const [hoveredDropdown, setHoveredDropdown] = useState<string | null>(null);
+  const closeTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
   const pathname = usePathname();
   const router = useRouter();
   const t = useTranslations('Navbar');
@@ -61,9 +62,8 @@ export default function Navbar({ data }: { data?: any }) {
   useEffect(() => {
     setIsMenuOpen(false);
     setActiveDropdown(null);
-    setOptimisticLocale(null); // Reset optimistic state on navigation complete
-
-    setForceClose(true);
+    setHoveredDropdown(null);
+    setOptimisticLocale(null);
   }, [pathname]);
 
   const isActive = (rawPath: string) => {
@@ -76,6 +76,21 @@ export default function Navbar({ data }: { data?: any }) {
 
   const toggleDropdown = (name: string) => {
     setActiveDropdown(activeDropdown === name ? null : name);
+  };
+
+  const handleMouseEnter = (name: string) => {
+    if (closeTimers.current[name]) {
+      clearTimeout(closeTimers.current[name]);
+      delete closeTimers.current[name];
+    }
+    setHoveredDropdown(name);
+  };
+
+  const handleMouseLeave = (name: string) => {
+    closeTimers.current[name] = setTimeout(() => {
+      setHoveredDropdown((prev) => (prev === name ? null : prev));
+      delete closeTimers.current[name];
+    }, 120);
   };
 
   useEffect(() => {
@@ -126,7 +141,13 @@ export default function Navbar({ data }: { data?: any }) {
             if (hasDropdown) {
               const isDropdownActive = link.dropdownItems.some((item: any) => isActive(item.path));
               return (
-                <li key={index} className={`${styles.dropdown} ${activeDropdown === link.label ? styles.dropdownActive : ''} ${forceClose ? styles.forceClose : ''}`} onClick={() => toggleDropdown(link.label)} onPointerLeave={() => setForceClose(false)}>
+              <li
+                key={index}
+                className={`${styles.dropdown} ${activeDropdown === link.label ? styles.dropdownActive : ''} ${hoveredDropdown === link.label ? styles.dropdownHovered : ''}`}
+                onMouseEnter={() => handleMouseEnter(link.label)}
+                onMouseLeave={() => handleMouseLeave(link.label)}
+                onClick={() => { if (window.innerWidth < 1025) toggleDropdown(link.label); }}
+              >
                   <span className={`${styles.dropdownTrigger} ${isDropdownActive ? styles.activeLink : ''}`}>
                     {link.label}
                     <svg className={styles.chevronIcon} viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">

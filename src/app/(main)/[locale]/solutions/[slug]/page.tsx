@@ -367,7 +367,7 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
                     <div className="w-3.5 h-3.5 rounded-full bg-white/90 shadow-sm flex-shrink-0 mt-1.5"></div>
                     <h3 className="text-white font-bold text-xl md:text-2xl leading-tight">{feature.title}</h3>
                   </div>
-                  <p className="text-white/75 text-sm md:text-base leading-relaxed pr-2">{feature.desc}</p>
+                  <p className="text-[13px] md:text-[14px] text-white/60 leading-[1.6] pr-2 font-medium font-[family-name:var(--font-secondary)]">{feature.desc}</p>
                 </div>
               ))}
             </ScrollReveal>
@@ -393,7 +393,7 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
                   <div className="w-6 h-6 rounded-full bg-[#00E573] flex-shrink-0 mt-1 md:mt-0 shadow-[0_0_15px_rgba(0,229,115,0.4)]"></div>
                   <div className="flex flex-col gap-1.5 flex-grow">
                     <h3 className="text-black font-bold text-[17px]">{item.heading}</h3>
-                    <p className="text-black/60 text-[12px] leading-relaxed max-w-3xl font-medium">
+                    <p className="text-[13px] md:text-[14px] text-gray-500 leading-[1.6] max-w-3xl font-medium font-[family-name:var(--font-secondary)]">
                       {item.narrative}
                     </p>
                   </div>

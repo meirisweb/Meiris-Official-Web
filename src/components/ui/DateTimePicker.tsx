@@ -72,19 +72,8 @@ export default function DateTimePicker({
   const [minute, setMinute] = useState<string>("00");
   const [period, setPeriod] = useState<"AM" | "PM">("AM");
 
-  // Close when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  // Rely on the fixed background overlay for "click outside" instead of a document mousedown listener,
+  // which causes issues on mobile touch devices.
 
   // Calendar math
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -216,7 +205,7 @@ export default function DateTimePicker({
             className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-[2px]" 
             onClick={(e) => { e.stopPropagation(); setIsOpen(false); }} 
           />
-          <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 w-[290px] sm:w-[320px] text-gray-900 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
+          <div className="datetime-picker-portal fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[9999] bg-white rounded-2xl shadow-2xl border border-gray-100 p-5 w-[290px] sm:w-[320px] text-gray-900 animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
           {/* Calendar Header */}
           <div className="flex items-center justify-between mb-1">
             <span className="text-sm font-bold tracking-tight text-gray-900">

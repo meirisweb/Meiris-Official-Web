@@ -43,11 +43,15 @@ export default async function Page({ params }: { params: any }) {
       categories {
         acCard {
           ...,
-          "imageUrl": image.asset->url
+          "imageUrl": image.asset->url,
+          "brochureUrl": brochureFile.asset->url,
+          "downloadBtnText": downloadBtnText
         },
         dcCard {
           ...,
-          "imageUrl": image.asset->url
+          "imageUrl": image.asset->url,
+          "brochureUrl": brochureFile.asset->url,
+          "downloadBtnText": downloadBtnText
         }
       },
       acModels[] {
@@ -71,11 +75,15 @@ export default async function Page({ params }: { params: any }) {
       categories {
         acCard {
           ...,
-          "imageUrl": image.asset->url
+          "imageUrl": image.asset->url,
+          "brochureUrl": brochureFile.asset->url,
+          "downloadBtnText": downloadBtnText
         },
         dcCard {
           ...,
-          "imageUrl": image.asset->url
+          "imageUrl": image.asset->url,
+          "brochureUrl": brochureFile.asset->url,
+          "downloadBtnText": downloadBtnText
         }
       },
       acModels[] {
