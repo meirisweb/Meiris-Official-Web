@@ -174,19 +174,38 @@ const Section3Parallax = ({ t, isMobile, isTablet }: { t: any, isMobile: boolean
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
+    let ticking = false;
     const onScroll = () => {
-      const el = containerRef.current;
-      if (!el) return;
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const el = containerRef.current;
+          if (el) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top <= window.innerHeight) {
+              const scrolled = -rect.top;
+              const total = rect.height - window.innerHeight;
+              let p = scrolled / total;
+              setProgress(Math.max(-0.5, Math.min(1, p)));
+            }
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    
+    // initial check
+    const el = containerRef.current;
+    if (el) {
       const rect = el.getBoundingClientRect();
       if (rect.top <= window.innerHeight) {
         const scrolled = -rect.top;
         const total = rect.height - window.innerHeight;
-        let p = scrolled / total;
-        setProgress(Math.max(-0.5, Math.min(1, p)));
+        setProgress(Math.max(-0.5, Math.min(1, scrolled / total)));
       }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    }
+    
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -421,6 +440,20 @@ export default function PlatformParallax({ platformModule, locale, cmsData }: Pr
     checkDevice();
     window.addEventListener("resize", checkDevice);
     return () => window.removeEventListener("resize", checkDevice);
+  }, []);
+
+  useEffect(() => {
+    const preloadSequence = () => {
+      for (let i = 1; i <= 181; i++) {
+        const img = new window.Image();
+        const paddedIndex = String(i).padStart(3, '0');
+        img.src = `https://res.cloudinary.com/efi3yigo/image/upload/v1786089532/ezgif-frame-${paddedIndex}.jpg`;
+      }
+    };
+    
+    // Delay preloading slightly to prioritize initial page load
+    const timer = setTimeout(preloadSequence, 1000);
+    return () => clearTimeout(timer);
   }, []);
 
   const TRANSLATIONS = locale === 'es-419' ? {
