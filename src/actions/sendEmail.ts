@@ -177,6 +177,21 @@ export async function sendEmail(formData: FormData) {
       return { success: false, error: "Failed to send email via Resend." };
     }
 
+    // Auto-reply to applicant if it's a careers application
+    if (subject.includes("Careers Application")) {
+      try {
+        await resend.emails.send({
+          from: "MEIRIS Careers <careers@siriem.com>",
+          to: [email],
+          subject: "Application Received - MEIRIS",
+          // @ts-ignore - Some versions of the Resend SDK typing may not include templateId yet
+          templateId: "application-received",
+        });
+      } catch (autoReplyErr) {
+        console.error("Failed to send auto-reply to user:", autoReplyErr);
+      }
+    }
+
     return { success: true };
   } catch (err) {
     console.error("Error sending email:", err);
