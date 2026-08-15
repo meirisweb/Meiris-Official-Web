@@ -180,12 +180,60 @@ export async function sendEmail(formData: FormData) {
     // Auto-reply to applicant if it's a careers application
     if (subject.includes("Careers Application")) {
       try {
+        const autoReplyHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Received</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f9f9f9; font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; color: #0a0a0a;">
+  <table width="100%" border="0" cellspacing="0" cellpadding="0" style="padding: 40px 20px;">
+    <tr>
+      <td align="center">
+        <table width="100%" max-width="500" border="0" cellspacing="0" cellpadding="0" style="max-width: 500px; background-color: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 30px rgba(0,0,0,0.04);">
+          <tr>
+            <td align="center" style="background-color: #000000; padding: 30px;">
+              <img src="https://siriem.com/logos/Meiris-Logo.png" alt="MEIRIS" width="200" style="display: block; border: none; outline: none; max-width: 100%; height: auto;" />
+            </td>
+          </tr>
+          <tr>
+            <td style="padding: 40px;">
+              <h2 style="font-size: 22px; font-weight: bold; color: #000000; margin: 0 0 20px 0;">Application Received</h2>
+              <p style="font-size: 15px; color: #555555; margin: 0 0 16px 0; line-height: 1.6;">Hi there,</p>
+              <p style="font-size: 15px; color: #555555; margin: 0 0 16px 0; line-height: 1.6;">Thank you for applying to <strong>MEIRIS</strong>. We have successfully received your application and our team is currently reviewing it.</p>
+              <p style="font-size: 15px; color: #555555; margin: 0 0 32px 0; line-height: 1.6;">If your profile matches our current requirements, we will reach out to you directly for the next steps.</p>
+              <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                <tr>
+                  <td align="center">
+                    <a href="https://siriem.com" style="background-color: #00D384; color: #000000; font-size: 14px; font-weight: bold; text-decoration: none; padding: 14px 32px; border-radius: 50px; display: inline-block;">Visit Our Website</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="background-color: #f9f9f9; padding: 30px; border-top: 1px solid #eeeeee;">
+              <p style="font-size: 12px; color: #888888; margin: 0 0 20px 0;">
+                Have questions? Contact us at <a href="mailto:reachus@siriem.com" style="color: #00D384; text-decoration: none;">reachus@siriem.com</a>
+              </p>
+              <p style="font-size: 11px; color: #aaaaaa; margin: 0;">This is an automated message. Please do not reply.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+        `;
+
         await resend.emails.send({
           from: "MEIRIS Careers <careers@siriem.com>",
           to: [email],
           subject: "Application Received - MEIRIS",
-          // @ts-ignore - Some versions of the Resend SDK typing may not include templateId yet
-          templateId: "application-received",
+          html: autoReplyHtml,
         });
       } catch (autoReplyErr) {
         console.error("Failed to send auto-reply to user:", autoReplyErr);
