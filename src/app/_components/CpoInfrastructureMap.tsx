@@ -102,14 +102,14 @@ export default function CpoInfrastructureMap({ src, locale }: { src: string, loc
   }, []);
 
   return (
-    <div ref={mapRef} className="w-full h-full relative z-20 font-sans">
+    <div ref={mapRef} className={`w-full h-full relative font-sans transition-all duration-300 ${activeId ? 'z-[100]' : 'z-20'}`}>
       {/* Background Video (Secure API route to hide Cloudinary URL) */}
       <CloudinaryVideo src={src} />
 
-      {/* Overlay to dim video when a marker is active */}
+      {/* Overlay to dim the rest of the website when a marker is active */}
       <div
         onClick={() => setActiveId(null)}
-        className={`absolute inset-0 bg-black/40 transition-opacity duration-300 z-0 ${activeId ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+        className={`fixed inset-0 bg-black/80 transition-opacity duration-300 z-[60] ${activeId ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
       />
 
       {/* Markers Container */}
@@ -119,7 +119,7 @@ export default function CpoInfrastructureMap({ src, locale }: { src: string, loc
         return (
           <div
             key={marker.id}
-            className={`absolute transition-all duration-300 ${isActive ? 'z-50' : 'z-10'}`}
+            className={`absolute transition-all duration-300 ${isActive ? 'z-[70]' : 'z-10'}`}
             style={{ top: marker.top, left: marker.left, transform: 'translate(-50%, -50%)' }}
           >
             {/* The Dot (Concentric Circles) */}
