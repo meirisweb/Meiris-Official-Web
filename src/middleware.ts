@@ -11,7 +11,7 @@ export default function middleware(req: NextRequest) {
   // Temporarily block the official domain while keeping the vercel preview active
   if (hostname === 'siriem.com' || hostname === 'www.siriem.com') {
     return new NextResponse(
-      '<html><body style="display:flex;justify-content:center;align-items:center;height:100vh;background-color:#000;color:#fff;font-family:sans-serif;text-align:center;"><div><h1>Coming Soon</h1><p>We are currently updating our policies and preparing for the official launch.</p></div></body></html>', 
+      '<html><body style="display:flex;justify-content:center;align-items:center;height:100vh;background-color:#000;color:#fff;font-family:sans-serif;text-align:center;"><div><h1>Coming Soon</h1><p>We are upgrading our site it will be launched shortly</p></div></body></html>', 
       { status: 503, headers: { 'content-type': 'text/html' } }
     );
   }
