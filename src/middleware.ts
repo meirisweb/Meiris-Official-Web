@@ -1,7 +1,23 @@
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 
-export default createMiddleware(routing);
+import { NextRequest, NextResponse } from 'next/server';
+
+const intlMiddleware = createMiddleware(routing);
+
+export default function middleware(req: NextRequest) {
+  const hostname = req.headers.get('host') || '';
+  
+  // Temporarily block the official domain while keeping the vercel preview active
+  if (hostname === 'siriem.com' || hostname === 'www.siriem.com') {
+    return new NextResponse(
+      '<html><body style="display:flex;justify-content:center;align-items:center;height:100vh;background-color:#000;color:#fff;font-family:sans-serif;text-align:center;"><div><h1>Coming Soon</h1><p>We are currently updating our policies and preparing for the official launch.</p></div></body></html>', 
+      { status: 503, headers: { 'content-type': 'text/html' } }
+    );
+  }
+
+  return intlMiddleware(req);
+}
 
 export const config = {
   matcher: [
