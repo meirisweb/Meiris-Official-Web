@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
   const resolvedParams = await params;
   const locale = resolvedParams?.locale || 'en';
   return resolveSanitySeo({
-    fallbackTitle: "Team — Meiris Intelligent Power Conversion",
+    fallbackTitle: "Team — MEIRIS Intelligent Power Conversion",
     fallbackDescription: "Meet the engineering and leadership team behind Meiris.",
     path: '/team',
     locale,

@@ -27,7 +27,7 @@ export async function generateMetadata({
       });
 
       if (post) {
-        const postTitle = `${post.title} | Meiris Insights`;
+        const postTitle = `${post.title} | MEIRIS Insights`;
         const postDescription =
           post.details ||
           'Read the latest insights, announcements, and technological developments from Meiris.';
@@ -73,7 +73,7 @@ export async function generateMetadata({
 
   return resolveSanitySeo({
     seoData,
-    fallbackTitle: 'Insights — Meiris Intelligent Power Conversion',
+    fallbackTitle: 'Insights — MEIRIS Intelligent Power Conversion',
     fallbackDescription: 'Insights, press releases, and announcements from Meiris.',
     path: '/insights',
     locale,

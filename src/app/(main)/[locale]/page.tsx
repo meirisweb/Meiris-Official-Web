@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
 
   return resolveSanitySeo({
     seoData,
-    fallbackTitle: 'Meiris — The power conversion platform for global electrification',
+    fallbackTitle: 'MEIRIS — The power conversion platform for global electrification',
     fallbackDescription: 'Meiris provides cutting-edge electrification solutions, power infrastructure, and technological innovation.',
     path: '/',
     locale,

@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
 
   return resolveSanitySeo({
     seoData,
-    fallbackTitle: "Contact Us — Meiris Intelligent Power Conversion",
+    fallbackTitle: "Contact Us — MEIRIS Intelligent Power Conversion",
     fallbackDescription: "Connect with our experts to discuss intelligent charging solutions designed for tomorrow's mobility.",
     path: '/contact',
     locale,

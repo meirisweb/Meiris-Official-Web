@@ -147,11 +147,6 @@ export const homePageType = defineType({
           type: 'string',
         }),
         defineField({
-          name: 'description',
-          title: 'Description',
-          type: 'text',
-        }),
-        defineField({
           name: 'namePlaceholder',
           title: 'Name Placeholder',
           type: 'string',

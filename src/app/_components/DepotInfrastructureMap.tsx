@@ -15,7 +15,7 @@ const markersDataEn = [
   {
     id: 2,
     title: "Peak load & transformer sizing",
-    desc: "Sizing a transformer for 20-60 vehicles charging in overlapping shifts is hard to get right. Oversize it and you've sunk capex into unused capacity; undersize it and you risk tripping, demand penalties and stranded vehicles at shift-start.",
+    desc: "Sizing a transformer for multiple vehicles charging in overlapping shifts is hard to get right. Oversize it and you've sunk capex into unused capacity; undersize it and you risk tripping, demand penalties and stranded vehicles at shift-start.",
     top: "45%",
     left: "30%"
   },
@@ -76,7 +76,7 @@ const markersDataEs = [
   {
     id: 2,
     title: "Carga pico y dimensionamiento\ndel transformador",
-    desc: "Dimensionar un transformador para 20 a 60 vehículos que se cargan en turnos superpuestos es difícil de calcular con precisión. Sobredimensionarlo significa hundir el Capex en capacidad no utilizada; subdimensionarlo implica el riesgo de sufrir disparos de protección, penalizaciones por exceso de demanda y tener vehículos varados al inicio del turno.",
+    desc: "Dimensionar un transformador para la carga de múltiples vehículos en turnos superpuestos es difícil de acertar. Sobredimensionarlo implica hundir CapEx en capacidad no utilizada; subdimensionarlo conlleva el riesgo de disparos, penalizaciones por demanda y vehículos varados al inicio del turno.",
     top: "49%",
     left: "30%"
   },

@@ -8,12 +8,50 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from '@/component
 import { toast } from 'sonner';
 import { sendEmail } from "@/actions/sendEmail";
 import { trackContactSubmit } from '@/lib/analytics';
+import { IntlPhoneInput } from '@/components/ui/IntlPhoneInput';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import styles from './Contact.module.css';
+
+const DISPOSABLE_DOMAINS = new Set([
+  "mailinator.com", "guerrillamail.com", "tempmail.com", "10minutemail.com",
+  "yopmail.com", "throwawaymail.com", "sharklasers.com", "getairmail.com",
+  "dispostable.com", "fakeinbox.com", "maildrop.cc", "temp-mail.org",
+  "test.com", "example.com", "fake.com", "spam.com", "asdf.com", "qwerty.com",
+]);
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
-  email: z.string().email({ message: "Please enter a valid email address." }),
+  company: z.string().min(2, { message: "Company name must be at least 2 characters." }),
+  email: z
+    .string()
+    .email({ message: "Please enter a valid email address." })
+    .refine(
+      (val) => {
+        const domain = val.split("@")[1]?.toLowerCase();
+        return domain && !DISPOSABLE_DOMAINS.has(domain);
+      },
+      { message: "Please use a professional corporate email address (disposable emails are not allowed)." }
+    ),
+  countryCode: z.string().optional(),
+  phone: z
+    .string()
+    .min(1, { message: "Please enter a valid phone number." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+}).superRefine((data, ctx) => {
+  if (data.phone) {
+    let fullNumber = data.phone;
+    if (data.countryCode && !fullNumber.startsWith("+")) {
+      fullNumber = `${data.countryCode} ${data.phone}`;
+    }
+    const phoneNumber = parsePhoneNumberFromString(fullNumber, data.countryCode as any);
+    if (!phoneNumber || !phoneNumber.isValid()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please enter a valid phone number for the selected country.",
+        path: ["phone"],
+      });
+    }
+  }
 });
 
 export default function Contact({ data }: { data: any }) {
@@ -26,7 +64,10 @@ export default function Contact({ data }: { data: any }) {
     mode: "onTouched",
     defaultValues: {
       name: "",
+      company: "",
       email: "",
+      countryCode: "+91",
+      phone: "",
       message: "",
     },
   });
@@ -42,6 +83,14 @@ export default function Contact({ data }: { data: any }) {
     
     const botField = document.querySelector<HTMLInputElement>('#contact-form-bot');
     if (botField?.value) formData.append("bot-field", botField.value);
+
+    let formattedPhone = String(values.phone || "").trim();
+    if (values.countryCode && !formattedPhone.startsWith("+")) {
+      formattedPhone = `${values.countryCode} ${formattedPhone}`.trim();
+    }
+
+    const messageBody = `Company: ${values.company || "Not provided"}\nPhone: ${formattedPhone}\n\nMessage:\n${values.message}`;
+    formData.set("message", messageBody);
 
     // Send email (and validate) on server via Resend
     formData.append("subject", `New Inquiry (Home Page Contact) from ${values.name}`);
@@ -94,9 +143,6 @@ export default function Contact({ data }: { data: any }) {
         <div className={styles.contactBox}>
           <div className={styles.textContent}>
             <h2 className={styles.title}>{data.heading}</h2>
-            <p className={styles.description}>
-              {data.description}
-            </p>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className={styles.form}>
                 <input type="text" name="bot-field" id="contact-form-bot" className="hidden" tabIndex={-1} autoComplete="off" />
@@ -115,11 +161,44 @@ export default function Contact({ data }: { data: any }) {
                   />
                   <FormField
                     control={form.control}
+                    name="company"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <input type="text" placeholder="Company Name" className={styles.input} {...field} />
+                        </FormControl>
+                        <FormMessage className="text-red-500 font-medium text-xs mt-1" />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className={styles.inputGroup}>
+                  <FormField
+                    control={form.control}
                     name="email"
                     render={({ field }) => (
                       <FormItem className="w-full">
                         <FormControl>
                           <input type="email" placeholder={data.emailPlaceholder || "Email Address"} className={styles.input} {...field} />
+                        </FormControl>
+                        <FormMessage className="text-red-500 font-medium text-xs mt-1" />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="phone"
+                    render={({ field }) => (
+                      <FormItem className="w-full">
+                        <FormControl>
+                          <IntlPhoneInput
+                            value={field.value}
+                            onChange={(formatted) => field.onChange(formatted)}
+                            onCountryChange={(dialCode) => {
+                              form.setValue("countryCode", dialCode);
+                            }}
+                            className={styles.intlPhoneWrapper}
+                          />
                         </FormControl>
                         <FormMessage className="text-red-500 font-medium text-xs mt-1" />
                       </FormItem>

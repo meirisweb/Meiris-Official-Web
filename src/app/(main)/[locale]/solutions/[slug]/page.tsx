@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
   const slug = resolvedParams?.slug || '';
   const locale = resolvedParams?.locale || 'en';
   
-  let solutionTitle = "Solutions — Meiris Intelligent Power Conversion";
+  let solutionTitle = "Solutions — MEIRIS Intelligent Power Conversion";
   let solutionDesc = "Charging infrastructure built around your fleet's schedule.";
   let seoData = null;
 
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
       { slug, locale }
     );
     if (solution?.title) {
-      solutionTitle = `${solution.title} — Meiris Intelligent Power Conversion`;
+      solutionTitle = `${solution.title} — MEIRIS Intelligent Power Conversion`;
       if (solution?.subtitle) {
         solutionDesc = solution.subtitle;
       }
@@ -335,17 +335,6 @@ export default async function SolutionsPage({ params }: { params: Promise<{ slug
               </div>
             </ScrollReveal>
             
-            {/* Over-heating / Quality Card */}
-            <ScrollReveal delay={300}>
-              <div className="w-full bg-[#eefaf3] rounded-xl p-6 md:p-8 border border-[#cbeadd] shadow-sm">
-                <h3 className="text-[#0d6447] font-bold text-sm md:text-[13px] tracking-[0.1em] mb-3 uppercase">
-                  {featuresSection?.cardTitle}
-                </h3>
-                <p className="text-[#374151] text-[14px] md:text-[15px] leading-relaxed max-w-5xl">
-                  {featuresSection?.cardText}
-                </p>
-              </div>
-            </ScrollReveal>
           </div>
         </section>
       )}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { AsYouType } from "libphonenumber-js";
+import { AsYouType, parsePhoneNumberWithError, ParseError } from "libphonenumber-js";
 
 export interface Country {
   name: string;
@@ -104,6 +104,27 @@ export function IntlPhoneInput({
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const raw = e.target.value;
+    
+    // If user is deleting, always allow it
+    if (raw.length < value.length) {
+      try {
+        const formatter = new AsYouType(selectedCountry.code as any);
+        onChange(formatter.input(raw));
+      } catch {
+        onChange(raw);
+      }
+      return;
+    }
+
+    // Check if the new string is too long for the selected country
+    try {
+      parsePhoneNumberWithError(raw, selectedCountry.code as any);
+    } catch (error) {
+      if (error instanceof ParseError && error.message === 'TOO_LONG') {
+        return; // Prevent adding more digits
+      }
+    }
+
     try {
       const formatter = new AsYouType(selectedCountry.code as any);
       const formatted = formatter.input(raw);

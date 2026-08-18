@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
 
   return resolveSanitySeo({
     seoData,
-    fallbackTitle: "Platform — Meiris Intelligent Power Conversion",
+    fallbackTitle: "Platform — MEIRIS Intelligent Power Conversion",
     fallbackDescription: "From grid input to precision output — a vertically integrated power conversion architecture built on Silicon Carbide devices and proprietary firmware.",
     path: '/platform',
     locale,

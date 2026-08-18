@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { sendEmail } from "@/actions/sendEmail";
 import { trackContactSubmit } from "@/lib/analytics";
 import { IntlPhoneInput } from "@/components/ui/IntlPhoneInput";
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 
 const DISPOSABLE_DOMAINS = new Set([
   "mailinator.com",
@@ -47,9 +48,23 @@ const formSchema = z.object({
   countryCode: z.string().optional(),
   phone: z
     .string()
-    .min(6, { message: "Please enter a valid phone number." })
-    .regex(/^[0-9\s\-().+]+$/, { message: "Please enter a valid phone number." }),
+    .min(1, { message: "Please enter a valid phone number." }),
   message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+}).superRefine((data, ctx) => {
+  if (data.phone) {
+    let fullNumber = data.phone;
+    if (data.countryCode && !fullNumber.startsWith("+")) {
+      fullNumber = `${data.countryCode} ${data.phone}`;
+    }
+    const phoneNumber = parsePhoneNumberFromString(fullNumber, data.countryCode as any);
+    if (!phoneNumber || !phoneNumber.isValid()) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Please enter a valid phone number for the selected country.",
+        path: ["phone"],
+      });
+    }
+  }
 });
 
 const FORM_CATEGORIES = [

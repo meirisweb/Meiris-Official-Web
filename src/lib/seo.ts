@@ -80,7 +80,7 @@ export function getLocalizedMetadata({
       ...(ogDesc && { description: ogDesc }),
       type: ogType,
       url: openGraph?.url || canonicalPath,
-      siteName: 'Meiris',
+      siteName: 'MEIRIS',
       ...(ogImage && {
         images: [
           {

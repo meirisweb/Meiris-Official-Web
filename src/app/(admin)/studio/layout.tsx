@@ -1,5 +1,5 @@
 export const metadata = {
-  title: 'Studio | Meiris',
+  title: 'Studio | MEIRIS',
   description: 'Meiris Sanity Studio',
 }
 

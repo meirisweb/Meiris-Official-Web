@@ -466,6 +466,9 @@ export default function ProductsPage({ data }: { data?: any }) {
                   <div className={`w-[140px] sm:w-[200px] md:w-[260px] lg:w-full lg:h-full flex-shrink-0 lg:flex-shrink relative z-10 ${textClasses}`}>
                     <Image src={activeModel?.imageUrl || "/images/ChargerDemo.png"} alt={`Model ${activeModel?.name}`} width={480} height={900} className="w-full h-auto lg:h-full lg:w-auto lg:max-w-full object-contain object-center lg:object-left" />
                   </div>
+                  <div className="absolute bottom-2 right-4 lg:bottom-4 lg:right-8 text-[9px] md:text-[10px] text-black/40 pointer-events-none z-20">
+                    {activeCategory === 'ac' ? (data?.categories?.acCard?.imageDisclaimer || "The image is for illustrative purposes only.") : (data?.categories?.dcCard?.imageDisclaimer || "The image is for illustrative purposes only.")}
+                  </div>
                 </div>
               </div>
 

@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
   return resolveSanitySeo({
     seoData,
-    fallbackTitle: "Resources — Meiris Intelligent Power Conversion",
+    fallbackTitle: "Resources — MEIRIS Intelligent Power Conversion",
     fallbackDescription: "Brochures, datasheets, and technical specifications for Meiris products and solutions.",
     path: '/resources',
     locale,

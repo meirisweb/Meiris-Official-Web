@@ -95,17 +95,7 @@ export const solutionType = defineType({
           type: 'string',
           description: 'Used above the interactive map (if applicable).',
         }),
-        defineField({
-          name: 'cardTitle',
-          title: 'Map Card Title',
-          type: 'string',
-          description: 'E.g., OVER-HEATING & DE-RATING',
-        }),
-        defineField({
-          name: 'cardText',
-          title: 'Map Card Text',
-          type: 'text',
-        }),
+
         defineField({
           name: 'sectionHeading',
           title: 'Features Section Heading',

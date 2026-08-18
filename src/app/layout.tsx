@@ -7,8 +7,8 @@ import { draftMode } from 'next/headers';
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.siriem.com'),
   title: {
-    default: "Meiris | Innovative Electrification Solutions",
-    template: "%s | Meiris"
+    default: "MEIRIS | Innovative Electrification Solutions",
+    template: "%s | MEIRIS"
   },
   description: "Meiris, previously known as SIRIEM, provides cutting-edge electrification solutions, power infrastructure, and technological innovation.",
   keywords: ["Meiris", "SIRIEM", "SIRI", "Electrification", "Power Solutions", "Infrastructure", "Technology"],

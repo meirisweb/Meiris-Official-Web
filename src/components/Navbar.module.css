@@ -58,7 +58,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 80px;
+  gap: 56px;
   align-items: center;
 }
 
@@ -293,12 +293,26 @@
 /* ─── Responsive ─────────────────────────────────────────────────────────────── */
 @media (max-width: 1280px) {
   .container {
-    padding: 0 32px;
-    gap: 28px;
+    padding: 0 24px;
+    gap: 24px;
   }
 
   .navLinks {
-    gap: 28px;
+    gap: 24px;
+  }
+
+  .navLinks>li>a,
+  .dropdownTrigger {
+    font-size: 14.5px;
+  }
+
+  .logoImage {
+    height: 50px;
+  }
+
+  .contactBtn {
+    padding: 8px 18px;
+    font-size: 12.5px;
   }
 }
 

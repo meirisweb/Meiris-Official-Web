@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: any }): Promise<Met
 
   return resolveSanitySeo({
     seoData,
-    fallbackTitle: "Careers — Meiris Intelligent Power Conversion",
+    fallbackTitle: "Careers — MEIRIS Intelligent Power Conversion",
     fallbackDescription: "Join a culture defined by technical precision, environmental consciousness, and the drive to disrupt the energy landscape.",
     path: '/careers',
     locale,

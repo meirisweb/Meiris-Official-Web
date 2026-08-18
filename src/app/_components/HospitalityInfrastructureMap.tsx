@@ -15,7 +15,7 @@ const markersDataEn = [
   {
     id: 2,
     title: "Billing and access complexity",
-    desc: "How does a hotel bill a guest's room charge for their overnight charging session? How does an employer distinguish personal from business use? How do multiple tenants in a shared office building split costs fairly?",
+    desc: "How does a hotel bill a guest for an overnight charging session? How does an employer distinguish personal from business use? How do multiple tenants in a shared office building split costs fairly?",
     top: "67%",
     left: "34%"
   },
@@ -62,7 +62,7 @@ const markersDataEs = [
   {
     id: 2,
     title: "Complejidad en la facturación y el acceso",
-    desc: "¿Cómo factura un hotel a la habitación de un huésped su sesión de carga nocturna? ¿Cómo distingue un empleador el uso personal del comercial? ¿Cómo dividen los costos de manera justa los múltiples inquilinos en un edificio de oficinas compartido?",
+    desc: "¿Cómo factura un hotel a un huésped por una sesión de carga nocturna? ¿Cómo distingue un empleador el uso personal del empresarial? ¿Cómo dividen de manera equitativa los costos varios inquilinos en un edificio de oficinas compartido?",
     top: "67%",
     left: "34%"
   },

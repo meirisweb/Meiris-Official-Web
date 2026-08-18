@@ -16,7 +16,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }): Promise<Metadata> {
   return {
-    title: "Meiris — The power conversion platform for global electrification",
+    title: "MEIRIS — The power conversion platform for global electrification",
     description: "From fleet depots to residential grids, our vertically integrated architecture delivers precision control and unmatched efficiency across every electrification touchpoint.",
   };
 }
