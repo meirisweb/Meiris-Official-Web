@@ -68,10 +68,15 @@ export default function Navbar({ data }: { data?: any }) {
 
   const isActive = (rawPath: string) => {
     const resolvedPath = localePath(rawPath);
-    if (resolvedPath === `/${currentLocale}` || resolvedPath === `/${currentLocale}/`) {
-      return pathname === resolvedPath || pathname === `${resolvedPath}/`;
+    const cleanPathname = pathname?.replace(/\/$/, '') || '/';
+    const cleanResolved = resolvedPath.replace(/\/$/, '') || '/';
+    
+    if (cleanResolved === `/${currentLocale}` || cleanResolved === '') {
+      return cleanPathname === `/${currentLocale}` || cleanPathname === '';
     }
-    return pathname === resolvedPath || (pathname && pathname.startsWith(resolvedPath + '/'));
+    
+    // Strict exact match prevents /insights from highlighting when on /insights/blogs
+    return cleanPathname === cleanResolved;
   };
 
   const toggleDropdown = (name: string) => {
