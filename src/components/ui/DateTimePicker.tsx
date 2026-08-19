@@ -18,8 +18,8 @@ const MONTH_NAMES = [
 
 const SHORT_WEEKDAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
-// Business hours: 8 AM to 6 PM
-const AM_HOURS = ["08", "09", "10", "11"];
+// Business hours: 10 AM to 6 PM IST
+const AM_HOURS = ["10", "11"];
 const PM_HOURS = ["12", "01", "02", "03", "04", "05", "06"];
 const MINUTES = ["00", "15", "30", "45"];
 
@@ -230,7 +230,7 @@ export default function DateTimePicker({
           </div>
 
           <div className="text-[10px] text-gray-500 font-medium mb-3">
-            Working Hours: Mon–Sat (8:00 AM – 6:00 PM)
+            Working Hours: Mon–Sat (10:00 AM – 6:00 PM IST)
           </div>
 
           {/* Weekday Names */}
@@ -289,10 +289,10 @@ export default function DateTimePicker({
           {/* Divider */}
           <div className="h-px bg-gray-100 my-3" />
 
-          {/* Time Picker Section (Locked 8 AM to 6 PM) */}
+          {/* Time Picker Section (Locked 10 AM to 6 PM IST) */}
           <div className="flex flex-col gap-2 mb-4">
             <span className="text-[10px] font-bold uppercase tracking-widest text-gray-400">
-              Select Time (8 AM – 6 PM)
+              Select Time (10 AM – 6 PM IST)
             </span>
             <div className="flex items-center justify-between gap-1.5">
               {/* Hour */}
