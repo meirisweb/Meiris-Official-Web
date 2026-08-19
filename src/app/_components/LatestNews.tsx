@@ -33,20 +33,33 @@ export default function LatestNews({ data, locale }: { data: any, locale: string
         </div>
         <div className={styles.newsGrid}>
           {news.map((item: any, index: number) => {
-            const date = new Date(item.publishedAt).toLocaleDateString(
-              locale === 'es-419' ? 'es-MX' : 'en-US', 
-              { year: 'numeric', month: 'long', day: 'numeric' }
-            );
+            const date = item.publishedAt 
+              ? new Date(item.publishedAt).toLocaleDateString(
+                  locale === 'es-419' ? 'es-MX' : 'en-US', 
+                  { year: 'numeric', month: 'long', day: 'numeric' }
+                )
+              : '';
             return (
               <div key={index} className={styles.newsCard}>
                 <div className={styles.imageWrapper}>
-                  <Image src={item.imageUrl} alt={item.title} fill className={styles.image} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                  {item.imageUrl ? (
+                    <Image src={item.imageUrl} alt={item.title || "News"} fill className={styles.image} sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.05)', position: 'absolute' }} />
+                  )}
                 </div>
                 <div className={styles.content}>
                   <h3 className={styles.newsTitle}>{item.title}</h3>
+                  {item.details && (
+                    <div className={styles.details}>
+                      {item.details.split('\n').map((line: string, idx: number) => (
+                        <p key={idx}>{line}</p>
+                      ))}
+                    </div>
+                  )}
                   <div className={styles.meta}>
                     <span className={styles.date}>{date}</span>
-                    <a href={`/${locale}/insights?post=${item.slug}`} className={styles.readMore}>{data.readMore}</a>
+                    <a href={`/${locale}/insights${item._type === 'blogPost' ? '/blogs' : ''}?post=${item.slug}`} className={styles.readMore}>{data.readMore}</a>
                   </div>
                 </div>
               </div>

@@ -7,10 +7,12 @@ export async function sanityFetch<QueryResponse>({
   query,
   params = {},
   tags,
+  revalidate = 60,
 }: {
   query: string
   params?: any
   tags?: string[]
+  revalidate?: number
 }) {
   const isDraftMode = draftMode().isEnabled
   const token = process.env.SANITY_API_READ_TOKEN
@@ -29,10 +31,10 @@ export async function sanityFetch<QueryResponse>({
     })
   }
 
-  // Normal mode: use published content
+  // Normal mode: use published content with ISR caching
   return client.fetch<QueryResponse>(query, params, {
     next: {
-      revalidate: 0,
+      revalidate,
       tags,
     },
   })

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import dynamic from 'next/dynamic';
-const InsightsClient = dynamic(() => import('./InsightsClient'));
+const InsightsClient = dynamic(() => import('../InsightsClient'));
 import { sanityFetch } from "@/sanity/lib/sanityFetch";
 import { urlFor } from "@/sanity/lib/image";
 
@@ -22,22 +22,22 @@ export async function generateMetadata({
   if (postId) {
     try {
       const post = await sanityFetch<any>({
-        query: `*[_type == "insightPost" && _id == $postId][0]`,
+        query: `*[_type == "blogPost" && _id == $postId][0]`,
         params: { postId },
       });
 
       if (post) {
-        const postTitle = `${post.title} | MEIRIS Insights`;
+        const postTitle = `${post.title} | MEIRIS Blogs`;
         const postDescription =
           post.details ||
-          'Read the latest insights, announcements, and technological developments from Meiris.';
+          'Read the latest blogs and technological developments from Meiris.';
         const imageUrl = post.image
           ? urlFor(post.image).width(1200).height(630).url()
           : undefined;
 
         return getLocalizedMetadata({
           locale,
-          path: '/insights',
+          path: '/insights/blogs',
           title: postTitle,
           description: postDescription,
           query: { post: postId },
@@ -63,19 +63,19 @@ export async function generateMetadata({
   let seoData = null;
   try {
     const doc = await sanityFetch<any>({
-      query: `*[_type == "insightsPage" && language == $locale][0] { seo }`,
+      query: `*[_type == "blogsPage" && language == $locale][0] { seo }`,
       params: { locale },
     });
     seoData = doc?.seo;
   } catch (e) {
-    console.error('Error fetching insights seo:', e);
+    console.error('Error fetching blogs seo:', e);
   }
 
   return resolveSanitySeo({
     seoData,
-    fallbackTitle: 'Insights — MEIRIS Intelligent Power Conversion',
-    fallbackDescription: 'Insights, press releases, and announcements from Meiris.',
-    path: '/insights',
+    fallbackTitle: 'Blogs — MEIRIS Intelligent Power Conversion',
+    fallbackDescription: 'Blogs, insights, and stories from Meiris.',
+    path: '/insights/blogs',
     locale,
   });
 }
@@ -83,7 +83,7 @@ export async function generateMetadata({
 // Revalidate the page every 3600 seconds (1 hour)
 export const revalidate = 3600;
 
-export default async function InsightsPage({
+export default async function BlogsPage({
   params,
   searchParams,
 }: {
@@ -95,39 +95,37 @@ export default async function InsightsPage({
   const resolvedSearch = searchParams ? await searchParams : {};
   const postId = resolvedSearch?.post;
 
-  // Fetch the insights page singleton
+  // Fetch the blogs page singleton
   let content = await sanityFetch<any>({
-    query: `*[_type == "insightsPage" && language == $locale][0] {
+    query: `*[_type == "blogsPage" && language == $locale][0] {
       pageTitle,
-      pageSubtitle,
-      tabCategories
+      pageSubtitle
     }`,
     params: { locale }
   });
 
   if (!content) {
     content = await sanityFetch<any>({
-      query: `*[_type == "insightsPage" && language == "en"][0] {
+      query: `*[_type == "blogsPage" && language == "en"][0] {
         pageTitle,
-        pageSubtitle,
-        tabCategories
+        pageSubtitle
       }`
     });
   }
 
   // Fetch standalone posts
   let posts = await sanityFetch<any[]>({
-    query: `*[_type == "insightPost" && language == $locale] | order(coalesce(publishedAt, _createdAt) desc)`,
+    query: `*[_type == "blogPost" && language == $locale] | order(coalesce(publishedAt, _createdAt) desc)`,
     params: { locale }
   });
 
   if (!posts || posts.length === 0) {
     posts = await sanityFetch<any[]>({
-      query: `*[_type == "insightPost" && language == "en"] | order(coalesce(publishedAt, _createdAt) desc)`
+      query: `*[_type == "blogPost" && language == "en"] | order(coalesce(publishedAt, _createdAt) desc)`
     });
   }
 
-  // Inject posts into content for client compatibility
+  // Inject posts into content for client compatibility with InsightsClient
   if (content) {
     content.insightsItems = posts;
   }
@@ -142,7 +140,7 @@ export default async function InsightsPage({
         '@context': 'https://schema.org',
         '@type': 'Article',
         headline: activePost.title,
-        description: activePost.details || 'Meiris Insight Post',
+        description: activePost.details || 'Meiris Blog Post',
         image: activePost.image
           ? urlFor(activePost.image).width(1200).height(630).url()
           : 'https://www.siriem.com/favicon.ico',
@@ -168,6 +166,7 @@ export default async function InsightsPage({
   const breadcrumbLd = getBreadcrumbJsonLd([
     { name: 'Home', path: '' },
     { name: 'Insights', path: '/insights' },
+    { name: 'Blogs', path: '/insights/blogs' },
   ], locale);
 
   return (
@@ -188,4 +187,3 @@ export default async function InsightsPage({
     </div>
   );
 }
-

@@ -62,6 +62,7 @@ const nextConfig = {
       { source: '/verticals/cpos', destination: '/solutions/charge-point-operators' },
       { source: '/page/evseoems', destination: '/solutions/charge-point-operators' },
       { source: '/page/cookie-policy', destination: '/resources' },
+      { source: '/blogs', destination: '/insights/blogs' },
     ];
 
     // Create redirects for both the raw path and the '/es-419' prefixed path just to be 100% bulletproof

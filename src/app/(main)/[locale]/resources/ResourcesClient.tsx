@@ -21,11 +21,19 @@ export default function ResourcesClient({ data }: { data: any }) {
   const allResources: ResourceCard[] = data?.resourceItems || [];
 
   const [activeTab, setActiveTab] = useState<string>("All");
+  const [visiblePosts, setVisiblePosts] = useState(9);
+
+  // Reset pagination when tab changes
+  React.useEffect(() => {
+    setVisiblePosts(9);
+  }, [activeTab]);
 
   const filteredResources =
     activeTab === "All"
       ? allResources
       : allResources.filter((r: any) => r.cardCategory === activeTab);
+
+  const displayedResources = filteredResources.slice(0, visiblePosts);
 
   const formatFileSize = (bytes?: number) => {
     if (!bytes) return "0 MB";
@@ -89,7 +97,7 @@ export default function ResourcesClient({ data }: { data: any }) {
 
       {/* Card Grid */}
       <ScrollReveal key={activeTab} staggerChildren={true} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
-        {filteredResources.map((card, i) => (
+        {displayedResources.map((card, i) => (
           <div
             key={card._id || i}
             className="animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out flex flex-col border border-black/10 shadow-sm hover:shadow-xl hover:-translate-y-1 bg-[#fcfcfc] overflow-hidden"
@@ -167,6 +175,18 @@ export default function ResourcesClient({ data }: { data: any }) {
           </div>
         )}
       </ScrollReveal>
+
+      {/* Load More Button */}
+      {filteredResources.length > visiblePosts && (
+        <div className="flex justify-center mt-16 mb-4">
+          <button
+            onClick={() => setVisiblePosts(prev => prev + 9)}
+            className="bg-black text-white px-10 py-4 text-[12px] font-bold tracking-widest uppercase hover:bg-black/80 transition-colors rounded-sm"
+          >
+            Load More
+          </button>
+        </div>
+      )}
     </main>
   );
 }

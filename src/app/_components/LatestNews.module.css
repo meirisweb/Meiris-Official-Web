@@ -81,6 +81,7 @@
   height: 280px;
   overflow: hidden;
   margin-bottom: 25px;
+  position: relative;
 }
 
 .image {
@@ -109,6 +110,22 @@
   color: #101828;
   flex-grow: 1;
   margin-bottom: 23px;
+}
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 25px;
+}
+
+.details p {
+  font-family: var(--font-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #6A7282;
+  margin: 0;
 }
 
 .meta {

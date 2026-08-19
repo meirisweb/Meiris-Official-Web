@@ -5,7 +5,7 @@ const LANGUAGES = [
   { id: 'es-419', title: 'Español (Latinoamérica)' },
 ]
 
-const I18N_TYPES = ['teamMember', 'solution', 'homePage', 'platformPage', 'productsPage', 'aboutPage', 'careersPage', 'contactPage', 'footer', 'navbar', 'resourcesPage', 'insightsPage', 'insightPost', 'resourcePost']
+const I18N_TYPES = ['teamMember', 'solution', 'homePage', 'platformPage', 'productsPage', 'aboutPage', 'careersPage', 'contactPage', 'footer', 'navbar', 'resourcesPage', 'insightsPage', 'insightPost', 'resourcePost', 'blogsPage', 'blogPost']
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>
@@ -275,6 +275,32 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
+      // ── Blogs Page (multilingual singleton) ───────────────────────────────
+      S.listItem()
+        .title('Blogs Page')
+        .child(
+          S.list()
+            .title('Blogs Page')
+            .items(
+              LANGUAGES.map((lang) =>
+                S.listItem()
+                  .title(lang.title)
+                  .child(
+                    S.documentList()
+                      .title(`${lang.title} — Blogs Page`)
+                      .filter('_type == "blogsPage" && (language == $lang || ($lang == "en" && !defined(language)))')
+                      .params({ lang: lang.id })
+                      .apiVersion('2023-01-01')
+                      .initialValueTemplates([
+                        S.initialValueTemplateItem(`blogsPage-${lang.id}`)
+                      ])
+                  )
+              )
+            )
+        ),
+
+      S.divider(),
+
       // ── Insight Posts (multilingual) ──────────────────────────────────────────
       S.listItem()
         .title('Insight Posts')
@@ -293,6 +319,32 @@ export const structure: StructureResolver = (S) =>
                       .apiVersion('2023-01-01')
                       .initialValueTemplates([
                         S.initialValueTemplateItem(`insightPost-${lang.id}`)
+                      ])
+                  )
+              )
+            )
+        ),
+
+      S.divider(),
+
+      // ── Blog Posts (multilingual) ──────────────────────────────────────────
+      S.listItem()
+        .title('Blog Posts')
+        .child(
+          S.list()
+            .title('Blog Posts')
+            .items(
+              LANGUAGES.map((lang) =>
+                S.listItem()
+                  .title(lang.title)
+                  .child(
+                    S.documentList()
+                      .title(`${lang.title} — Blog Posts`)
+                      .filter('_type == "blogPost" && (language == $lang || ($lang == "en" && !defined(language)))')
+                      .params({ lang: lang.id })
+                      .apiVersion('2023-01-01')
+                      .initialValueTemplates([
+                        S.initialValueTemplateItem(`blogPost-${lang.id}`)
                       ])
                   )
               )

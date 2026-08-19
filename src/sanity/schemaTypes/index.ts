@@ -15,6 +15,8 @@ import { insightsPageType } from './insightsPageType'
 import { insightPostType } from './insightPostType'
 import { resourcePostType } from './resourcePostType'
 import { seoType } from './seoType'
+import { blogsPageType } from './blogsPageType'
+import { blogPostType } from './blogPostType'
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -33,6 +35,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     insightsPageType,
     insightPostType,
     resourcePostType,
+    blogsPageType,
+    blogPostType,
   ],
 }
 

@@ -79,9 +79,11 @@ export default async function Home({ params: { locale } }: { params: { locale: s
 
   // Fetch the latest 3 posts dynamically from the standalone insightPost documents
   let latestPosts = await sanityFetch<any[]>({
-    query: `*[_type == "insightPost" && language == $locale] | order(coalesce(publishedAt, _createdAt) desc)[0...3] {
+    query: `*[_type in ["insightPost", "blogPost"] && language == $locale] | order(coalesce(publishedAt, _createdAt) desc)[0...3] {
       title,
+      details,
       publishedAt,
+      _type,
       "slug": _id,
       "imageUrl": image.asset->url + "?w=800&h=450&fit=crop"
     }`,
@@ -90,9 +92,11 @@ export default async function Home({ params: { locale } }: { params: { locale: s
 
   if (!latestPosts || latestPosts.length === 0) {
     latestPosts = await sanityFetch<any[]>({
-      query: `*[_type == "insightPost" && language == "en"] | order(coalesce(publishedAt, _createdAt) desc)[0...3] {
+      query: `*[_type in ["insightPost", "blogPost"] && language == "en"] | order(coalesce(publishedAt, _createdAt) desc)[0...3] {
         title,
+        details,
         publishedAt,
+        _type,
         "slug": _id,
         "imageUrl": image.asset->url + "?w=800&h=450&fit=crop"
       }`

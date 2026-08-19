@@ -57,6 +57,12 @@ export default function InsightsClient({ data }: { data?: any }) {
   const [activeTab, setActiveTab] = useState<string>("All");
   const [selectedArticle, setSelectedArticle] = useState<any | null>(null);
   const [isClosing, setIsClosing] = useState(false);
+  const [visiblePosts, setVisiblePosts] = useState(9);
+
+  // Reset pagination when tab changes
+  useEffect(() => {
+    setVisiblePosts(9);
+  }, [activeTab]);
 
   // Automatically open article if URL param is present
   useEffect(() => {
@@ -72,6 +78,8 @@ export default function InsightsClient({ data }: { data?: any }) {
     activeTab === "All"
       ? allPosts
       : allPosts.filter((p: any) => p.postCategory === activeTab);
+
+  const displayedPosts = filteredPosts.slice(0, visiblePosts);
 
   // Lock body scroll when article is open
   useEffect(() => {
@@ -143,7 +151,7 @@ export default function InsightsClient({ data }: { data?: any }) {
               No posts found in this category.
             </div>
           )}
-          {filteredPosts.map((card: any, i: number) => (
+          {displayedPosts.map((card: any, i: number) => (
             <div key={card._id || i} className="animate-on-scroll opacity-0 translate-y-10 transition-all duration-700 ease-out flex flex-col border border-black/10 shadow-sm hover:shadow-xl hover:-translate-y-1 bg-[#fcfcfc] overflow-hidden">
               {/* Image Area */}
               <div className="aspect-square w-full bg-white relative border-b border-black/10">
@@ -199,6 +207,18 @@ export default function InsightsClient({ data }: { data?: any }) {
             </div>
           ))}
         </ScrollReveal>
+
+        {/* Load More Button */}
+        {filteredPosts.length > visiblePosts && (
+          <div className="flex justify-center mt-16 mb-4">
+            <button
+              onClick={() => setVisiblePosts(prev => prev + 9)}
+              className="bg-black text-white px-10 py-4 text-[12px] font-bold tracking-widest uppercase hover:bg-black/80 transition-colors rounded-sm"
+            >
+              Load More
+            </button>
+          </div>
+        )}
       </main>
 
       {/* Full Screen Article Modal */}
