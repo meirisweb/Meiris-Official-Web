@@ -11,8 +11,21 @@ export default function LanguagePrompt() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Only show on client side to avoid hydration mismatch
-    setIsVisible(true);
+    // Only evaluate on client side to avoid hydration mismatch and avoid dynamic rendering
+    const cookies = document.cookie.split(';').map(c => c.trim());
+    const hasSeenPrompt = cookies.some(c => c.startsWith('lang-prompt-seen=true'));
+    
+    let country = '';
+    const countryCookie = cookies.find(c => c.startsWith('vercel-ip-country='));
+    if (countryCookie) {
+      country = countryCookie.split('=')[1];
+    }
+    
+    const WHITELIST = ['AR', 'BO', 'CL', 'CO', 'CR', 'CU', 'DO', 'EC', 'SV', 'GT', 'HN', 'MX', 'NI', 'PA', 'PY', 'PE', 'PR', 'UY', 'VE'];
+    
+    if (!hasSeenPrompt && WHITELIST.includes(country)) {
+      setIsVisible(true);
+    }
   }, []);
 
   const handleSelection = (locale: 'en' | 'es-419') => {

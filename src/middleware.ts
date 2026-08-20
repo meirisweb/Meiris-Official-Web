@@ -16,7 +16,14 @@ export default function middleware(req: NextRequest) {
     );
   }
 
-  return intlMiddleware(req);
+  const response = intlMiddleware(req);
+  
+  const country = req.headers.get('x-vercel-ip-country');
+  if (country) {
+    response.cookies.set('vercel-ip-country', country, { path: '/', maxAge: 31536000 });
+  }
+
+  return response;
 }
 
 export const config = {
