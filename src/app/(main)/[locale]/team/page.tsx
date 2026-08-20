@@ -10,8 +10,12 @@ import { resolveSanitySeo } from "@/lib/seo";
 export async function generateMetadata({ params }: { params: any }): Promise<Metadata> {
   const resolvedParams = await params;
   const locale = resolvedParams?.locale || 'en';
+  
+  const pageData = await client.fetch(`*[_type == "teamPage" && (!defined(language) || language == $locale)][0]`, { locale });
+  
   return resolveSanitySeo({
-    fallbackTitle: "Team — MEIRIS Intelligent Power Conversion",
+    seoData: pageData?.seo,
+    fallbackTitle: pageData?.title || "Team — MEIRIS Intelligent Power Conversion",
     fallbackDescription: "Meet the engineering and leadership team behind Meiris.",
     path: '/team',
     locale,
@@ -55,14 +59,15 @@ function Logo({ small = false }: { small?: boolean }) {
 export const revalidate = 60;
 
 export default async function TeamPage({ params: { locale } }: { params: { locale: string } }) {
+  const pageData = await client.fetch(`*[_type == "teamPage" && (!defined(language) || language == $locale)][0]`, { locale });
   const teamMembers = await client.fetch(`*[_type == "teamMember" && (!defined(language) || language == $locale)] | order(order asc)`, { locale });
 
   return (
     <div className="relative min-h-screen bg-white text-black selection:bg-[#00E573] selection:text-black">
       
       <main className="mx-auto max-w-[1200px] px-6 md:px-8 lg:px-12 pt-36 md:pt-44 lg:pt-48 pb-12 md:pb-16 lg:pb-20">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-black mb-12 md:mb-20">
-          CORE TEAM
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-black mb-12 md:mb-20 uppercase">
+          {pageData?.title || "CORE TEAM"}
         </h1>
 
         <div className="flex flex-col gap-32">

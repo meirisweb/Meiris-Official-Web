@@ -1,6 +1,7 @@
 import { type SchemaTypeDefinition } from 'sanity'
 
 import { teamMember } from './teamMember'
+import { teamPageType } from './teamPageType'
 import { homePageType } from './homePageType'
 import { platformPageType } from './platformPageType'
 import { productsPageType } from './productsPageType'
@@ -28,6 +29,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     careersPageType,
     contactPageType,
     productsPageType,
+    teamPageType,
     teamMember,
     footerType,
     navbarType,
