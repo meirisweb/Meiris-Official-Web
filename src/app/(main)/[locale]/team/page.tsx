@@ -80,9 +80,9 @@ export default async function TeamPage({ params: { locale } }: { params: { local
               <div key={member._id} className={`grid grid-cols-1 gap-10 md:gap-12 lg:gap-16 items-center ${isEven ? 'md:grid-cols-[320px_1fr] lg:grid-cols-[400px_1fr]' : 'md:grid-cols-[1fr_320px] lg:grid-cols-[1fr_400px]'}`}>
                 
                 {/* Image */}
-                <div className={`w-full max-w-[320px] md:max-w-none aspect-[4/5] bg-[#e5e5e5] shadow-lg relative overflow-hidden mx-auto md:mx-0 ${isEven ? 'order-1' : 'order-1 md:order-2'}`}>
+                <div className={`w-full max-w-[320px] md:max-w-none aspect-[2/3] bg-white relative overflow-hidden mx-auto md:mx-0 ${isEven ? 'order-1' : 'order-1 md:order-2'}`}>
                   {member.image ? (
-                    <Image src={urlFor(member.image).width(800).height(1000).url()} alt={member.name} fill className="absolute inset-0 w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 400px" />
+                    <Image src={urlFor(member.image).width(800).height(1200).url()} alt={member.name} fill className="absolute inset-0 w-full h-full object-cover" sizes="(max-width: 768px) 100vw, 400px" />
                   ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-black/30 font-semibold tracking-widest text-sm uppercase">
                       Image Placeholder
